@@ -108,6 +108,15 @@
   .stog { padding: 5px 10px; background: #0f0f0f; color: #666; border: 1px solid #222; border-radius: 3px; cursor: pointer; font-family: inherit; font-size: 10px; font-weight: 700; letter-spacing: 0.5px; transition: all 0.15s; }
   .stog.active { background: #1e3a4a; color: #5ab4f5; border-color: #2a5a7a; }
   .stog.bw-tog.active { background: #2a1f40; color: #a78bfa; border-color: #3a2a5a; }
+  /* Range minimap */
+  .range-wrap { margin-bottom: 12px; user-select: none; -webkit-user-select: none; }
+  .range-presets { display: flex; gap: 5px; margin-bottom: 8px; }
+  .range-preset { padding: 4px 9px; background: #0f0f0f; color: #555; border: 1px solid #1e1e1e; border-radius: 3px; cursor: pointer; font-family: inherit; font-size: 9px; font-weight: 700; letter-spacing: 0.5px; transition: all 0.15s; }
+  .range-preset.active { background: #1a1a1a; color: #c8f55a; border-color: #3a3a1a; }
+  .range-minimap { position: relative; touch-action: none; cursor: col-resize; }
+  .range-minimap svg { display: block; width: 100%; border-radius: 4px; overflow: visible; }
+  .range-labels { display: flex; justify-content: space-between; margin-top: 4px; }
+  .range-label { font-size: 9px; color: #5ab4f5; letter-spacing: 0.5px; }
   .graph-wrap { background: #0f0f0f; border: 1px solid #1e1e1e; border-radius: 4px; padding: 8px; margin-bottom: 12px; }
   .graph-wrap svg { display: block; width: 100%; }
   .stats-summary { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
@@ -216,6 +225,43 @@
   .ex-card[draggable="true"] { cursor: grab; }
   .ex-card[draggable="true"]:active { cursor: grabbing; }
   .drag-handle { color: #333; font-size: 11px; padding: 0 6px 0 2px; flex-shrink: 0; cursor: grab; touch-action: none; user-select: none; }
+
+  /* ── Exercise Picker ────────────────────────── */
+  .picker-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.92); z-index:150; align-items:flex-end; justify-content:center; }
+  .picker-overlay.open { display:flex; }
+  .picker-sheet { background:#111; border-top:1px solid #2a2a2a; border-radius:16px 16px 0 0; width:100%; max-width:560px; height:90vh; display:flex; flex-direction:column; overflow:hidden; }
+  .picker-handle { width:36px; height:4px; background:#333; border-radius:2px; margin:12px auto 0; flex-shrink:0; }
+  .picker-header { padding:10px 16px 0; flex-shrink:0; }
+  .picker-title-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+  .picker-title { font-size:10px; color:#8aaa2e; letter-spacing:3px; }
+  .picker-close { background:none; border:none; color:#555; font-size:20px; cursor:pointer; line-height:1; padding:2px; }
+  .picker-search-wrap { position:relative; margin-bottom:8px; }
+  .picker-search { width:100%; background:#0f0f0f; border:1px solid #2a2a2a; color:#e8e8e8; border-radius:6px; padding:9px 32px 9px 12px; font-family:inherit; font-size:12px; outline:none; }
+  .picker-search:focus { border-color:#444; }
+  .picker-search-x { position:absolute; right:9px; top:50%; transform:translateY(-50%); background:none; border:none; color:#555; cursor:pointer; font-size:13px; padding:2px; }
+  .picker-muscles { display:flex; gap:6px; overflow-x:auto; padding-bottom:8px; scrollbar-width:none; }
+  .picker-muscles::-webkit-scrollbar { display:none; }
+  .pmuscle { flex-shrink:0; padding:5px 11px; background:#1a1a1a; color:#666; border:none; border-radius:12px; cursor:pointer; font-family:inherit; font-size:10px; font-weight:700; letter-spacing:0.5px; white-space:nowrap; }
+  .pmuscle.active { background:#c8f55a; color:#0f0f0f; }
+  .picker-day-strip { display:flex; gap:4px; overflow-x:auto; padding:6px 16px; border-top:1px solid #1a1a1a; border-bottom:1px solid #1a1a1a; scrollbar-width:none; flex-shrink:0; }
+  .picker-day-strip::-webkit-scrollbar { display:none; }
+  .pday { flex-shrink:0; padding:5px 9px; background:#1a1a1a; color:#555; border:none; border-radius:4px; cursor:pointer; font-family:inherit; font-size:9px; font-weight:700; white-space:nowrap; }
+  .pday.active { background:#222; color:#c8f55a; border:1px solid #333; }
+  .picker-list { flex:1; overflow-y:auto; padding-bottom:calc(8px + env(safe-area-inset-bottom)); }
+  .picker-group { font-size:9px; color:#444; letter-spacing:2px; padding:10px 16px 4px; }
+  .picker-item { display:flex; align-items:center; justify-content:space-between; padding:12px 16px; border-bottom:1px solid #161616; cursor:pointer; }
+  .picker-item:active { background:#1a1a1a; }
+  .picker-item.used { opacity:0.3; pointer-events:none; }
+  .pi-name { font-size:13px; color:#e8e8e8; }
+  .pi-meta { font-size:9px; color:#555; letter-spacing:1px; margin-top:2px; }
+  .pi-add { font-size:18px; color:#c8f55a; flex-shrink:0; margin-left:8px; }
+  .picker-custom { padding:10px 16px calc(10px + env(safe-area-inset-bottom)); border-top:1px solid #1e1e1e; flex-shrink:0; background:#111; }
+  .picker-custom-label { font-size:9px; color:#444; letter-spacing:2px; margin-bottom:8px; }
+  .picker-custom-row { display:flex; gap:8px; }
+  .picker-custom-input { flex:1; background:#0f0f0f; border:1px solid #2a2a2a; color:#e8e8e8; border-radius:4px; padding:8px 10px; font-family:inherit; font-size:12px; outline:none; }
+  .picker-custom-input:focus { border-color:#444; }
+  .picker-custom-btn { padding:8px 14px; background:#c8f55a; color:#0f0f0f; border:none; border-radius:4px; cursor:pointer; font-family:inherit; font-size:11px; font-weight:700; flex-shrink:0; }
+
 </style>
 </head>
 <body>
@@ -307,10 +353,13 @@ let searchQuery = "";
 let searchLogTarget = null; // {ex, tab} for search-result log modal
 
 // Stats state
-let statsEx = null;      // exercise name
-let statsTab = null;     // which day
-let statsShowBW = false; // toggle body weight overlay
+let statsEx = null;        // exercise name
+let statsTab = null;       // which day
+let statsShowBW = false;   // toggle body weight overlay
 let statsMetric = "weight"; // "weight" | "volume" | "avg"
+let statsActiveDate = null; // tapped dot date — shows session detail panel
+let statsRangeStart = null; // fractional 0–1, left handle position
+let statsRangeEnd = null;   // fractional 0–1, right handle position
 
 // Manage state
 let manageEx = null;
@@ -319,6 +368,12 @@ let manageTab = null;
 // Drag reorder state
 let dragSrcEx = null;
 let dragOverEx = null;
+
+// Exercise picker state
+let pickerOpen = false;
+let pickerMuscle = "ALL";   // active muscle group filter
+let pickerSearch = "";       // search query
+let pickerDays = new Set();  // which days to add to (multi-select)
 
 
 // Settings state
@@ -410,25 +465,42 @@ function dedupeSharedExercises() {
 
 function today() {
   const d = new Date();
-  return `${String(d.getMonth()+1).padStart(2,"0")}/${String(d.getDate()).padStart(2,"0")}`;
+  return `${String(d.getMonth()+1).padStart(2,"0")}/${String(d.getDate()).padStart(2,"0")}/${d.getFullYear()}`;
 }
 function totalReps(sets) { return sets.reduce((a,b)=>a+b,0); }
 function avgReps(sets) { return sets.length ? totalReps(sets)/sets.length : 0; }
 function fmtSets(sets) { return sets.join(" / "); }
-function fmtW(w) { return typeof w==="number" ? w+" lbs" : w; }
 function sgn(n) { return n>0 ? "+" : ""; }
 
-// Days since MM/DD date (assumes current year, handles Dec→Jan wrap)
-function daysAgo(mmdd) {
-  if (!mmdd) return null;
-  const [m, d] = mmdd.split("/").map(Number);
-  if (!m || !d) return null;
-  const now = new Date();
-  let year = now.getFullYear();
-  const candidate = new Date(year, m - 1, d);
-  if (candidate > now) { candidate.setFullYear(year - 1); } // past year
-  const diff = Math.round((now - candidate) / 86400000);
-  return diff;
+// Parse a date string — supports both MM/DD and MM/DD/YYYY.
+// Returns a real JS Date object (noon local time to avoid DST edge cases).
+function parseEntryDate(str) {
+  if (!str) return null;
+  const parts = String(str).split("/").map(Number);
+  if (parts.length === 3) {
+    // MM/DD/YYYY
+    const [m, d, y] = parts;
+    if (!m || !d || !y) return null;
+    return new Date(y, m - 1, d, 12);
+  }
+  if (parts.length === 2) {
+    // MM/DD — infer year: if the date would be in the future, use last year
+    const [m, d] = parts;
+    if (!m || !d) return null;
+    const now = new Date();
+    let year = now.getFullYear();
+    const candidate = new Date(year, m - 1, d, 12);
+    if (candidate - now > 86400000) candidate.setFullYear(year - 1);
+    return candidate;
+  }
+  return null;
+}
+
+// Days since a date string (MM/DD or MM/DD/YYYY)
+function daysAgo(str) {
+  const d = parseEntryDate(str);
+  if (!d) return null;
+  return Math.round((Date.now() - d.getTime()) / 86400000);
 }
 
 function fmtDaysAgo(n) {
@@ -436,6 +508,14 @@ function fmtDaysAgo(n) {
   if (n === 0) return "today";
   if (n === 1) return "1d ago";
   return `${n}d ago`;
+}
+
+// Display format — strip year for compactness in UI
+function fmtDate(str) {
+  if (!str) return "";
+  const parts = String(str).split("/");
+  if (parts.length === 3) return `${parts[0]}/${parts[1]}`; // MM/DD
+  return str;
 }
 
 // Parse plate notation: "2pl" → 90 lbs (each plate = 45 lbs, barbell = 45 lbs)
@@ -476,14 +556,24 @@ function getBWForDate(date) {
   return bwEntries.length ? bwEntries[bwEntries.length - 1].weight : null;
 }
 
-// Parse MM/DD date string into a sortable number (month*100+day)
-function dateKey(d) {
-  const p = String(d).split("/");
-  return parseInt(p[0]||0)*100 + parseInt(p[1]||0);
+// Sort key — milliseconds since epoch so MM/DD/YYYY entries sort correctly across years
+function dateKey(str) {
+  const d = parseEntryDate(str);
+  return d ? d.getTime() : 0;
 }
 
 function sortedEntries(entries) {
   return entries.slice().sort((a,b) => dateKey(a.date) - dateKey(b.date));
+}
+
+// Returns the Monday of the week containing a given Date (local time)
+function getMondayOf(date) {
+  const d = new Date(date);
+  const day = d.getDay(); // 0=Sun,1=Mon,...
+  const diff = (day === 0) ? -6 : 1 - day; // shift to Monday
+  d.setDate(d.getDate() + diff);
+  d.setHours(0, 0, 0, 0);
+  return d;
 }
 
 function getDelta(entries) {
@@ -576,224 +666,469 @@ function openStats(ex, tab) {
   statsEx = ex;
   statsTab = tab || activeTab;
   statsShowBW = false;
-  // Auto-select best metric using pooled entries across all days
+  statsActiveDate = null;
+  statsRangeStart = 0;
+  statsRangeEnd = 1;
   const entries = getAllEntriesForEx(ex);
   const hasResolvableWeight = entries.some(e => numericWeight(e.weight) !== null);
   statsMetric = hasResolvableWeight ? "weight" : "avg";
   render();
 }
-function closeStats() { statsEx = null; statsTab = null; render(); }
-function setStatsMetric(m) { statsMetric = m; render(); }
+function closeStats() { statsEx = null; statsTab = null; statsActiveDate = null; render(); }
+function setStatsMetric(m) { statsMetric = m; statsActiveDate = null; render(); }
 function toggleStatsBW() { statsShowBW = !statsShowBW; render(); }
+function setStatsDate(d) { statsActiveDate = statsActiveDate === d ? null : d; render(); }
 
-function getMetricVal(e) {
-  if (statsMetric === "volume") {
-    const w = numericWeight(e.weight) ?? 1;
-    return totalReps(e.sets) * w;
+function setStatsRange(start, end) {
+  statsRangeStart = Math.max(0, Math.min(1, start));
+  statsRangeEnd   = Math.max(0, Math.min(1, end));
+  if (statsRangeEnd - statsRangeStart < 0.02) {
+    // keep handles at least 2% apart
+    statsRangeEnd = Math.min(1, statsRangeStart + 0.02);
   }
-  if (statsMetric === "avg") return avgReps(e.sets);
-  return numericWeight(e.weight);
+  statsActiveDate = null;
+  render();
+}
+
+// Preset buttons snap handles to a time window from the end
+function setStatsPreset(days) {
+  if (days === null) { setStatsRange(0, 1); return; }
+  // We need the session list to compute what fraction "days ago" maps to
+  const allSorted = sortedEntries(getAllEntriesForEx(statsEx));
+  if (!allSorted.length) return;
+  const daySessions = groupSessionsByDate(allSorted);
+  if (daySessions.length < 2) return;
+
+  function dateToDaysFn(str) {
+    const [m, d] = str.split("/").map(Number);
+    const dim = [0,31,28,31,30,31,30,31,31,30,31,30,31];
+    let n = d; for (let i=1;i<m;i++) n+=dim[i]; return n;
+  }
+  const rawD = daySessions.map(s => dateToDaysFn(s.date));
+  const adjD = rawD.slice();
+  for (let i=1;i<adjD.length;i++) if (adjD[i]<adjD[i-1]) adjD[i]+=365;
+  for (let i=2;i<adjD.length;i++) if (adjD[i]<adjD[i-1]) adjD[i]+=365;
+  const tMin = adjD[0], tMax = adjD[adjD.length-1], tRng = tMax-tMin||1;
+  const cutoff = tMax - days;
+  const frac = Math.max(0, (cutoff - tMin) / tRng);
+  setStatsRange(frac, 1);
+}
+
+// ── Session grouping ─────────────────────────────────────────
+// Collapses same-date entries into one session point.
+// Each session carries the raw entries plus a representative "top value"
+// per metric so the graph has one clean dot per date.
+function groupSessionsByDate(entries) {
+  // entries already sorted chronologically
+  const map = new Map();
+  for (const e of entries) {
+    if (!map.has(e.date)) map.set(e.date, []);
+    map.get(e.date).push(e);
+  }
+  return [...map.entries()].map(([date, raws]) => {
+    // Top weight: highest numeric weight in session (best calibration attempt)
+    const numericWeights = raws.map(e => numericWeight(e.weight)).filter(v => v !== null);
+    const topWeight = numericWeights.length ? Math.max(...numericWeights) : null;
+
+    // For non-numeric weights, pick the entry with most total reps as "top"
+    const topEntry = topWeight !== null
+      ? raws.reduce((best, e) => {
+          const w = numericWeight(e.weight) ?? 0;
+          const rm = est1RM(w, Math.max(...e.sets));
+          const bw = est1RM(numericWeight(best.weight) ?? 0, Math.max(...best.sets));
+          return rm > bw ? e : best;
+        })
+      : raws.reduce((best, e) => totalReps(e.sets) > totalReps(best.sets) ? e : best);
+
+    // Session totals
+    const sessionVolume = raws.reduce((sum, e) => {
+      const w = numericWeight(e.weight) ?? 1;
+      return sum + totalReps(e.sets) * w;
+    }, 0);
+    const sessionAvgReps = raws.reduce((sum, e) => sum + avgReps(e.sets), 0) / raws.length;
+
+    // Best BW for this date
+    const bw = topEntry.bw || getBWForDate(date);
+
+    return { date, raws, topEntry, topWeight, sessionVolume, sessionAvgReps, bw };
+  });
+}
+
+function sessionMetricVal(session) {
+  if (statsMetric === "volume") return session.sessionVolume;
+  if (statsMetric === "avg") return session.sessionAvgReps;
+  return session.topWeight; // null for non-numeric
+}
+
+// ── Range Slider ─────────────────────────────────────────────
+// Renders an SVG-free, pointer-event-driven dual handle range slider.
+// Drag logic runs via inline onpointerdown on each handle.
+function renderRangeSlider(tMinAll, tMaxAll, tRngAll, allAdjDays, sessions) {
+  if (sessions.length < 2) return "";
+
+  const rs = statsRangeStart ?? 0;
+  const re = statsRangeEnd   ?? 1;
+
+  const W = 420, H = 26;   // shorter bar
+  const HANDLE_W = 10;
+  const lx = rs * W;
+  const rx = re * W;
+
+  // Volume per session (for tick height scaling)
+  const vols = sessions.map(s => s.sessionVolume || 1);
+  const maxVol = Math.max(...vols, 1);
+
+  // Session ticks — height proportional to session volume
+  const ticks = sessions.map((s, i) => {
+    const fx = tRngAll > 0 ? ((allAdjDays[i] - tMinAll) / tRngAll) * W : W / 2;
+    const inside = fx >= lx && fx <= rx;
+    const volFrac = Math.max(0.25, vols[i] / maxVol); // min 25% height
+    const maxH = H - 4;
+    const barH = inside ? Math.round(maxH * volFrac) : Math.round(maxH * volFrac * 0.45);
+    const y1 = H - 2 - barH; // anchor to bottom
+    const color = inside ? "#5ab4f5" : "#252525";
+    return `<line id="tick-${i}" x1="${fx.toFixed(1)}" y1="${y1}" x2="${fx.toFixed(1)}" y2="${(H-2).toFixed(1)}" stroke="${color}" stroke-width="1.5" stroke-linecap="round"/>`;
+  }).join("");
+
+  // Month divider lines (every ~30 days across the full span)
+  let monthDivs = "";
+  if (tRngAll > 25) {
+    const step = 30;
+    for (let t = tMinAll + step; t < tMaxAll; t += step) {
+      const fx = ((t - tMinAll) / tRngAll) * W;
+      monthDivs += `<line x1="${fx.toFixed(1)}" y1="0" x2="${fx.toFixed(1)}" y2="${H}" stroke="#1e1e1e" stroke-width="0.5" stroke-dasharray="2 3"/>`;
+    }
+  }
+
+  // Background
+  const bgRect = `<rect x="0" y="0" width="${W}" height="${H}" rx="3" fill="#0d0d0d" stroke="#1e1e1e" stroke-width="1"/>`;
+
+  // Selected overlay
+  const selRect = `<rect id="mm-sel" x="${lx.toFixed(1)}" y="0" width="${(rx-lx).toFixed(1)}" height="${H}" fill="#5ab4f5" fill-opacity="0.06"/>`;
+
+  // Dimmers — always present, width/x updated live
+  const dimL = `<rect id="mm-diml" x="0" y="0" width="${lx.toFixed(1)}" height="${H}" rx="3" fill="#0d0d0d" fill-opacity="0.62"/>`;
+  const dimR = `<rect id="mm-dimr" x="${rx.toFixed(1)}" y="0" width="${(W-rx).toFixed(1)}" height="${H}" rx="3" fill="#0d0d0d" fill-opacity="0.62"/>`;
+
+  // Edge lines
+  const edgeL = `<line id="mm-el" x1="${lx.toFixed(1)}" y1="0" x2="${lx.toFixed(1)}" y2="${H}" stroke="#5ab4f5" stroke-width="1.5" opacity="0.7"/>`;
+  const edgeR = `<line id="mm-er" x1="${rx.toFixed(1)}" y1="0" x2="${rx.toFixed(1)}" y2="${H}" stroke="#5ab4f5" stroke-width="1.5" opacity="0.7"/>`;
+
+  // Handles
+  const handleL = `
+    <rect id="mm-hl" x="${(lx - HANDLE_W/2).toFixed(1)}" y="2" width="${HANDLE_W}" height="${H-4}" rx="3"
+      fill="#5ab4f5" opacity="0.85" style="cursor:ew-resize"
+      onpointerdown="startRangeDrag(event,'start')" ontouchstart="startRangeDrag(event,'start')"/>
+    <line id="mm-hll" x1="${lx.toFixed(1)}" y1="${(H/2-3).toFixed(1)}" x2="${lx.toFixed(1)}" y2="${(H/2+3).toFixed(1)}"
+      stroke="#061220" stroke-width="1.5" stroke-linecap="round" style="pointer-events:none"/>`;
+
+  const handleR = `
+    <rect id="mm-hr" x="${(rx - HANDLE_W/2).toFixed(1)}" y="2" width="${HANDLE_W}" height="${H-4}" rx="3"
+      fill="#5ab4f5" opacity="0.85" style="cursor:ew-resize"
+      onpointerdown="startRangeDrag(event,'end')" ontouchstart="startRangeDrag(event,'end')"/>
+    <line id="mm-hrl" x1="${rx.toFixed(1)}" y1="${(H/2-3).toFixed(1)}" x2="${rx.toFixed(1)}" y2="${(H/2+3).toFixed(1)}"
+      stroke="#061220" stroke-width="1.5" stroke-linecap="round" style="pointer-events:none"/>`;
+
+  // Date labels
+  function fracToDate(frac) {
+    const t = tMinAll + frac * tRngAll;
+    let best = sessions[0], bestDist = Infinity;
+    allAdjDays.forEach((d, i) => { const dist = Math.abs(d-t); if (dist < bestDist) { bestDist = dist; best = sessions[i]; } });
+    return fmtDate(best.date);
+  }
+  const startLabel = fracToDate(rs);
+  const endLabel   = fracToDate(re);
+
+  // Presets
+  function isPreset(days) {
+    if (days === null) return rs <= 0.001 && re >= 0.999;
+    const cutFrac = Math.max(0, (tMaxAll - days - tMinAll) / tRngAll);
+    return Math.abs(rs - cutFrac) < 0.03 && Math.abs(re - 1) < 0.01;
+  }
+  const presets = [
+    { label: "1M", days: 30 }, { label: "3M", days: 90 },
+    { label: "6M", days: 180 }, { label: "1Y", days: 365 },
+    { label: "ALL", days: null },
+  ].filter(p => p.days === null || p.days < tRngAll);
+
+  return `
+    <div class="range-wrap" id="range-wrap">
+      <div class="range-presets">
+        ${presets.map(p => `<button class="range-preset ${isPreset(p.days)?"active":""}" onclick="setStatsPreset(${p.days})">${p.label}</button>`).join("")}
+      </div>
+      <div class="range-minimap" id="rtrack">
+        <svg id="rsvg" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg"
+          onpointerdown="minimapClick(event)" style="touch-action:none">
+          ${bgRect}${monthDivs}${ticks}${dimL}${dimR}${selRect}${edgeL}${edgeR}${handleL}${handleR}
+        </svg>
+      </div>
+      <div class="range-labels">
+        <span class="range-label" id="mm-lbl-start">${startLabel}</span>
+        <span class="range-label" id="mm-lbl-end">${endLabel}</span>
+      </div>
+    </div>`;
 }
 
 function renderStatsModal() {
   if (!statsEx || !statsTab) return "";
-  // Pool entries from ALL days that have this exercise name
+
+  // Pool + sort all entries across days
   const allSorted = sortedEntries(getAllEntriesForEx(statsEx));
   const hasResolvableWeight = allSorted.some(e => numericWeight(e.weight) !== null);
-  const entries = statsMetric === "weight"
-    ? allSorted.filter(e => numericWeight(e.weight) !== null)
-    : allSorted;
 
-  const W = 420, H = 160, PAD = { t:16, r:statsShowBW ? 32 : 16, b:30, l:48 };
+  // Group into sessions (one per date) — ALL sessions for history list
+  const sessions = groupSessionsByDate(allSorted);
+
+  // ── Date → day number (with year-wrap) ──────────────────────
+  function dateToDays(str) {
+    const [m, d] = str.split("/").map(Number);
+    const dim = [0,31,28,31,30,31,30,31,31,30,31,30,31];
+    let n = d; for (let i=1;i<m;i++) n+=dim[i]; return n;
+  }
+  const allRawDays = sessions.map(s => dateToDays(s.date));
+  const allAdjDays = allRawDays.slice();
+  for (let i=1;i<allAdjDays.length;i++) if (allAdjDays[i]<allAdjDays[i-1]) allAdjDays[i]+=365;
+  for (let i=2;i<allAdjDays.length;i++) if (allAdjDays[i]<allAdjDays[i-1]) allAdjDays[i]+=365;
+  const tMinAll = allAdjDays[0] ?? 0;
+  const tMaxAll = allAdjDays[allAdjDays.length-1] ?? 1;
+  const tRngAll = tMaxAll - tMinAll || 1;
+
+  // Apply range filter (statsRangeStart/End are 0–1 fractions)
+  const rs = statsRangeStart ?? 0;
+  const re = statsRangeEnd   ?? 1;
+  const tCutStart = tMinAll + rs * tRngAll;
+  const tCutEnd   = tMinAll + re * tRngAll;
+
+  // For weight metric, filter sessions that have no numeric weight
+  const metricFiltered = statsMetric === "weight"
+    ? sessions.filter(s => s.topWeight !== null)
+    : sessions;
+
+  const visibleSessions = metricFiltered.filter((s, i) => {
+    const t = allAdjDays[sessions.indexOf(s)];
+    return t >= tCutStart - 0.5 && t <= tCutEnd + 0.5;
+  });
+
+  const W = 420, H = 170, PAD = { t:16, r: statsShowBW ? 34 : 16, b:30, l:48 };
   const IW = W - PAD.l - PAD.r;
   const IH = H - PAD.t - PAD.b;
 
   let graphSVG = "";
   let summaryHtml = "";
-
   const hasBWData = Array.isArray(data["BODY"]) && data["BODY"].length > 0;
 
-  // If on weight tab but no resolvable weights, show explanation
+  // ── Graph ─────────────────────────────────────────────────
   if (statsMetric === "weight" && !hasResolvableWeight) {
     graphSVG = `<div class="no-data-msg" style="padding:24px 0">
       <div style="color:#5ab4f5;margin-bottom:6px">NO NUMERIC WEIGHT</div>
-      <div style="color:#444;font-size:10px">Weight "${escH(allSorted[0]?.weight ?? "")}" can't be parsed. Use Npl for plates or a number. Switch to AVG REPS to see rep progress.</div>
+      <div style="color:#444;font-size:10px">Weight "${escH(allSorted[0]?.weight ?? "")}" can't be parsed — use Npl for plates or a number. Switch to AVG REPS to see rep progress.</div>
     </div>`;
-  } else if (entries.length < 2) {
-    graphSVG = `<div class="no-data-msg">Need at least 2 entries to show a graph.</div>`;
+  } else if (visibleSessions.length < 2) {
+    graphSVG = `<div class="no-data-msg">Log at least 2 sessions to see a graph.</div>`;
   } else {
-    const rawVals = entries.map(e => getMetricVal(e));
-    const vals = rawVals.filter(v => v !== null);
-    if (vals.length < 2) {
-      graphSVG = `<div class="no-data-msg">Not enough numeric data for this metric.</div>`;
-    } else {
-      const mn = Math.min(...vals), mx = Math.max(...vals), rng = mx - mn || 1;
+    const vals = visibleSessions.map(s => sessionMetricVal(s)).filter(v => v !== null);
+    const mn = Math.min(...vals), mx = Math.max(...vals), rng = mx - mn || 1;
 
-      // Build points only for entries with valid values
-      const pts = entries.map((e, i) => {
-        const v = getMetricVal(e);
-        if (v === null) return null;
-        const validIdx = entries.slice(0,i+1).filter((_,j) => getMetricVal(entries[j]) !== null).length - 1;
-        const totalValid = entries.filter(en => getMetricVal(en) !== null).length;
-        const x = PAD.l + (totalValid <= 1 ? IW/2 : (validIdx / (totalValid - 1)) * IW);
-        const y = PAD.t + IH - ((v - mn) / rng) * IH;
-        return { x, y, v, e };
+    const pts = visibleSessions.map((s, i) => {
+      const v = sessionMetricVal(s);
+      if (v === null) return null;
+      const x = PAD.l + (i / (visibleSessions.length - 1)) * IW;
+      const y = PAD.t + IH - ((v - mn) / rng) * IH;
+      return { x, y, v, s };
+    }).filter(Boolean);
+
+    const pathD = pts.map((p, i) => `${i===0?"M":"L"} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(" ");
+    const areaD = `${pathD} L ${pts[pts.length-1].x.toFixed(1)} ${(PAD.t+IH).toFixed(1)} L ${pts[0].x.toFixed(1)} ${(PAD.t+IH).toFixed(1)} Z`;
+
+    // BW overlay
+    let bwLine = "";
+    if (statsShowBW && hasBWData) {
+      const bwPtsRaw = pts.map(p => {
+        const bw = p.s.bw;
+        return bw ? { x: p.x, bw: parseFloat(bw) } : null;
       }).filter(Boolean);
-
-      const pathD = pts.map((p, i) => `${i === 0 ? "M" : "L"} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(" ");
-      const areaD = `${pathD} L ${pts[pts.length-1].x.toFixed(1)} ${(PAD.t+IH).toFixed(1)} L ${PAD.l} ${(PAD.t+IH).toFixed(1)} Z`;
-
-      // Body weight overlay
-      let bwLine = "";
-      if (statsShowBW && hasBWData) {
-        const bwPtsRaw = entries.map((e, i) => {
-          const bw = e.bw || getBWForDate(e.date);
-          if (!bw) return null;
-          const validIdx = entries.slice(0,i+1).filter((_,j) => getMetricVal(entries[j]) !== null).length - 1;
-          const totalValid = entries.filter(en => getMetricVal(en) !== null).length;
-          const x = PAD.l + (totalValid <= 1 ? IW/2 : (validIdx / (totalValid - 1)) * IW);
-          return { x, bw: parseFloat(bw) };
-        }).filter(Boolean);
-
-        if (bwPtsRaw.length >= 2) {
-          const bwVals = bwPtsRaw.map(p => p.bw);
-          const bwMn = Math.min(...bwVals), bwMx = Math.max(...bwVals), bwRng = bwMx - bwMn || 1;
-          const bwPts = bwPtsRaw.map(p => ({
-            ...p,
-            y: PAD.t + IH - ((p.bw - bwMn) / bwRng) * IH
-          }));
-          const bwPath = bwPts.map((p, i) => `${i === 0 ? "M" : "L"} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(" ");
-          bwLine = `
-            <path d="${bwPath}" fill="none" stroke="#a78bfa" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.7"/>
-            ${bwPts.map(p => `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="2.5" fill="#a78bfa" opacity="0.9"/>`).join("")}
-            <text x="${(W - PAD.r + 4).toFixed(1)}" y="${(PAD.t + 5).toFixed(1)}" font-size="8" fill="#a78bfa" opacity="0.7" font-family="IBM Plex Mono, monospace">${bwMx.toFixed(0)}</text>
-            <text x="${(W - PAD.r + 4).toFixed(1)}" y="${(PAD.t + IH).toFixed(1)}" font-size="8" fill="#a78bfa" opacity="0.7" font-family="IBM Plex Mono, monospace">${bwMn.toFixed(0)}</text>
-          `;
-        }
+      if (bwPtsRaw.length >= 2) {
+        const bwVals = bwPtsRaw.map(p => p.bw);
+        const bwMn = Math.min(...bwVals), bwMx = Math.max(...bwVals), bwRng = bwMx - bwMn || 1;
+        const bwPts2 = bwPtsRaw.map(p => ({ ...p, y: PAD.t + IH - ((p.bw - bwMn) / bwRng) * IH }));
+        const bwPath = bwPts2.map((p, i) => `${i===0?"M":"L"} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(" ");
+        bwLine = `
+          <path d="${bwPath}" fill="none" stroke="#a78bfa" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.7"/>
+          ${bwPts2.map(p=>`<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="2.5" fill="#a78bfa" opacity="0.9"/>`).join("")}
+          <text x="${(W-PAD.r+4).toFixed(1)}" y="${(PAD.t+5).toFixed(1)}" font-size="8" fill="#a78bfa" opacity="0.7" font-family="monospace">${bwMx.toFixed(0)}</text>
+          <text x="${(W-PAD.r+4).toFixed(1)}" y="${(PAD.t+IH).toFixed(1)}" font-size="8" fill="#a78bfa" opacity="0.7" font-family="monospace">${bwMn.toFixed(0)}</text>`;
       }
+    }
 
-      // Y axis labels
-      const yMid = ((mn + mx) / 2).toFixed(0);
-      const yAxisLabels = `
-        <text x="${(PAD.l - 4).toFixed(1)}" y="${(PAD.t + 4).toFixed(1)}" font-size="8" fill="#444" text-anchor="end" font-family="IBM Plex Mono, monospace">${mx.toFixed(statsMetric==="avg"?1:0)}</text>
-        <text x="${(PAD.l - 4).toFixed(1)}" y="${(PAD.t + IH/2 + 4).toFixed(1)}" font-size="8" fill="#444" text-anchor="end" font-family="IBM Plex Mono, monospace">${yMid}</text>
-        <text x="${(PAD.l - 4).toFixed(1)}" y="${(PAD.t + IH + 4).toFixed(1)}" font-size="8" fill="#444" text-anchor="end" font-family="IBM Plex Mono, monospace">${mn.toFixed(statsMetric==="avg"?1:0)}</text>
-      `;
+    // Axis labels
+    const yAxisLabels = `
+      <text x="${(PAD.l-4).toFixed(1)}" y="${(PAD.t+4).toFixed(1)}" font-size="8" fill="#444" text-anchor="end" font-family="monospace">${mx.toFixed(statsMetric==="avg"?1:0)}</text>
+      <text x="${(PAD.l-4).toFixed(1)}" y="${(PAD.t+IH/2+4).toFixed(1)}" font-size="8" fill="#444" text-anchor="end" font-family="monospace">${((mn+mx)/2).toFixed(0)}</text>
+      <text x="${(PAD.l-4).toFixed(1)}" y="${(PAD.t+IH+4).toFixed(1)}" font-size="8" fill="#444" text-anchor="end" font-family="monospace">${mn.toFixed(statsMetric==="avg"?1:0)}</text>`;
 
-      // X axis date labels (first, middle, last)
-      const xLabels = (() => {
-        const show = [0, Math.floor((pts.length-1)/2), pts.length-1].filter((v,i,a) => a.indexOf(v)===i);
-        return show.map(i => {
-          return `<text x="${pts[i].x.toFixed(1)}" y="${(PAD.t + IH + 14).toFixed(1)}" font-size="8" fill="#444" text-anchor="middle" font-family="IBM Plex Mono, monospace">${escH(pts[i].e.date)}</text>`;
-        }).join("");
-      })();
+    const showIdxs = [0, Math.floor((pts.length-1)/2), pts.length-1].filter((v,i,a)=>a.indexOf(v)===i);
+    const xLabels = showIdxs.map(i =>
+      `<text x="${pts[i].x.toFixed(1)}" y="${(PAD.t+IH+14).toFixed(1)}" font-size="8" fill="#444" text-anchor="middle" font-family="monospace">${escH(fmtDate(pts[i].s.date))}</text>`
+    ).join("");
 
-      const gridLines = [0, 0.5, 1].map(f => {
-        const y = (PAD.t + IH * (1 - f)).toFixed(1);
-        return `<line x1="${PAD.l}" y1="${y}" x2="${W - PAD.r}" y2="${y}" stroke="#1e1e1e" stroke-width="1"/>`;
-      }).join("");
+    const gridLines = [0,0.5,1].map(f => {
+      const y = (PAD.t+IH*(1-f)).toFixed(1);
+      return `<line x1="${PAD.l}" y1="${y}" x2="${W-PAD.r}" y2="${y}" stroke="#1e1e1e" stroke-width="1"/>`;
+    }).join("");
 
-      graphSVG = `
-        <svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
-          ${gridLines}
-          <defs>
-            <linearGradient id="sg" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#5ab4f5" stop-opacity="0.25"/>
-              <stop offset="100%" stop-color="#5ab4f5" stop-opacity="0.02"/>
-            </linearGradient>
-          </defs>
-          <path d="${areaD}" fill="url(#sg)"/>
-          <path d="${pathD}" fill="none" stroke="#5ab4f5" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-          ${pts.map((p, i) => `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${i === pts.length-1 ? 4 : 3}" fill="${i === pts.length-1 ? "#5ab4f5" : "#0f0f0f"}" stroke="#5ab4f5" stroke-width="1.5"/>`).join("")}
-          ${bwLine}
-          ${yAxisLabels}
-          ${xLabels}
-        </svg>`;
+    // Dots — larger hit target, highlight active, multi-dot indicator
+    const dots = pts.map((p, i) => {
+      const isActive = statsActiveDate === p.s.date;
+      const isLatest = i === pts.length - 1;
+      const multiSet = p.s.raws.length > 1;
+      const fill = isActive ? "#c8f55a" : isLatest ? "#5ab4f5" : "#0f0f0f";
+      const stroke = isActive ? "#c8f55a" : "#5ab4f5";
+      const r = isActive ? 5 : isLatest ? 4 : 3;
+      // Orange badge: same filled/outline logic as the blue dot.
+      const badgeFill = isLatest ? "#f5a05a" : "#0f0f0f";
+      return `
+        <circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="12" fill="transparent" style="cursor:pointer" onclick="setStatsDate('${escQ(p.s.date)}')"/>
+        <circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${r}" fill="${fill}" stroke="${stroke}" stroke-width="1.5" style="cursor:pointer" onclick="setStatsDate('${escQ(p.s.date)}')"/>
+        ${multiSet ? `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="2" fill="${badgeFill}" stroke="#f5a05a" stroke-width="1" style="pointer-events:none"/>` : ""}`;
+    }).join("");
 
-      // Summary stats vars
-      const first2 = vals[0], last2 = vals[vals.length-1];
-      const change = last2 - first2;
-      const pct = first2 ? ((change / first2) * 100).toFixed(1) : null;
-      const best = Math.max(...vals);
-      const volumeUnit = hasResolvableWeight ? "" : " reps";
-      const unit = statsMetric === "avg" ? " reps" : statsMetric === "volume" ? volumeUnit : " lbs";
-      const fmt = v => statsMetric === "avg" ? v.toFixed(1) : statsMetric === "volume" ? Math.round(v).toLocaleString() : v.toFixed(0);
+    graphSVG = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
+      ${gridLines}
+      <defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#5ab4f5" stop-opacity="0.2"/>
+        <stop offset="100%" stop-color="#5ab4f5" stop-opacity="0.02"/>
+      </linearGradient></defs>
+      <path d="${areaD}" fill="url(#sg)"/>
+      <path d="${pathD}" fill="none" stroke="#5ab4f5" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+      ${dots}
+      ${bwLine}
+      ${yAxisLabels}
+      ${xLabels}
+    </svg>`;
 
-      // Best estimated 1RM (weight metric only)
-      const best1RM = statsMetric === "weight" ? getBest1RM(entries) : null;
-      const rm1Banner = best1RM ? `
-        <div style="display:flex;align-items:center;justify-content:space-between;background:#0f1a2a;border:1px solid #1e3a4a;border-radius:4px;padding:8px 12px;margin-bottom:10px">
-          <span style="font-size:9px;color:#5ab4f5;letter-spacing:2px">EST. 1 REP MAX (EPLEY)</span>
-          <span style="font-size:18px;font-weight:700;color:#5ab4f5">${best1RM} <span style="font-size:11px;color:#5ab4f5;opacity:0.7">lbs</span></span>
-        </div>` : "";
+    // ── Legend hint ──
+    graphSVG += `<div style="display:flex;gap:12px;padding:4px 2px 0;flex-wrap:wrap">
+      <span style="font-size:9px;color:#555"><span style="color:#5ab4f5">●</span> top set · tap to expand</span>
+      <span style="font-size:9px;color:#555"><span style="color:#f5a05a">●</span> multiple sets logged</span>
+      ${statsShowBW ? `<span style="font-size:9px;color:#555"><span style="color:#a78bfa">--</span> bodyweight</span>` : ""}
+    </div>`;
 
-      summaryHtml = rm1Banner + `<div class="stats-summary">
-        <div class="s-stat">
-          <div class="s-stat-lbl">CURRENT</div>
-          <div class="s-stat-val">${fmt(last2)}${unit}</div>
-        </div>
-        <div class="s-stat">
-          <div class="s-stat-lbl">BEST</div>
-          <div class="s-stat-val yellow">${fmt(best)}${unit}</div>
-        </div>
-        <div class="s-stat">
-          <div class="s-stat-lbl">CHANGE</div>
-          <div class="s-stat-val ${change >= 0 ? "green" : ""}">${change >= 0 ? "+" : ""}${fmt(change)}${unit}</div>
-        </div>
-        ${pct !== null ? `<div class="s-stat">
-          <div class="s-stat-lbl">% GAIN</div>
-          <div class="s-stat-val ${change >= 0 ? "green" : ""}">${change >= 0 ? "+" : ""}${pct}%</div>
-        </div>` : ""}
-        <div class="s-stat">
-          <div class="s-stat-lbl">SESSIONS</div>
-          <div class="s-stat-val">${entries.length}</div>
-        </div>
-      </div>`;
+    // ── Session detail panel (shows when a dot is tapped) ──
+    if (statsActiveDate) {
+      const activeSess = sessions.find(s => s.date === statsActiveDate);
+      if (activeSess) {
+        const sessionRM = activeSess.raws.reduce((best, e) => {
+          const w = numericWeight(e.weight);
+          if (!w) return best;
+          const rm = est1RM(w, Math.max(...e.sets));
+          return rm > best ? rm : best;
+        }, 0) || null;
 
-      // History table in stats modal
-      // Pre-compute PR sessions: weight PR or rep PR at same weight
-      const prDates = new Set();
-      {
-        let runMaxW = -Infinity;
-        // track best reps per weight level
-        const repMaxByW = {};
-        for (const e of entries) { // sorted asc
-          const w = numericWeight(e.weight) ?? -1;
-          const maxRep = Math.max(...e.sets);
-          const key = e.date + "|" + e.weight;
-          if (w > runMaxW) { runMaxW = w; prDates.add(key); }
-          else if (w === runMaxW || w === -1) {
-            const prevBest = repMaxByW[w] ?? 0;
-            if (maxRep > prevBest) prDates.add(key);
-          }
-          repMaxByW[w] = Math.max(repMaxByW[w] ?? 0, maxRep);
-        }
-      }
-
-      summaryHtml += `<div class="manage-section-title" style="margin-top:14px;margin-bottom:6px">SESSION HISTORY</div>
-        <div style="max-height:160px;overflow-y:auto">
-        ${entries.slice().reverse().map((e,i) => {
-          const v = getMetricVal(e);
-          const isPREntry = prDates.has(e.date + "|" + e.weight);
-          return `<div class="mrow" style="padding:6px 0">
-            <div class="mrow-info">
-              <span class="mrow-date">${escH(e.date)}</span>
-              ${isPREntry ? `<span style="color:#f5c542;font-size:10px;margin-left:4px" title="Personal Record">🏆</span>` : ""}
-              <span class="mrow-val" style="margin-left:8px">${escH(fmtW(e.weight))} · [${escH(fmtSets(e.sets))}]${v !== null ? ` · <span style="color:#5ab4f5">${statsMetric==="weight"?v+" lbs":statsMetric==="avg"?v.toFixed(1)+" avg":Math.round(v)+(hasResolvableWeight?" vol":" reps")}</span>` : ""}</span>
-              ${e.note ? `<span class="mrow-note" style="margin-left:8px">${escH(e.note)}</span>` : ""}
-              ${e.bw ? `<span style="color:#a78bfa;font-size:10px;margin-left:8px">BW ${e.bw}</span>` : ""}
-            </div>
-          </div>`;
-        }).join("")}
+        graphSVG += `<div style="background:#0f1a0f;border:1px solid #1e3a1e;border-radius:4px;padding:10px 12px;margin-top:8px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <span style="font-size:10px;color:#c8f55a;letter-spacing:2px">SESSION · ${escH(fmtDate(statsActiveDate))}</span>
+            ${sessionRM ? `<span style="font-size:10px;color:#5ab4f5">1RM~${sessionRM}</span>` : ""}
+          </div>
+          ${activeSess.raws.map((e, i) => {
+            const w = numericWeight(e.weight);
+            const rm = w ? est1RM(w, Math.max(...e.sets)) : null;
+            return `<div style="display:flex;align-items:baseline;gap:8px;padding:4px 0;border-bottom:1px solid #1a2a1a;font-size:11px">
+              <span style="color:#666;min-width:14px">${i+1}.</span>
+              <span style="color:#e8e8e8;font-weight:600">${escH(fmtW(e.weight))}</span>
+              <span style="color:#555">·</span>
+              <span style="color:#5ab4f5">[${escH(fmtSets(e.sets))}]</span>
+              ${rm ? `<span style="color:#8aaa2e;font-size:9px;margin-left:auto">~${rm} 1RM</span>` : ""}
+              ${e.note ? `<span style="color:#8aaa2e;font-size:9px;font-style:italic">${escH(e.note)}</span>` : ""}
+            </div>`;
+          }).join("")}
+          <div style="display:flex;gap:12px;padding-top:6px;font-size:9px;color:#555">
+            <span>VOL: ${Math.round(activeSess.sessionVolume).toLocaleString()}</span>
+            <span>AVG REPS: ${activeSess.sessionAvgReps.toFixed(1)}</span>
+            ${activeSess.bw ? `<span style="color:#a78bfa">BW: ${activeSess.bw} lbs</span>` : ""}
+          </div>
         </div>`;
-    } // end vals.length >= 2
-  } // end else (entries.length >= 2 and hasNumericWeight)
+      }
+    }
+
+    // ── Summary stats ──
+    const firstV = vals[0], lastV = vals[vals.length-1];
+    const prevV = vals.length >= 2 ? vals[vals.length-2] : null;
+    const changeVsPrev = prevV !== null ? lastV - prevV : null;
+    const changeTotal = lastV - firstV;
+    const pct = firstV ? ((changeTotal/firstV)*100).toFixed(1) : null;
+    const best = Math.max(...vals);
+    const volumeUnit = hasResolvableWeight ? "" : " reps";
+    const unit = statsMetric === "avg" ? " reps" : statsMetric === "volume" ? volumeUnit : " lbs";
+    const fmt = v => statsMetric === "avg" ? v.toFixed(1) : statsMetric === "volume" ? Math.round(v).toLocaleString() : v.toFixed(0);
+
+    const best1RM = statsMetric === "weight" ? getBest1RM(allSorted) : null;
+    const rm1Banner = best1RM ? `
+      <div style="display:flex;align-items:center;justify-content:space-between;background:#0f1a2a;border:1px solid #1e3a4a;border-radius:4px;padding:8px 12px;margin-bottom:10px">
+        <span style="font-size:9px;color:#5ab4f5;letter-spacing:2px">EST. 1 REP MAX (EPLEY)</span>
+        <span style="font-size:18px;font-weight:700;color:#5ab4f5">${best1RM} <span style="font-size:11px;opacity:0.7">lbs</span></span>
+      </div>` : "";
+
+    summaryHtml = rm1Banner + `<div class="stats-summary">
+      <div class="s-stat"><div class="s-stat-lbl">CURRENT</div><div class="s-stat-val">${fmt(lastV)}${unit}</div></div>
+      <div class="s-stat"><div class="s-stat-lbl">BEST</div><div class="s-stat-val yellow">${fmt(best)}${unit}</div></div>
+      ${changeVsPrev!==null?`<div class="s-stat"><div class="s-stat-lbl">vs LAST</div><div class="s-stat-val ${changeVsPrev>=0?"green":""}">${changeVsPrev>=0?"+":""}${fmt(changeVsPrev)}${unit}</div></div>`:""}
+      <div class="s-stat"><div class="s-stat-lbl">ALL TIME</div><div class="s-stat-val ${changeTotal>=0?"green":""}">${changeTotal>=0?"+":""}${fmt(changeTotal)}${unit}</div></div>
+      ${pct!==null?`<div class="s-stat"><div class="s-stat-lbl">TOTAL %</div><div class="s-stat-val ${changeTotal>=0?"green":""}">${changeTotal>=0?"+":""}${pct}%</div></div>`:""}
+      <div class="s-stat"><div class="s-stat-lbl">SESSIONS</div><div class="s-stat-val">${sessions.length}</div></div>
+    </div>`;
+
+    // ── Session history list (grouped by date) ──
+    const prDates = new Set();
+    {
+      let runMaxW = -Infinity;
+      const repMaxByW = {};
+      for (const sess of visibleSessions) {
+        const w = sess.topWeight ?? -1;
+        const maxRep = Math.max(...sess.raws.flatMap(e => e.sets));
+        const key = sess.date;
+        if (w > runMaxW) { runMaxW = w; prDates.add(key); }
+        else if (w === runMaxW) {
+          const prevBest = repMaxByW[w] ?? 0;
+          if (maxRep > prevBest) prDates.add(key);
+        }
+        repMaxByW[w] = Math.max(repMaxByW[w] ?? 0, maxRep);
+      }
+    }
+
+    summaryHtml += `<div class="manage-section-title" style="margin-top:14px;margin-bottom:6px">SESSION HISTORY</div>
+      <div style="max-height:200px;overflow-y:auto">
+      ${sessions.slice().reverse().map((sess) => {
+        const isPRSess = prDates.has(sess.date);
+        const isActive = statsActiveDate === sess.date;
+        const v = sessionMetricVal(sess);
+        const topFmt = v !== null ? fmt(v) : "—";
+        return `<div onclick="setStatsDate('${escQ(sess.date)}')" style="padding:7px 0;border-bottom:1px solid #1a1a1a;cursor:pointer;${isActive?"background:#0f1a0f;margin:0 -4px;padding-left:4px;padding-right:4px;border-radius:3px":""}">
+          <div style="display:flex;align-items:baseline;gap:6px">
+            <span class="mrow-date">${escH(fmtDate(sess.date))}</span>
+            ${isPRSess?`<span style="color:#f5c542;font-size:10px">🏆</span>`:""}
+            ${sess.raws.length>1?`<span style="color:#f5a05a;font-size:9px;letter-spacing:1px">${sess.raws.length} SETS</span>`:""}
+            <span style="margin-left:auto;font-size:11px;color:${statsMetric==="weight"?"#c8f55a":"#5ab4f5"}">${topFmt}${unit}</span>
+          </div>
+          <div style="font-size:10px;color:#555;margin-top:2px">
+            ${sess.raws.map(e => `${escH(fmtW(e.weight))} [${escH(fmtSets(e.sets))}]`).join("  ·  ")}
+          </div>
+        </div>`;
+      }).join("")}
+      </div>`;
+  }
 
   const metricLabels = { weight: "WEIGHT", volume: "VOLUME", avg: "AVG REPS" };
-
-  // Check if this exercise appears on multiple days
   const daysWithEx = WORKOUT_DAYS.filter(d => data[d]?.[statsEx] !== undefined);
   const multiDay = daysWithEx.length > 1;
+  const sliderHtml = sessions.length >= 2
+    ? renderRangeSlider(tMinAll, tMaxAll, tRngAll, allAdjDays, sessions)
+    : "";
+
+  // Store for live drag label updates
+  window._mmSessions = sessions;
+  window._mmAdjDays  = allAdjDays;
+  window._mmTMin     = tMinAll;
+  window._mmTRng     = tRngAll;
 
   return `<div class="overlay open" onclick="if(event.target===this)closeStats()">
     <div class="stats-modal">
@@ -806,6 +1141,7 @@ function renderStatsModal() {
         ).join("")}
         ${hasBWData ? `<button class="stog bw-tog ${statsShowBW?"active":""}" onclick="toggleStatsBW()">+ BODYWEIGHT</button>` : ""}
       </div>
+      ${sliderHtml}
       <div class="graph-wrap">${graphSVG}</div>
       ${summaryHtml}
       <div class="brow" style="margin-top:12px">
@@ -868,7 +1204,7 @@ function renderManageModal() {
         const vol = typeof e.weight === "number" ? (totalReps(e.sets) * e.weight) : null;
         return `<div class="mrow">
           <div class="mrow-info">
-            <div class="mrow-date">${escH(e.date)}</div>
+            <div class="mrow-date">${escH(fmtDate(e.date))}</div>
             <div class="mrow-val">${escH(fmtW(e.weight))} · [${escH(fmtSets(e.sets))}]${vol ? ` · vol ${vol}` : ""}</div>
             ${e.note ? `<div class="mrow-note">${escH(e.note)}</div>` : ""}
           </div>
@@ -913,7 +1249,7 @@ function renderManageBWModal() {
         const sortedIdx = entries.length - 1 - ri;
         return `<div class="mrow">
           <div class="mrow-info">
-            <div class="mrow-date">${escH(e.date)}</div>
+            <div class="mrow-date">${escH(fmtDate(e.date))}</div>
             <div class="mrow-val">${e.weight} lbs${e.fat ? ` · ${e.fat}% fat` : ""}${e.muscle ? ` · ${e.muscle} lbs muscle` : ""}</div>
             ${e.note ? `<div class="mrow-note">${escH(e.note)}</div>` : ""}
           </div>
@@ -1092,26 +1428,190 @@ function confirmReset() {
 // Strength standards for 5'11" (~182cm), bodyweight ~183 lbs
 // Source: Strength Level / ExRx relative strength ratios adapted for BW
 // Tiers: Beginner / Intermediate / Advanced / Elite (1RM lbs)
+// ────────────────────────────────────────────────────────────
+// EXERCISE LIBRARY
+// Each entry: { name, muscle, tags }
+// muscle: display group label
+// tags: array of day keys that suggest this exercise (for auto-day)
+// ────────────────────────────────────────────────────────────
+const EXERCISE_LIBRARY = [
+  // ── CHEST ──────────────────────────────────────────────
+  { name:"Flat Bench Press",       muscle:"Chest",     tags:["MON · Push","FRI · Upper"] },
+  { name:"Incline Bench",          muscle:"Chest",     tags:["MON · Push","FRI · Upper"] },
+  { name:"Decline Bench Press",    muscle:"Chest",     tags:["MON · Push"] },
+  { name:"DB Bench Press",         muscle:"Chest",     tags:["MON · Push","FRI · Upper"] },
+  { name:"Incline DB Press",       muscle:"Chest",     tags:["MON · Push","FRI · Upper"] },
+  { name:"Decline DB Press",       muscle:"Chest",     tags:["MON · Push"] },
+  { name:"Pec Dec",                muscle:"Chest",     tags:["MON · Push","FRI · Upper"] },
+  { name:"Cable Fly",              muscle:"Chest",     tags:["MON · Push","FRI · Upper"] },
+  { name:"Low Cable Fly",          muscle:"Chest",     tags:["MON · Push"] },
+  { name:"High Cable Fly",         muscle:"Chest",     tags:["MON · Push"] },
+  { name:"Dips",                   muscle:"Chest",     tags:["MON · Push","FRI · Upper"] },
+  { name:"Weighted Dips",          muscle:"Chest",     tags:["MON · Push","FRI · Upper"] },
+  { name:"Smith Machine Bench",    muscle:"Chest",     tags:["MON · Push"] },
+  { name:"Chest Press Machine",    muscle:"Chest",     tags:["MON · Push","FRI · Upper"] },
+  // ── SHOULDERS ──────────────────────────────────────────
+  { name:"Overhead Press",         muscle:"Shoulders", tags:["MON · Push","FRI · Upper"] },
+  { name:"Shoulder / Strict Press",muscle:"Shoulders", tags:["MON · Push","FRI · Upper"] },
+  { name:"DB Shoulder Press",      muscle:"Shoulders", tags:["MON · Push","FRI · Upper"] },
+  { name:"Push Press",             muscle:"Shoulders", tags:["MON · Push","FRI · Upper"] },
+  { name:"Arnold Press",           muscle:"Shoulders", tags:["MON · Push"] },
+  { name:"Lateral Raises",         muscle:"Shoulders", tags:["MON · Push","FRI · Upper"] },
+  { name:"Cable Lateral Raise",    muscle:"Shoulders", tags:["MON · Push"] },
+  { name:"Front Raise",            muscle:"Shoulders", tags:["MON · Push"] },
+  { name:"Rear Delt Fly",          muscle:"Shoulders", tags:["TUE · Pull","FRI · Upper"] },
+  { name:"Face Pulls",             muscle:"Shoulders", tags:["TUE · Pull","FRI · Upper"] },
+  { name:"Upright Row",            muscle:"Shoulders", tags:["MON · Push","FRI · Upper"] },
+  { name:"Shrugs",                 muscle:"Shoulders", tags:["TUE · Pull"] },
+  { name:"DB Shrugs",              muscle:"Shoulders", tags:["TUE · Pull"] },
+  // ── TRICEPS ────────────────────────────────────────────
+  { name:"JM Press / Tricep Pushdown", muscle:"Triceps", tags:["MON · Push","FRI · Upper"] },
+  { name:"Tricep Pushdown",        muscle:"Triceps",   tags:["MON · Push","FRI · Upper"] },
+  { name:"Overhead Tricep Extension", muscle:"Triceps",tags:["MON · Push"] },
+  { name:"Skull Crushers",         muscle:"Triceps",   tags:["MON · Push","FRI · Upper"] },
+  { name:"Close Grip Bench",       muscle:"Triceps",   tags:["MON · Push"] },
+  { name:"Tricep Kickbacks",       muscle:"Triceps",   tags:["MON · Push"] },
+  { name:"Cable Tricep Extension", muscle:"Triceps",   tags:["MON · Push"] },
+  // ── BACK ───────────────────────────────────────────────
+  { name:"Pull-Ups",               muscle:"Back",      tags:["TUE · Pull","FRI · Upper"] },
+  { name:"Weighted Pull-Ups",      muscle:"Back",      tags:["TUE · Pull","FRI · Upper"] },
+  { name:"Lat Pulldowns",          muscle:"Back",      tags:["TUE · Pull","FRI · Upper"] },
+  { name:"Close Grip Pulldown",    muscle:"Back",      tags:["TUE · Pull"] },
+  { name:"T-Bar Rows",             muscle:"Back",      tags:["TUE · Pull","FRI · Upper"] },
+  { name:"Barbell Rows",           muscle:"Back",      tags:["TUE · Pull","FRI · Upper"] },
+  { name:"Seated Rows",            muscle:"Back",      tags:["TUE · Pull","FRI · Upper"] },
+  { name:"Seated / Barbell Rows",  muscle:"Back",      tags:["TUE · Pull","FRI · Upper"] },
+  { name:"Single Arm DB Row",      muscle:"Back",      tags:["TUE · Pull"] },
+  { name:"Chest Supported Row",    muscle:"Back",      tags:["TUE · Pull"] },
+  { name:"Cable Row",              muscle:"Back",      tags:["TUE · Pull"] },
+  { name:"Meadows Row",            muscle:"Back",      tags:["TUE · Pull"] },
+  { name:"Pendlay Row",            muscle:"Back",      tags:["TUE · Pull","FRI · Upper"] },
+  { name:"Straight Arm Pulldown",  muscle:"Back",      tags:["TUE · Pull"] },
+  { name:"Good Mornings",          muscle:"Back",      tags:["WED · Legs","SAT · Legs"] },
+  // ── BICEPS ─────────────────────────────────────────────
+  { name:"Barbell Curl",           muscle:"Biceps",    tags:["TUE · Pull","FRI · Upper"] },
+  { name:"DB Curl",                muscle:"Biceps",    tags:["TUE · Pull","FRI · Upper"] },
+  { name:"Hammer Curls",           muscle:"Biceps",    tags:["TUE · Pull","FRI · Upper"] },
+  { name:"Preacher Curls",         muscle:"Biceps",    tags:["TUE · Pull","FRI · Upper"] },
+  { name:"Incline DB Curl",        muscle:"Biceps",    tags:["TUE · Pull"] },
+  { name:"Cable Curl",             muscle:"Biceps",    tags:["TUE · Pull"] },
+  { name:"Concentration Curl",     muscle:"Biceps",    tags:["TUE · Pull"] },
+  { name:"Spider Curl",            muscle:"Biceps",    tags:["TUE · Pull"] },
+  { name:"Reverse Curl",           muscle:"Biceps",    tags:["TUE · Pull"] },
+  { name:"Wrist Cable Curls",      muscle:"Biceps",    tags:["TUE · Pull"] },
+  { name:"Wrist Roller",           muscle:"Biceps",    tags:["TUE · Pull"] },
+  // ── QUADS ──────────────────────────────────────────────
+  { name:"Squat",                  muscle:"Quads",     tags:["WED · Legs","SAT · Legs"] },
+  { name:"Smith Squat",            muscle:"Quads",     tags:["WED · Legs","SAT · Legs"] },
+  { name:"Front Squat",            muscle:"Quads",     tags:["WED · Legs","SAT · Legs"] },
+  { name:"Hack Squat",             muscle:"Quads",     tags:["WED · Legs","SAT · Legs"] },
+  { name:"Leg Press",              muscle:"Quads",     tags:["WED · Legs","SAT · Legs"] },
+  { name:"Leg Extensions",         muscle:"Quads",     tags:["WED · Legs","SAT · Legs"] },
+  { name:"Bulgarian Split Squats", muscle:"Quads",     tags:["WED · Legs","SAT · Legs"] },
+  { name:"Walking Lunges",         muscle:"Quads",     tags:["WED · Legs","SAT · Legs"] },
+  { name:"Reverse Lunges",         muscle:"Quads",     tags:["WED · Legs","SAT · Legs"] },
+  { name:"Step Ups",               muscle:"Quads",     tags:["WED · Legs","SAT · Legs"] },
+  { name:"Sissy Squats",           muscle:"Quads",     tags:["WED · Legs","SAT · Legs"] },
+  // ── HAMSTRINGS ─────────────────────────────────────────
+  { name:"RDLs",                   muscle:"Hamstrings",tags:["WED · Legs","SAT · Legs"] },
+  { name:"Sumo Deadlift",          muscle:"Hamstrings",tags:["WED · Legs","SAT · Legs"] },
+  { name:"Trap Bar Deadlift",      muscle:"Hamstrings",tags:["WED · Legs","SAT · Legs"] },
+  { name:"Deadlift",               muscle:"Hamstrings",tags:["WED · Legs","SAT · Legs"] },
+  { name:"Lying Hamstring Curls",  muscle:"Hamstrings",tags:["WED · Legs","SAT · Legs"] },
+  { name:"Seated Hamstring Curl",  muscle:"Hamstrings",tags:["WED · Legs","SAT · Legs"] },
+  { name:"Standing Hamstring Curl",muscle:"Hamstrings",tags:["WED · Legs","SAT · Legs"] },
+  { name:"Nordic Curls",           muscle:"Hamstrings",tags:["WED · Legs","SAT · Legs"] },
+  // ── GLUTES ─────────────────────────────────────────────
+  { name:"Hip Thrust",             muscle:"Glutes",    tags:["WED · Legs","SAT · Legs"] },
+  { name:"Glute Bridge",           muscle:"Glutes",    tags:["WED · Legs","SAT · Legs"] },
+  { name:"Cable Kickback",         muscle:"Glutes",    tags:["WED · Legs","SAT · Legs"] },
+  { name:"Abductor Machine",       muscle:"Glutes",    tags:["WED · Legs","SAT · Legs"] },
+  { name:"Adductor Machine",       muscle:"Glutes",    tags:["WED · Legs","SAT · Legs"] },
+  // ── CALVES ─────────────────────────────────────────────
+  { name:"Calf Raises",            muscle:"Calves",    tags:["WED · Legs","SAT · Legs"] },
+  { name:"Seated Calf Raises",     muscle:"Calves",    tags:["WED · Legs","SAT · Legs"] },
+  { name:"Single Leg Calf Raise",  muscle:"Calves",    tags:["WED · Legs","SAT · Legs"] },
+  { name:"Leg Press Calf Raise",   muscle:"Calves",    tags:["WED · Legs","SAT · Legs"] },
+  // ── CORE ───────────────────────────────────────────────
+  { name:"Ab Cable Crunch",        muscle:"Core",      tags:["TUE · Pull","FRI · Upper"] },
+  { name:"Hanging Leg Raise",      muscle:"Core",      tags:["TUE · Pull"] },
+  { name:"Cable Woodchop",         muscle:"Core",      tags:["TUE · Pull"] },
+  { name:"Plank",                  muscle:"Core",      tags:["WED · Legs"] },
+  { name:"Decline Crunch",         muscle:"Core",      tags:["TUE · Pull"] },
+  { name:"Dragon Flag",            muscle:"Core",      tags:["TUE · Pull"] },
+  { name:"Ab Wheel Rollout",       muscle:"Core",      tags:["TUE · Pull"] },
+  { name:"Oblique Crunch",         muscle:"Core",      tags:["TUE · Pull"] },
+  { name:"Landmine Twist",         muscle:"Core",      tags:["TUE · Pull"] },
+  // ── FOREARMS ───────────────────────────────────────────
+  { name:"Wrist Curls",            muscle:"Forearms",  tags:["TUE · Pull"] },
+  { name:"Reverse Wrist Curls",    muscle:"Forearms",  tags:["TUE · Pull"] },
+  { name:"Farmer Carries",         muscle:"Forearms",  tags:["TUE · Pull"] },
+  { name:"Dead Hangs",             muscle:"Forearms",  tags:["TUE · Pull"] },
+];
+
+// Unique muscle groups in order
+const MUSCLE_GROUPS = ["ALL", ...new Set(EXERCISE_LIBRARY.map(e => e.muscle))];
+
 const STRENGTH_STANDARDS = {
   // [beginner, intermediate, advanced, elite] 1RM in lbs for ~183 lb male
-  "Bench Press":        [115, 185, 255, 330],
-  "Squat":              [145, 230, 320, 415],
-  "Deadlift":           [175, 275, 380, 490],
-  "T-Bar Rows":         [100, 160, 220, 285],
-  "Pull-Ups":           [115, 170, 230, 300], // bodyweight + added weight equiv
-  "Incline Bench":      [95, 155, 215, 280],
-  "RDLs":               [135, 215, 295, 380],
+  "Bench Press":          [115, 185, 255, 330],
+  "Incline Bench":        [95,  155, 215, 280],
+  "Decline Bench":        [120, 195, 265, 345],
+  "Dumbbell Bench":       [70,  115, 160, 210],
+  "Incline DB Bench":     [60,  100, 140, 185],
+  "Squat":                [145, 230, 320, 415],
+  "Front Squat":          [110, 175, 245, 315],
+  "Hack Squat":           [130, 210, 290, 375],
+  "Deadlift":             [175, 275, 380, 490],
+  "RDLs":                 [135, 215, 295, 380],
+  "Sumo Deadlift":        [170, 265, 365, 470],
+  "Trap Bar Deadlift":    [185, 290, 400, 510],
+  "T-Bar Rows":           [100, 160, 220, 285],
+  "Barbell Rows":         [95,  155, 215, 280],
+  "Pull-Ups":             [115, 170, 230, 300],
+  "Seated Cable Row":     [90,  145, 200, 260],
+  "Overhead Press":       [75,  120, 165, 215],
+  "Push Press":           [95,  150, 205, 265],
+  "Dips":                 [115, 175, 240, 310],
+  "Hip Thrust":           [155, 245, 340, 440],
+  "Leg Press":            [225, 360, 495, 640],
 };
 
 // Map exercise names in data to standard names (fuzzy)
 const EX_ALIAS = {
+  // Chest
   "Incline Bench": "Incline Bench",
+  "Incline Smith": "Incline Bench",
+  "Flat Bench Press": "Bench Press",
+  "Bench Press": "Bench Press",
+  "Decline Bench Press": "Decline Bench",
+  "DB Bench Press": "Dumbbell Bench",
+  "Incline DB Press": "Incline DB Bench",
+  // Back
+  "T-Bar Rows": "T-Bar Rows",
+  "Barbell Rows": "Barbell Rows",
+  "Seated Rows": "Seated Cable Row",
+  "Seated / Barbell Rows": "Barbell Rows",
+  "Pull-Ups": "Pull-Ups",
+  "Weighted Pull-Ups": "Pull-Ups",
+  "Lat Pulldowns": "Pull-Ups",
+  // Shoulders
+  "Shoulder / Strict Press": "Overhead Press",
+  "Overhead Press": "Overhead Press",
+  "Push Press": "Push Press",
+  // Legs
   "Squat": "Squat",
   "Smith Squat": "Squat",
-  "T-Bar Rows": "T-Bar Rows",
-  "Pull-Ups": "Pull-Ups",
-  "Lat Pulldowns": "Pull-Ups", // close enough standard — lat pulldown ≈ pull-up in strength profile
+  "Front Squat": "Front Squat",
+  "Hack Squat": "Hack Squat",
+  "Sumo Deadlift": "Sumo Deadlift",
+  "Trap Bar Deadlift": "Trap Bar Deadlift",
   "RDLs": "RDLs",
+  "Hip Thrust": "Hip Thrust",
+  "Leg Press": "Leg Press",
+  // Chest/triceps
+  "Weighted Dips": "Dips",
+  "Dips": "Dips",
 };
 
 function getTierIndex(rm, standards) {
@@ -1277,39 +1777,35 @@ const EX_MUSCLE_MAP = {
   "Plank":                ["Abs / Core"],
 };
 
-// State for the volume week window (0 = current 7 days, 1 = previous 7 days, etc.)
+// Returns midnight ms for the Monday of the week that is `offsetWeeks` ago
+function getWeekWindow(offsetWeeks) {
+  const now = new Date();
+  const monday = getMondayOf(now);
+  const windowStart = new Date(monday);
+  windowStart.setDate(monday.getDate() - offsetWeeks * 7);
+  const windowEnd = new Date(windowStart);
+  windowEnd.setDate(windowStart.getDate() + 6);
+  windowEnd.setHours(23, 59, 59, 999);
+  return { windowStart, windowEnd };
+}
+
+function weekWindowLabel(offsetWeeks) {
+  const { windowStart, windowEnd } = getWeekWindow(offsetWeeks);
+  const fmt = d => `${String(d.getMonth()+1).padStart(2,"0")}/${String(d.getDate()).padStart(2,"0")}`;
+  if (offsetWeeks === 0) return `THIS WEEK  ${fmt(windowStart)}–${fmt(windowEnd)}`;
+  if (offsetWeeks === 1) return `LAST WEEK  ${fmt(windowStart)}–${fmt(windowEnd)}`;
+  return `${fmt(windowStart)}–${fmt(windowEnd)}`;
+}
+
+// State for the volume week window (0 = this Mon–Sun, 1 = last Mon–Sun, etc.)
 let volWeekOffset = 0;
 
-// Parse MM/DD as days since a fixed epoch (Jan 1 of current year, handles year wrap)
-function mmddToDayNum(mmdd) {
-  if (!mmdd) return null;
-  const [m, d] = mmdd.split("/").map(Number);
-  if (!m || !d) return null;
-  const now = new Date();
-  let year = now.getFullYear();
-  // Build date assuming current year
-  let date = new Date(year, m - 1, d);
-  // If date is in the future by more than 1 day, assume last year
-  if (date - now > 86400000) date = new Date(year - 1, m - 1, d);
-  return Math.floor(date.getTime() / 86400000);
-}
-
-function todayDayNum() {
-  return Math.floor(Date.now() / 86400000);
-}
-
-function dayNumToLabel(dayNum) {
-  const d = new Date(dayNum * 86400000);
-  return `${String(d.getMonth()+1).padStart(2,"0")}/${String(d.getDate()).padStart(2,"0")}`;
-}
-
-// Compute sets per muscle group for a given 7-day window
+// Compute sets per muscle group for a given Mon–Sun calendar week
 function computeWeeklyVolume(offsetWeeks) {
-  const todayNum = todayDayNum();
-  const windowEnd = todayNum - offsetWeeks * 7;
-  const windowStart = windowEnd - 6; // 7 days inclusive
+  const { windowStart, windowEnd } = getWeekWindow(offsetWeeks);
+  const wsMs = windowStart.getTime();
+  const weMs = windowEnd.getTime();
 
-  // muscle → { sets, exercises: Set }
   const totals = {};
   for (const muscle of Object.keys(MUSCLE_TARGETS)) {
     totals[muscle] = { sets: 0, exercises: new Set() };
@@ -1321,12 +1817,13 @@ function computeWeeklyVolume(offsetWeeks) {
       const muscles = EX_MUSCLE_MAP[exName];
       if (!muscles) continue;
       for (const entry of entries) {
-        const dn = mmddToDayNum(entry.date);
-        if (dn === null || dn < windowStart || dn > windowEnd) continue;
+        const d = parseEntryDate(entry.date);
+        if (!d) continue;
+        const ms = d.getTime();
+        if (ms < wsMs || ms > weMs) continue;
         const setsInEntry = entry.sets.length;
         for (const muscle of muscles) {
           if (!totals[muscle]) continue;
-          // Compound lifts split credit: primary muscle gets full sets, secondary gets half
           const isPrimary = muscles[0] === muscle;
           totals[muscle].sets += isPrimary ? setsInEntry : Math.ceil(setsInEntry / 2);
           totals[muscle].exercises.add(exName);
@@ -1448,9 +1945,8 @@ function renderProfile() {
 
   // ── Volume tracker ──────────────────────────────────────────
   const { totals, windowStart, windowEnd } = computeWeeklyVolume(volWeekOffset);
-  const startLabel = dayNumToLabel(windowStart);
-  const endLabel   = dayNumToLabel(windowEnd);
   const isCurrentWeek = volWeekOffset === 0;
+  const weekLabel = weekWindowLabel(volWeekOffset);
 
   const volRows = Object.entries(MUSCLE_TARGETS).map(([muscle, target]) => {
     const actual = totals[muscle]?.sets ?? 0;
@@ -1513,7 +2009,7 @@ function renderProfile() {
   const volWeekNav = `
     <div class="vol-week-nav">
       <button class="vol-week-btn" onclick="volWeekOffset++;render()">◀</button>
-      <div class="vol-week-label">${isCurrentWeek ? "LAST 7 DAYS" : `${startLabel} – ${endLabel}`}</div>
+      <div class="vol-week-label">${weekLabel}</div>
       <button class="vol-week-btn" ${isCurrentWeek ? "disabled style=\"opacity:0.3\"" : ""} onclick="if(volWeekOffset>0){volWeekOffset--;render()}">▶</button>
     </div>`;
 
@@ -1628,7 +2124,7 @@ function renderSearchResults() {
       const da = last ? daysAgo(last.date) : null;
       const daClass = da === null ? "" : da <= 4 ? "fresh" : da >= 8 ? "stale" : "";
       const sub = last
-        ? `${escH(last.date)} · <span class="w">${escH(fmtW(last.weight))}</span> · [${escH(fmtSets(last.sets))}]${delta ? `<br><span class="dw">${escH(delta.wv)}</span>` : ""}`
+        ? `${escH(fmtDate(last.date))} · <span class="w">${escH(fmtW(last.weight))}</span> · [${escH(fmtSets(last.sets))}]${delta ? `<br><span class="dw">${escH(delta.wv)}</span>` : ""}`
         : `<span style="color:#444">no entries yet</span>`;
       const exNote = getExNote(day, ex);
       const noteLine = exNote ? `<div style="font-size:10px;color:#8aaa2e;font-style:italic;margin-top:2px">${escH(exNote)}</div>` : "";
@@ -1837,7 +2333,7 @@ function renderCard(ex) {
   }
 
   const sub = last
-    ? `${escH(last.date)} · <span class="w">${escH(fmtW(last.weight))}</span> · [${escH(fmtSets(last.sets))}]${(last.bw || getBWForDate(last.date)) ? ` · BW ${(last.bw || getBWForDate(last.date))}` : ""}${dhtml}`
+    ? `${escH(fmtDate(last.date))} · <span class="w">${escH(fmtW(last.weight))}</span> · [${escH(fmtSets(last.sets))}]${(last.bw || getBWForDate(last.date)) ? ` · BW ${(last.bw || getBWForDate(last.date))}` : ""}${dhtml}`
     : `<span style="color:#444">no entries yet</span>`;
 
   const exNote = getExNote(activeTab, ex);
@@ -1848,7 +2344,7 @@ function renderCard(ex) {
       <div class="history-label">HISTORY</div>
       ${entries.map((e,i)=>`
         <div class="hrow ${i===entries.length-1?"latest":""}">
-          <span>${escH(e.date)}</span>
+          <span>${escH(fmtDate(e.date))}</span>
           <span>${escH(fmtW(e.weight))}</span>
           <span>${(e.bw || getBWForDate(e.date)) ? `${(e.bw || getBWForDate(e.date))} lbs BW` : "—"}</span>
           <span>[${escH(fmtSets(e.sets))}] ${e.note?`<span class="hnote">${escH(e.note)}</span>`:""}</span>
@@ -1924,7 +2420,7 @@ function renderBW() {
       ${chartEntries.map(e=>{
         const pct = ((e.weight-mn)/rng*70+15).toFixed(1);
         return `<div class="bar-row">
-          <span class="bar-date">${escH(e.date)}</span>
+          <span class="bar-date">${escH(fmtDate(e.date))}</span>
           <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
           <span class="bar-val">${e.weight} lbs</span>
         </div>`;
@@ -1938,7 +2434,7 @@ function renderBW() {
     const cls = diff===null?"": parseFloat(diff)>0?"up":"dn";
     const ds = diff!==null ? `<span class="bw-delta ${cls}">${parseFloat(diff)>0?"+":""}${diff}</span>` : "";
     return `<div class="bw-erow ${i===0?"latest":""}">
-      <span>${escH(e.date)}</span>
+      <span>${escH(fmtDate(e.date))}</span>
       <span>${e.weight} lbs ${ds}</span>
       ${e.fat?`<span>${e.fat}% fat</span>`:"<span></span>"}
       ${e.note?`<span class="hnote">${escH(e.note)}</span>`:""}
@@ -1992,19 +2488,196 @@ function renderBWModal() {
     </div></div>`;
 }
 
+// ── Exercise Picker ──────────────────────────────────────────
 function renderNewExModal() {
-  if (!addingNew) return "";
-  return `<div class="overlay open">
-    <div class="modal">
-      <div class="mlbl">NEW EXERCISE</div>
-      <div class="field" style="margin-top:12px"><div class="flbl">NAME</div><input id="new-name" placeholder="e.g. Romanian Deadlift"></div>
-      <div class="field"><div class="flbl">DAY</div>
-        <div class="catrow">
-          ${WORKOUT_DAYS.map(d=>`<button class="catbtn ${d===addNewTab?"active":""}" onclick="setNewTab('${escQ(d)}')">${escH(d)}</button>`).join("")}
+  if (!pickerOpen) return "";
+
+  // Which exercises already exist on the target day
+  // Union of exercises already on all selected days
+  const existing = new Set([...pickerDays].flatMap(d => Object.keys(data[d] || {})));
+
+  // Filter library
+  const q = pickerSearch.trim().toLowerCase();
+  let items = EXERCISE_LIBRARY;
+  if (pickerMuscle !== "ALL") items = items.filter(e => e.muscle === pickerMuscle);
+  if (q) items = items.filter(e => e.name.toLowerCase().includes(q) || e.muscle.toLowerCase().includes(q));
+
+  // Group by muscle
+  const groups = {};
+  for (const e of items) {
+    if (!groups[e.muscle]) groups[e.muscle] = [];
+    groups[e.muscle].push(e);
+  }
+
+  const listHtml = Object.entries(groups).map(([muscle, exs]) => `
+    <div class="picker-group">${escH(muscle.toUpperCase())}</div>
+    ${exs.map(e => {
+      const alreadyHas = existing.has(e.name);
+      return `<div class="picker-item ${alreadyHas ? "used" : ""}" onclick="${alreadyHas ? "" : `pickExercise('${escQ(e.name)}')`}">
+        <div>
+          <div class="pi-name">${escH(e.name)}</div>
+          <div class="pi-meta">${escH(e.muscle.toUpperCase())} · ${escH(e.tags.map(t=>t.split("·")[0].trim()).join(", "))}</div>
+        </div>
+        <div class="pi-add">${alreadyHas ? "✓" : "+"}</div>
+      </div>`;
+    }).join("")}
+  `).join("");
+
+  const emptyHtml = items.length === 0
+    ? `<div style="padding:32px 16px;text-align:center;color:#444;font-size:12px">No exercises found.<br><span style="color:#555;font-size:10px">Add it as custom below.</span></div>`
+    : "";
+
+  return `
+    <div class="picker-overlay open" onclick="if(event.target===this)closeNewEx()">
+      <div class="picker-sheet">
+        <div class="picker-handle"></div>
+        <div class="picker-header">
+          <div class="picker-title-row">
+            <span class="picker-title">ADD EXERCISE</span>
+            <button class="picker-close" onclick="closeNewEx()">✕</button>
+          </div>
+          <div class="picker-search-wrap">
+            <input class="picker-search" id="picker-search-input"
+              placeholder="Search exercises…"
+              value="${escH(pickerSearch)}"
+              oninput="pickerSearch=this.value;renderPickerOnly()"
+              autocomplete="off" autocorrect="off" spellcheck="false">
+            ${pickerSearch ? `<button class="picker-search-x" onclick="pickerSearch='';renderPickerOnly()">✕</button>` : ""}
+          </div>
+          <div class="picker-muscles">
+            ${MUSCLE_GROUPS.map(m => `
+              <button class="pmuscle ${m===pickerMuscle?"active":""}" onclick="pickerMuscle='${escQ(m)}';renderPickerOnly()">${escH(m)}</button>
+            `).join("")}
+          </div>
+        </div>
+        <div class="picker-day-strip">
+          <span style="font-size:9px;color:#444;letter-spacing:1px;align-self:center;padding-right:6px;flex-shrink:0">ADD TO:</span>
+          ${WORKOUT_DAYS.map(d => `
+            <button class="pday ${pickerDays.has(d)?"active":""}" onclick="togglePickerDay('${escQ(d)}')">${escH(d)}</button>
+          `).join("")}
+        </div>
+        <div class="picker-list" id="picker-list">
+          ${emptyHtml}${listHtml}
+        </div>
+        <div class="picker-custom">
+          <div class="picker-custom-label">CUSTOM EXERCISE</div>
+          <div class="picker-custom-row">
+            <input class="picker-custom-input" id="picker-custom-name" placeholder="e.g. Sissy Squat Machine"
+              autocorrect="off" spellcheck="false">
+            <button class="picker-custom-btn" onclick="submitCustomEx()">ADD</button>
+          </div>
         </div>
       </div>
-      <div class="brow"><button class="bcnl" onclick="closeNewEx()">CANCEL</button><button class="bsav" onclick="submitNewEx()">ADD</button></div>
-    </div></div>`;
+    </div>`;
+}
+
+// Re-render only the picker contents without rebuilding the whole page
+// (keeps keyboard open on mobile during search)
+function renderPickerOnly() {
+  const existing = new Set([...pickerDays].flatMap(d => Object.keys(data[d] || {})));
+  const q = pickerSearch.trim().toLowerCase();
+  let items = EXERCISE_LIBRARY;
+  if (pickerMuscle !== "ALL") items = items.filter(e => e.muscle === pickerMuscle);
+  if (q) items = items.filter(e => e.name.toLowerCase().includes(q) || e.muscle.toLowerCase().includes(q));
+
+  // Update muscle filter buttons
+  document.querySelectorAll(".pmuscle").forEach(btn => {
+    btn.className = "pmuscle" + (btn.textContent === pickerMuscle ? " active" : "");
+  });
+  // Update day buttons
+  document.querySelectorAll(".pday").forEach(btn => {
+    const onclick = btn.getAttribute("onclick") || "";
+    const match = onclick.match(/togglePickerDay\('([^']+)'\)/);
+    if (match) btn.className = "pday" + (pickerDays.has(match[1]) ? " active" : "");
+  });
+
+  const groups = {};
+  for (const e of items) {
+    if (!groups[e.muscle]) groups[e.muscle] = [];
+    groups[e.muscle].push(e);
+  }
+  const listEl = document.getElementById("picker-list");
+  if (!listEl) { render(); return; }
+
+  const emptyHtml = items.length === 0
+    ? `<div style="padding:32px 16px;text-align:center;color:#444;font-size:12px">No exercises found.<br><span style="color:#555;font-size:10px">Add it as custom below.</span></div>`
+    : "";
+
+  listEl.innerHTML = emptyHtml + Object.entries(groups).map(([muscle, exs]) => `
+    <div class="picker-group">${escH(muscle.toUpperCase())}</div>
+    ${exs.map(e => {
+      const alreadyHas = existing.has(e.name);
+      return `<div class="picker-item ${alreadyHas ? "used" : ""}" onclick="${alreadyHas ? "" : `pickExercise('${escQ(e.name)}')`}">
+        <div>
+          <div class="pi-name">${escH(e.name)}</div>
+          <div class="pi-meta">${escH(e.muscle.toUpperCase())} · ${escH(e.tags.map(t=>t.split("·")[0].trim()).join(", "))}</div>
+        </div>
+        <div class="pi-add">${alreadyHas ? "✓" : "+"}</div>
+      </div>`;
+    }).join("")}
+  `).join("");
+}
+
+function pickExercise(name) {
+  for (const day of pickerDays) {
+    if (!data[day]) data[day] = {};
+    if (!data[day][name]) data[day][name] = [];
+    const order = getExOrder(day);
+    if (!order.includes(name)) order.push(name);
+    saveExOrder(day, order);
+  }
+  save();
+  // Mark as added without closing (let user keep picking)
+  renderPickerOnly();
+  // Brief flash confirmation
+  const items = document.querySelectorAll(".picker-item");
+  items.forEach(el => {
+    if (el.querySelector(".pi-name") && el.querySelector(".pi-name").textContent === name) {
+      el.style.background = "#1a2a0a";
+      setTimeout(() => { el.style.background = ""; renderPickerOnly(); }, 600);
+    }
+  });
+}
+
+function submitCustomEx() {
+  const input = document.getElementById("picker-custom-name");
+  const name = (input ? input.value : "").trim();
+  if (!name) return;
+  for (const day of pickerDays) {
+    if (!data[day]) data[day] = {};
+    if (!data[day][name]) data[day][name] = [];
+    const order = getExOrder(day);
+    if (!order.includes(name)) order.push(name);
+    saveExOrder(day, order);
+  }
+  save();
+  if (input) input.value = "";
+  renderPickerOnly();
+}
+
+function openNewEx() {
+  pickerOpen = true;
+  const initDay = (activeTab === "BODY" || activeTab === "PROFILE") ? WORKOUT_DAYS[0] : activeTab;
+  pickerDays = new Set([initDay]);
+  pickerMuscle = "ALL";
+  pickerSearch = "";
+  render();
+  setTimeout(() => { const el = document.getElementById("picker-search-input"); if(el) el.focus(); }, 80);
+}
+function closeNewEx() {
+  pickerOpen = false;
+  // Switch to the first selected day if we're not already on one
+  const first = [...pickerDays][0];
+  if (first && WORKOUT_DAYS.includes(activeTab)) activeTab = first;
+  render();
+}
+function togglePickerDay(d) {
+  if (pickerDays.has(d)) {
+    if (pickerDays.size > 1) pickerDays.delete(d); // keep at least one
+  } else {
+    pickerDays.add(d);
+  }
+  renderPickerOnly();
 }
 
 function switchTab(t) { activeTab=t; searchQuery=""; render(); }
@@ -2052,19 +2725,141 @@ function submitBW() {
   save(); addingBW=false; bwHistOpen=true; render();
 }
 
-function openNewEx() { addingNew=true; addNewTab=activeTab==="BODY"?WORKOUT_DAYS[0]:activeTab; render(); setTimeout(()=>{const el=document.getElementById("new-name");if(el)el.focus();},50); }
-function closeNewEx() { addingNew=false; render(); }
-function setNewTab(t) { addNewTab=t; render(); }
-function submitNewEx() {
-  const name=(document.getElementById("new-name").value||"").trim();
-  if(!name) return;
-  if(!data[addNewTab]) data[addNewTab]={};
-  if(!data[addNewTab][name]) data[addNewTab][name]=[];
-  // Append to saved order
-  const order = getExOrder(addNewTab);
-  if (!order.includes(name)) order.push(name);
-  saveExOrder(addNewTab, order);
-  addingNew=false; activeTab=addNewTab; render();
+
+
+// ── Range minimap drag ───────────────────────────────────────
+let _rangeDragging = null; // "start" | "end" | "window"
+let _rangeDragAnchor = null; // { rs, re, fx } for window drag
+
+function _svgFrac(e) {
+  const svg = document.getElementById("rsvg");
+  if (!svg) return null;
+  const rect = svg.getBoundingClientRect();
+  const clientX = e.touches ? e.touches[0].clientX : (e.clientX ?? 0);
+  return Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+}
+
+function minimapClick(e) {
+  const frac = _svgFrac(e);
+  if (frac === null) return;
+  const rs = statsRangeStart ?? 0;
+  const re = statsRangeEnd   ?? 1;
+  const margin = 0.04;
+  if (frac > rs + margin && frac < re - margin) {
+    e.preventDefault(); e.stopPropagation();
+    _rangeDragging = "window";
+    _rangeDragAnchor = { rs, re, fx: frac };
+    _attachRangeMoveUp();
+  }
+}
+
+function startRangeDrag(e, handle) {
+  e.preventDefault(); e.stopPropagation();
+  _rangeDragging = handle;
+  _rangeDragAnchor = null;
+  _attachRangeMoveUp();
+}
+
+function _attachRangeMoveUp() {
+  const move = e => {
+    if (!_rangeDragging) return;
+    if (e.cancelable) e.preventDefault();
+    const frac = _svgFrac(e);
+    if (frac === null) return;
+    if (_rangeDragging === "start") {
+      statsRangeStart = Math.max(0, Math.min(frac, (statsRangeEnd ?? 1) - 0.02));
+    } else if (_rangeDragging === "end") {
+      statsRangeEnd = Math.min(1, Math.max(frac, (statsRangeStart ?? 0) + 0.02));
+    } else if (_rangeDragging === "window" && _rangeDragAnchor) {
+      const { rs, re, fx } = _rangeDragAnchor;
+      const span = re - rs;
+      const delta = frac - fx;
+      statsRangeStart = Math.max(0, Math.min(rs + delta, 1 - span));
+      statsRangeEnd   = statsRangeStart + span;
+    }
+    statsActiveDate = null;
+    _updateRangeSVG();
+  };
+  const up = () => {
+    _rangeDragging = null;
+    _rangeDragAnchor = null;
+    document.removeEventListener("pointermove", move);
+    document.removeEventListener("pointerup", up);
+    document.removeEventListener("touchmove", move);
+    document.removeEventListener("touchend", up);
+    render();
+  };
+  document.addEventListener("pointermove", move);
+  document.addEventListener("pointerup", up);
+  document.addEventListener("touchmove", move, { passive: false });
+  document.addEventListener("touchend", up);
+}
+
+function _updateRangeSVG() {
+  const W = 420, H = 26, HANDLE_W = 10;
+  const rs = statsRangeStart ?? 0;
+  const re = statsRangeEnd   ?? 1;
+  const lx = rs * W, rx = re * W;
+
+  function sa(id, attrs) {
+    const el = document.getElementById(id);
+    if (el) Object.entries(attrs).forEach(([k,v]) => el.setAttribute(k,v));
+  }
+
+  // Dimmers
+  sa("mm-diml", { width: Math.max(0, lx).toFixed(1) });
+  sa("mm-dimr", { x: rx.toFixed(1), width: Math.max(0, W-rx).toFixed(1) });
+  // Selection overlay
+  sa("mm-sel",  { x: lx.toFixed(1), width: Math.max(0, rx-lx).toFixed(1) });
+  // Edge lines
+  sa("mm-el",   { x1: lx.toFixed(1), x2: lx.toFixed(1) });
+  sa("mm-er",   { x1: rx.toFixed(1), x2: rx.toFixed(1) });
+  // Left handle
+  sa("mm-hl",   { x: (lx - HANDLE_W/2).toFixed(1) });
+  sa("mm-hll",  { x1: lx.toFixed(1), x2: lx.toFixed(1), y1: (H/2-3).toFixed(1), y2: (H/2+3).toFixed(1) });
+  // Right handle
+  sa("mm-hr",   { x: (rx - HANDLE_W/2).toFixed(1) });
+  sa("mm-hrl",  { x1: rx.toFixed(1), x2: rx.toFixed(1), y1: (H/2-3).toFixed(1), y2: (H/2+3).toFixed(1) });
+
+  // Tick colors + heights live
+  const svg = document.getElementById("rsvg");
+  if (svg) {
+    const maxBarH = H - 4;
+    svg.querySelectorAll("line[id^='tick-']").forEach(line => {
+      const x = parseFloat(line.getAttribute("x1"));
+      const inside = x >= lx && x <= rx;
+      // Recover original full height from the current y values to preserve volume scaling
+      // We store the full-height y1 as a data attr on first render
+      const origY1 = parseFloat(line.dataset.y1 ?? line.getAttribute("y1"));
+      const origY2 = parseFloat(line.dataset.y2 ?? line.getAttribute("y2"));
+      if (!line.dataset.y1) { line.dataset.y1 = origY1; line.dataset.y2 = origY2; }
+      if (inside) {
+        line.setAttribute("y1", origY1);
+        line.setAttribute("y2", origY2);
+        line.setAttribute("stroke", "#5ab4f5");
+      } else {
+        const fullH = origY2 - origY1;
+        const dimH  = Math.max(2, Math.round(fullH * 0.45));
+        line.setAttribute("y1", (H - 2 - dimH).toFixed(0));
+        line.setAttribute("y2", (H - 2).toFixed(1));
+        line.setAttribute("stroke", "#252525");
+      }
+    });
+  }
+
+  // Live date labels — snap to nearest session using stored globals
+  if (window._mmSessions && window._mmAdjDays) {
+    function nearestDate(frac) {
+      const t = window._mmTMin + frac * window._mmTRng;
+      let best = window._mmSessions[0], bestDist = Infinity;
+      window._mmAdjDays.forEach((d,i) => { const dist = Math.abs(d-t); if (dist<bestDist){bestDist=dist;best=window._mmSessions[i];} });
+      return fmtDate(best.date);
+    }
+    const lblS = document.getElementById("mm-lbl-start");
+    const lblE = document.getElementById("mm-lbl-end");
+    if (lblS) lblS.textContent = nearestDate(rs);
+    if (lblE) lblE.textContent = nearestDate(re);
+  }
 }
 
 load(); render();
