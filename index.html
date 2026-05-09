@@ -126,6 +126,64 @@
   .hnote { color: var(--accent-dim); font-style: italic; }
   .add-ex-btn { width: 100%; margin-top: 14px; padding: 10px; background: transparent; border: 1px dashed var(--border); color: var(--text-dim); border-radius: 6px; cursor: pointer; font-family: inherit; font-size: 11px; letter-spacing: 1px; }
 
+
+  /* BW graphs */
+  .bw-graph-card { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; margin-bottom: 10px; }
+  .bw-graph-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; cursor: pointer; }
+  .bw-graph-title { font-size: 10px; color: var(--text-dim); letter-spacing: 2px; }
+  .bw-graph-body { padding: 4px 14px 12px; border-top: 1px solid var(--border); }
+  .bw-graph-tabs { display: flex; gap: 4px; margin-bottom: 12px; margin-top: 8px; }
+  .bw-gtab { flex: 1; padding: 5px; background: var(--surface2); color: var(--text-dim); border: none; border-radius: 4px; cursor: pointer; font-family: inherit; font-size: 9px; font-weight: 700; letter-spacing: 0.5px; }
+  .bw-gtab.active { background: var(--tertiary); color: var(--accent-dark); }
+  svg.bw-svg { width: 100%; overflow: visible; }
+  .svg-line { fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .svg-dot { cursor: pointer; transition: r 0.1s; }
+  .svg-dot:hover { r: 5; }
+  .svg-axis-label { font-size: 9px; fill: #555; font-family: 'IBM Plex Mono', monospace; }
+  .svg-tooltip { pointer-events: none; }
+
+  /* JSON paste section */
+  .bw-paste-card { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; margin-bottom: 10px; }
+  .bw-paste-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; cursor: pointer; }
+  .bw-paste-title { font-size: 10px; color: var(--text-dim); letter-spacing: 2px; }
+  .bw-paste-body { padding: 12px 14px; border-top: 1px solid var(--border); }
+  .bw-paste-sub { font-size: 10px; color: #555; margin-bottom: 8px; line-height: 1.5; }
+  .bw-paste-textarea { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text); border-radius: 4px; padding: 8px 10px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; outline: none; resize: vertical; min-height: 90px; }
+  .bw-paste-textarea:focus { border-color: var(--text-mute); }
+  .bw-paste-status { font-size: 10px; margin: 6px 0 0; min-height: 14px; }
+  .bw-paste-status.ok { color: #4ade80; }
+  .bw-paste-status.err { color: #f87171; }
+  .bw-paste-btn { margin-top: 8px; padding: 8px 16px; background: var(--tertiary); color: var(--accent-dark); border: none; border-radius: 4px; cursor: pointer; font-family: inherit; font-size: 11px; font-weight: 700; }
+
+
+  /* Vitamin tracker */
+  .vit-header { font-size:10px; color:var(--text-dim); letter-spacing:2px; margin-bottom:12px; }
+  .vit-date { font-size:11px; color:var(--accent); margin-bottom:16px; }
+  .vit-list { display:flex; flex-direction:column; gap:8px; margin-bottom:20px; }
+  .vit-row { display:flex; align-items:center; gap:12px; background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:12px 14px; cursor:pointer; transition:border-color 0.15s, background 0.15s; }
+  .vit-row.checked { border-color:var(--accent-dim); background:color-mix(in srgb, var(--accent) 6%, var(--surface)); }
+  .vit-emoji { font-size:20px; flex-shrink:0; width:28px; text-align:center; }
+  .vit-name { flex:1; font-size:13px; color:var(--text); }
+  .vit-check { width:22px; height:22px; border-radius:5px; border:2px solid var(--border); flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:13px; transition:background 0.15s, border-color 0.15s; }
+  .vit-row.checked .vit-check { background:var(--accent); border-color:var(--accent); color:var(--accent-dark); }
+  .vit-progress-wrap { background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:12px 14px; margin-bottom:16px; }
+  .vit-progress-label { font-size:10px; color:var(--text-dim); letter-spacing:1px; margin-bottom:8px; display:flex; justify-content:space-between; }
+  .vit-progress-bar { height:6px; background:var(--surface2); border-radius:3px; overflow:hidden; }
+  .vit-progress-fill { height:100%; background:var(--accent); border-radius:3px; transition:width 0.3s; }
+  .vit-add-row { display:flex; gap:8px; margin-bottom:16px; }
+  .vit-add-input { flex:1; background:var(--bg); border:1px solid var(--border); color:var(--text); border-radius:4px; padding:8px 10px; font-family:inherit; font-size:12px; outline:none; }
+  .vit-add-input:focus { border-color:var(--text-mute); }
+  .vit-add-btn { padding:8px 14px; background:var(--accent); color:var(--accent-dark); border:none; border-radius:4px; cursor:pointer; font-family:inherit; font-size:11px; font-weight:700; flex-shrink:0; }
+  .vit-delete-btn { background:none; border:none; color:#444; cursor:pointer; font-size:14px; padding:2px 4px; flex-shrink:0; }
+  .vit-history-card { background:var(--surface); border:1px solid var(--border); border-radius:6px; overflow:hidden; margin-bottom:10px; }
+  .vit-history-header { display:flex; justify-content:space-between; align-items:center; padding:10px 14px; cursor:pointer; }
+  .vit-history-title { font-size:10px; color:var(--text-dim); letter-spacing:2px; }
+  .vit-hist-row { display:flex; justify-content:space-between; align-items:center; padding:8px 14px; border-bottom:1px solid var(--surface2); font-size:11px; color:var(--text-dim); }
+  .vit-hist-row:last-child { border-bottom:none; }
+  .vit-hist-date { color:var(--text); }
+  .vit-hist-dots { display:flex; gap:4px; }
+  .vit-hist-dot { width:8px; height:8px; border-radius:50%; }
+
   /* BW tab */
   .bw-summary { background: var(--surface); border: 1px solid var(--tertiary-bg); border-radius: 6px; padding: 16px; margin-bottom: 10px; }
   .bw-stats { display: flex; gap: 14px; flex-wrap: wrap; }
@@ -192,7 +250,7 @@
   .range-presets { display: flex; gap: 5px; margin-bottom: 8px; }
   .range-preset { padding: 4px 9px; background: var(--bg); color: var(--text-mute); border: 1px solid var(--border2); border-radius: 3px; cursor: pointer; font-family: inherit; font-size: 9px; font-weight: 700; letter-spacing: 0.5px; transition: all 0.15s; }
   .range-preset.active { background: var(--surface2); color: var(--accent); border-color: var(--accent-border); }
-  .range-minimap { position: relative; touch-action: none; cursor: col-resize; }
+  .range-minimap { position: relative; touch-action: none; cursor: col-resize; overflow: visible; padding: 0 8px; }
   .range-minimap svg { display: block; width: 100%; border-radius: 4px; overflow: visible; }
   .range-labels { display: flex; justify-content: space-between; margin-top: 4px; }
   .range-label { font-size: 9px; color: var(--secondary); letter-spacing: 0.5px; }
@@ -360,9 +418,10 @@ const SPLIT_META = {
   "SAT · Legs":  "Mixed rep ranges",
   "BODY":        "Weight · body fat · muscle mass",
   "PROFILE":     "Strength · endurance · fitness classification",
+  "VITAMINS":    "Daily supplement tracker · resets at midnight",
 };
 const WORKOUT_DAYS = ["MON · Push","TUE · Pull","WED · Legs","FRI · Upper","SAT · Legs"];
-const ALL_TABS = [...WORKOUT_DAYS, "BODY", "PROFILE"];
+const ALL_TABS = [...WORKOUT_DAYS, "BODY", "PROFILE", "VITAMINS"];
 
 const DEFAULT_DATA = {
   // Canonical day for each exercise owns the entries.
@@ -434,6 +493,33 @@ let addingNew = false;
 let addNewTab = ALL_TABS[0];
 let addingBW = false;
 let bwHistOpen = false;
+
+// Vitamin tracker state
+const DEFAULT_VITAMINS = [
+  { id:"v1", name:"Multivitamin",   emoji:"💊" },
+  { id:"v2", name:"Vitamin D3",     emoji:"☀️" },
+  { id:"v3", name:"Fish Oil",       emoji:"🐟" },
+  { id:"v4", name:"Magnesium",      emoji:"🪨" },
+  { id:"v5", name:"Zinc",           emoji:"⚡" },
+  { id:"v6", name:"Creatine",       emoji:"💪" },
+];
+// vitamins stored in data.vitamins: { list:[{id,name,emoji}], checks:{"MM/DD":{id:true}} }
+function getVitaminData() {
+  if (!data.vitamins) data.vitamins = { list: JSON.parse(JSON.stringify(DEFAULT_VITAMINS)), checks: {} };
+  if (!data.vitamins.list) data.vitamins.list = JSON.parse(JSON.stringify(DEFAULT_VITAMINS));
+  if (!data.vitamins.checks) data.vitamins.checks = {};
+  return data.vitamins;
+}
+function todayChecks() {
+  const vd = getVitaminData();
+  const t = today();
+  if (!vd.checks[t]) vd.checks[t] = {};
+  return vd.checks[t];
+}
+let bwGraphOpen = true;
+let bwPasteOpen = false;
+let bwGraphMetric = "weight"; // "weight" | "fat" | "lean" | "bmi"
+let bwPasteOpen2 = false;
 let searchQuery = "";
 let searchLogTarget = null;
 let activeTheme = "default"; // default | ocean | ember | mono // {ex, tab} for search-result log modal
@@ -641,6 +727,26 @@ function numericWeight(w) {
   return parsePlateWeight(w);
 }
 
+// Resolve the actual numeric weight for an entry — handles BW entries by
+// looking up the logged bodyweight for that date (or most recent before it)
+function resolveWeight(entry) {
+  const w = entry.weight;
+  const parsed = numericWeight(w);
+  if (parsed !== null) return parsed;
+  // Check if it's a bodyweight-based entry (BW, bw, Bodyweight, etc.)
+  const s = String(w).toLowerCase().trim();
+  if (s === "bw" || s === "bodyweight" || s === "body weight") {
+    return getBWForDate(entry.date) ?? null;
+  }
+  // BW+X (e.g. "BW+25" for weighted pullups)
+  const bwPlus = s.match(/^bw\+(\d+(?:\.\d+)?)$/);
+  if (bwPlus) {
+    const bw = getBWForDate(entry.date);
+    return bw ? bw + parseFloat(bwPlus[1]) : null;
+  }
+  return null;
+}
+
 // Display weight — show both notation and lbs equivalent for plate weights
 function fmtW(w) {
   if (typeof w === "number") return w + " lbs";
@@ -651,9 +757,17 @@ function fmtW(w) {
 
 function getBWForDate(date) {
   const bwEntries = Array.isArray(data["BODY"]) ? data["BODY"] : [];
-  const exact = bwEntries.find(e => e.date === date);
+  if (!bwEntries.length) return null;
+  const targetKey = dateKey(date);
+  // Exact date match first
+  const exact = bwEntries.find(e => dateKey(e.date) === targetKey);
   if (exact) return exact.weight;
-  return bwEntries.length ? bwEntries[bwEntries.length - 1].weight : null;
+  // Fall back to most recent entry ON OR BEFORE this date
+  const sorted = sortedEntries(bwEntries);
+  const before = sorted.filter(e => dateKey(e.date) <= targetKey);
+  if (before.length) return before[before.length - 1].weight;
+  // If all entries are after this date, use the earliest one
+  return sorted[0].weight;
 }
 
 // Sort key — milliseconds since epoch so MM/DD/YYYY entries sort correctly across years
@@ -699,8 +813,8 @@ function est1RM(weight, reps) {
 function getBest1RM(entries) {
   let best = 0;
   for (const e of entries) {
-    const w = numericWeight(e.weight);
-    if (w === null) continue;
+    const w = resolveWeight(e);
+    if (!w) continue;
     for (const r of e.sets) {
       const rm = est1RM(w, r);
       if (rm > best) best = rm;
@@ -713,17 +827,15 @@ function isPR(entries) {
   const sorted = sortedEntries(entries);
   if (sorted.length < 2) return false;
   const last = sorted[sorted.length - 1];
-  const lw = numericWeight(last.weight);
+  const lw = resolveWeight(last);
   const prevEntries = sorted.slice(0, -1);
 
   if (lw !== null) {
-    // Check weight PR
-    const prevMaxW = Math.max(...prevEntries.map(e => numericWeight(e.weight) ?? 0));
+    const prevMaxW = Math.max(...prevEntries.map(e => resolveWeight(e) ?? 0));
     if (lw > prevMaxW) return true;
-    // Same weight — check rep PR (max single set)
     const lastMaxRep = Math.max(...last.sets);
     const prevMaxRep = Math.max(...prevEntries.flatMap(e => {
-      const ew = numericWeight(e.weight);
+      const ew = resolveWeight(e);
       return ew === lw ? e.sets : [];
     }), 0);
     if (lastMaxRep > prevMaxRep) return true;
@@ -770,7 +882,7 @@ function openStats(ex, tab) {
   statsRangeStart = 0;
   statsRangeEnd = 1;
   const entries = getAllEntriesForEx(ex);
-  const hasResolvableWeight = entries.some(e => numericWeight(e.weight) !== null);
+  const hasResolvableWeight = entries.some(e => resolveWeight(e) !== null);
   statsMetric = hasResolvableWeight ? "weight" : "avg";
   render();
 }
@@ -827,22 +939,22 @@ function groupSessionsByDate(entries) {
   }
   return [...map.entries()].map(([date, raws]) => {
     // Top weight: highest numeric weight in session (best calibration attempt)
-    const numericWeights = raws.map(e => numericWeight(e.weight)).filter(v => v !== null);
+    const numericWeights = raws.map(e => resolveWeight(e)).filter(v => v !== null);
     const topWeight = numericWeights.length ? Math.max(...numericWeights) : null;
 
     // For non-numeric weights, pick the entry with most total reps as "top"
     const topEntry = topWeight !== null
       ? raws.reduce((best, e) => {
-          const w = numericWeight(e.weight) ?? 0;
+          const w = resolveWeight(e) ?? 0;
           const rm = est1RM(w, Math.max(...e.sets));
-          const bw = est1RM(numericWeight(best.weight) ?? 0, Math.max(...best.sets));
-          return rm > bw ? e : best;
+          const bw2 = est1RM(resolveWeight(best) ?? 0, Math.max(...best.sets));
+          return rm > bw2 ? e : best;
         })
       : raws.reduce((best, e) => totalReps(e.sets) > totalReps(best.sets) ? e : best);
 
     // Session totals
     const sessionVolume = raws.reduce((sum, e) => {
-      const w = numericWeight(e.weight) ?? 1;
+      const w = resolveWeight(e) ?? 1;
       return sum + totalReps(e.sets) * w;
     }, 0);
     const sessionAvgReps = raws.reduce((sum, e) => sum + avgReps(e.sets), 0) / raws.length;
@@ -857,7 +969,7 @@ function groupSessionsByDate(entries) {
 function sessionMetricVal(session) {
   if (statsMetric === "volume") return session.sessionVolume;
   if (statsMetric === "avg") return session.sessionAvgReps;
-  return session.topWeight; // null for non-numeric
+  return session.topWeight; // already resolved via resolveWeight in groupSessionsByDate
 }
 
 // ── Range Slider ─────────────────────────────────────────────
@@ -888,7 +1000,7 @@ function renderRangeSlider(tMinAll, tMaxAll, tRngAll, allAdjDays, sessions) {
     const barH = inside ? Math.round(maxH * volFrac) : Math.round(maxH * volFrac * 0.45);
     const y1 = H - 2 - barH; // anchor to bottom
     const color = inside ? "#5ab4f5" : "#252525";
-    return `<line id="tick-${i}" x1="${fx.toFixed(1)}" y1="${y1}" x2="${fx.toFixed(1)}" y2="${(H-2).toFixed(1)}" stroke="${color}" stroke-width="1.5" stroke-linecap="round"/>`;
+    return `<line id="tick-${i}" x1="${fx.toFixed(1)}" y1="${y1}" x2="${fx.toFixed(1)}" y2="${(H-2).toFixed(1)}" stroke="${color}" stroke-width="1.5" stroke-linecap="round" style="pointer-events:none"/>`;
   }).join("");
 
   // Month divider lines (every ~30 days across the full span)
@@ -979,21 +1091,18 @@ function renderStatsModal() {
 
   // Pool + sort all entries across days
   const allSorted = sortedEntries(getAllEntriesForEx(statsEx));
-  const hasResolvableWeight = allSorted.some(e => numericWeight(e.weight) !== null);
+  const hasResolvableWeight = allSorted.some(e => resolveWeight(e) !== null);
 
   // Group into sessions (one per date) — ALL sessions for history list
   const sessions = groupSessionsByDate(allSorted);
 
-  // ── Date → day number (with year-wrap) ──────────────────────
+  // ── Date → real day number (Unix days, year-aware) ──────────
   function dateToDays(str) {
-    const [m, d] = str.split("/").map(Number);
-    const dim = [0,31,28,31,30,31,30,31,31,30,31,30,31];
-    let n = d; for (let i=1;i<m;i++) n+=dim[i]; return n;
+    const d = parseEntryDate(str);
+    return d ? Math.round(d.getTime() / 86400000) : 0;
   }
   const allRawDays = sessions.map(s => dateToDays(s.date));
-  const allAdjDays = allRawDays.slice();
-  for (let i=1;i<allAdjDays.length;i++) if (allAdjDays[i]<allAdjDays[i-1]) allAdjDays[i]+=365;
-  for (let i=2;i<allAdjDays.length;i++) if (allAdjDays[i]<allAdjDays[i-1]) allAdjDays[i]+=365;
+  const allAdjDays = allRawDays.slice(); // no year-wrap hack needed — real timestamps
   const tMinAll = allAdjDays[0] ?? 0;
   const tMaxAll = allAdjDays[allAdjDays.length-1] ?? 1;
   const tRngAll = tMaxAll - tMinAll || 1;
@@ -1091,9 +1200,15 @@ function renderStatsModal() {
       const r = isActive ? 5 : isLatest ? 4 : 3;
       // Orange badge: same filled/outline logic as the blue dot.
       const badgeFill = isLatest ? "#f5a05a" : "#0f0f0f";
+      // Voronoi band: midpoint between this dot and its neighbors → exclusive hit zone
+      const prevX = i > 0 ? pts[i-1].x : 0;
+      const nextX = i < pts.length - 1 ? pts[i+1].x : W;
+      const bandLeft  = (p.x + prevX) / 2;
+      const bandRight = (p.x + nextX) / 2;
+      const bandW = bandRight - bandLeft;
       return `
-        <circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="12" fill="transparent" style="cursor:pointer" onclick="setStatsDate('${escQ(p.s.date)}')"/>
-        <circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${r}" fill="${fill}" stroke="${stroke}" stroke-width="1.5" style="cursor:pointer" onclick="setStatsDate('${escQ(p.s.date)}')"/>
+        <rect x="${bandLeft.toFixed(1)}" y="0" width="${bandW.toFixed(1)}" height="${H}" fill="transparent" style="cursor:pointer" onclick="setStatsDate('${escQ(p.s.date)}')"/>
+        <circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${r}" fill="${fill}" stroke="${stroke}" stroke-width="1.5" style="pointer-events:none"/>
         ${multiSet ? `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="2" fill="${badgeFill}" stroke="#f5a05a" stroke-width="1" style="pointer-events:none"/>` : ""}`;
     }).join("");
 
@@ -1123,7 +1238,7 @@ function renderStatsModal() {
       const activeSess = sessions.find(s => s.date === statsActiveDate);
       if (activeSess) {
         const sessionRM = activeSess.raws.reduce((best, e) => {
-          const w = numericWeight(e.weight);
+          const w = resolveWeight(e);
           if (!w) return best;
           const rm = est1RM(w, Math.max(...e.sets));
           return rm > best ? rm : best;
@@ -1135,7 +1250,7 @@ function renderStatsModal() {
             ${sessionRM ? `<span style="font-size:10px;color:#5ab4f5">1RM~${sessionRM}</span>` : ""}
           </div>
           ${activeSess.raws.map((e, i) => {
-            const w = numericWeight(e.weight);
+            const w = resolveWeight(e);
             const rm = w ? est1RM(w, Math.max(...e.sets)) : null;
             return `<div style="display:flex;align-items:baseline;gap:8px;padding:4px 0;border-bottom:1px solid #1a2a1a;font-size:11px">
               <span style="color:#666;min-width:14px">${i+1}.</span>
@@ -1166,10 +1281,12 @@ function renderStatsModal() {
     const unit = statsMetric === "avg" ? " reps" : statsMetric === "volume" ? volumeUnit : " lbs";
     const fmt = v => statsMetric === "avg" ? v.toFixed(1) : statsMetric === "volume" ? Math.round(v).toLocaleString() : v.toFixed(0);
 
-    const best1RM = statsMetric === "weight" ? getBest1RM(allSorted) : null;
+    const visibleEntries = visibleSessions.flatMap(s => s.raws);
+    const best1RM = statsMetric === "weight" ? getBest1RM(visibleEntries) : null;
+    const isFiltered = (statsRangeStart ?? 0) > 0.001 || (statsRangeEnd ?? 1) < 0.999;
     const rm1Banner = best1RM ? `
       <div style="display:flex;align-items:center;justify-content:space-between;background:#0f1a2a;border:1px solid #1e3a4a;border-radius:4px;padding:8px 12px;margin-bottom:10px">
-        <span style="font-size:9px;color:#5ab4f5;letter-spacing:2px">EST. 1 REP MAX (EPLEY)</span>
+        <span style="font-size:9px;color:#5ab4f5;letter-spacing:2px">EST. 1RM (EPLEY)${isFiltered ? " · SELECTED RANGE" : " · ALL TIME"}</span>
         <span style="font-size:18px;font-weight:700;color:#5ab4f5">${best1RM} <span style="font-size:11px;opacity:0.7">lbs</span></span>
       </div>` : "";
 
@@ -1497,7 +1614,13 @@ function renderSettingsInPlace() {
 
 function exportData() {
   try {
-    const exportObj = { data, settings, exportedAt: new Date().toISOString() };
+    const exportObj = {
+      version: 3,
+      exportedAt: new Date().toISOString(),
+      data,                              // all workout logs, BODY, __order
+      settings: { ...settings },         // name, height, age, sex, units
+      theme: activeTheme,                // active theme
+    };
     const blob = new Blob([JSON.stringify(exportObj, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -1518,10 +1641,18 @@ function importData(event) {
       // Support both formats: { data, settings } wrapper or raw data object
       const importedData = parsed.data || parsed;
       const importedSettings = parsed.settings || null;
+      const importedTheme = parsed.theme || (importedSettings && importedSettings.__theme) || null;
       // Validate it looks like workout data
       if (typeof importedData !== "object" || Array.isArray(importedData)) throw new Error("Invalid format");
       data = Object.assign(JSON.parse(JSON.stringify(DEFAULT_DATA)), importedData);
-      if (importedSettings) settings = Object.assign(settings, importedSettings);
+      // Ensure __order survives the merge
+      if (importedData.__order) data.__order = importedData.__order;
+      if (importedSettings) {
+        settings = Object.assign(settings, importedSettings);
+        // Strip internal fields from settings object
+        delete settings.__theme;
+      }
+      if (importedTheme) { activeTheme = importedTheme; applyTheme(); }
       dedupeSharedExercises();
       save();
       const statusEl = document.getElementById("import-status");
@@ -1685,66 +1816,31 @@ const EXERCISE_LIBRARY = [
 // Unique muscle groups in order
 const MUSCLE_GROUPS = ["ALL", ...new Set(EXERCISE_LIBRARY.map(e => e.muscle))];
 
+// Strength standards as bodyweight multipliers
+// [beginner, intermediate, advanced, elite] × bodyweight
+// Derived from widely-used relative strength tables
 const STRENGTH_STANDARDS = {
-  // [beginner, intermediate, advanced, elite] 1RM in lbs for ~183 lb male
-  "Bench Press":          [115, 185, 255, 330],
-  "Incline Bench":        [95,  155, 215, 280],
-  "Decline Bench":        [120, 195, 265, 345],
-  "Dumbbell Bench":       [70,  115, 160, 210],
-  "Incline DB Bench":     [60,  100, 140, 185],
-  "Squat":                [145, 230, 320, 415],
-  "Front Squat":          [110, 175, 245, 315],
-  "Hack Squat":           [130, 210, 290, 375],
-  "Deadlift":             [175, 275, 380, 490],
-  "RDLs":                 [135, 215, 295, 380],
-  "Sumo Deadlift":        [170, 265, 365, 470],
-  "Trap Bar Deadlift":    [185, 290, 400, 510],
-  "T-Bar Rows":           [100, 160, 220, 285],
-  "Barbell Rows":         [95,  155, 215, 280],
-  "Pull-Ups":             [115, 170, 230, 300],
-  "Seated Cable Row":     [90,  145, 200, 260],
-  "Overhead Press":       [75,  120, 165, 215],
-  "Push Press":           [95,  150, 205, 265],
-  "Dips":                 [115, 175, 240, 310],
-  "Hip Thrust":           [155, 245, 340, 440],
-  "Leg Press":            [225, 360, 495, 640],
-};
-
-// Map exercise names in data to standard names (fuzzy)
-const EX_ALIAS = {
-  // Chest
-  "Incline Bench": "Incline Bench",
-  "Incline Smith": "Incline Bench",
-  "Flat Bench Press": "Bench Press",
-  "Bench Press": "Bench Press",
-  "Decline Bench Press": "Decline Bench",
-  "DB Bench Press": "Dumbbell Bench",
-  "Incline DB Press": "Incline DB Bench",
-  // Back
-  "T-Bar Rows": "T-Bar Rows",
-  "Barbell Rows": "Barbell Rows",
-  "Seated Rows": "Seated Cable Row",
-  "Seated / Barbell Rows": "Barbell Rows",
-  "Pull-Ups": "Pull-Ups",
-  "Weighted Pull-Ups": "Pull-Ups",
-  "Lat Pulldowns": "Pull-Ups",
-  // Shoulders
-  "Shoulder / Strict Press": "Overhead Press",
-  "Overhead Press": "Overhead Press",
-  "Push Press": "Push Press",
-  // Legs
-  "Squat": "Squat",
-  "Smith Squat": "Squat",
-  "Front Squat": "Front Squat",
-  "Hack Squat": "Hack Squat",
-  "Sumo Deadlift": "Sumo Deadlift",
-  "Trap Bar Deadlift": "Trap Bar Deadlift",
-  "RDLs": "RDLs",
-  "Hip Thrust": "Hip Thrust",
-  "Leg Press": "Leg Press",
-  // Chest/triceps
-  "Weighted Dips": "Dips",
-  "Dips": "Dips",
+  "Bench Press":       [0.63, 1.01, 1.39, 1.80],
+  "Incline Bench":     [0.52, 0.85, 1.17, 1.53],
+  "Decline Bench":     [0.66, 1.07, 1.45, 1.89],
+  "Dumbbell Bench":    [0.38, 0.63, 0.87, 1.15],
+  "Incline DB Bench":  [0.33, 0.55, 0.77, 1.01],
+  "Squat":             [0.79, 1.26, 1.75, 2.27],
+  "Front Squat":       [0.60, 0.96, 1.34, 1.72],
+  "Hack Squat":        [0.71, 1.15, 1.59, 2.05],
+  "Deadlift":          [0.96, 1.50, 2.08, 2.68],
+  "RDLs":              [0.74, 1.18, 1.61, 2.08],
+  "Sumo Deadlift":     [0.93, 1.45, 2.00, 2.57],
+  "Trap Bar Deadlift": [1.01, 1.59, 2.19, 2.79],
+  "T-Bar Rows":        [0.55, 0.87, 1.20, 1.56],
+  "Barbell Rows":      [0.52, 0.85, 1.17, 1.53],
+  "Pull-Ups":          [0.63, 0.93, 1.26, 1.64],
+  "Seated Cable Row":  [0.49, 0.79, 1.09, 1.42],
+  "Overhead Press":    [0.41, 0.66, 0.90, 1.18],
+  "Push Press":        [0.52, 0.82, 1.12, 1.45],
+  "Dips":              [0.63, 0.96, 1.31, 1.69],
+  "Hip Thrust":        [0.85, 1.34, 1.86, 2.40],
+  "Leg Press":         [1.23, 1.97, 2.70, 3.50],
 };
 
 function getTierIndex(rm, standards) {
@@ -1752,7 +1848,7 @@ function getTierIndex(rm, standards) {
   if (rm >= standards[2]) return 2;
   if (rm >= standards[1]) return 1;
   if (rm >= standards[0]) return 0;
-  return -1; // below beginner
+  return -1;
 }
 
 function getTierLabel(idx) {
@@ -1762,9 +1858,58 @@ function getTierClass(idx) {
   return ["beg","int","adv","eli"][idx] ?? "beg";
 }
 
+// Map exercise names in data to standard names (fuzzy match)
+const EX_ALIAS = {
+  // Chest
+  "Incline Bench":           "Incline Bench",
+  "Incline Smith":           "Incline Bench",
+  "Flat Bench Press":        "Bench Press",
+  "Bench Press":             "Bench Press",
+  "Decline Bench Press":     "Decline Bench",
+  "DB Bench Press":          "Dumbbell Bench",
+  "Incline DB Press":        "Incline DB Bench",
+  // Back
+  "T-Bar Rows":              "T-Bar Rows",
+  "Barbell Rows":            "Barbell Rows",
+  "Seated Rows":             "Seated Cable Row",
+  "Seated / Barbell Rows":   "Barbell Rows",
+  "Pull-Ups":                "Pull-Ups",
+  "Weighted Pull-Ups":       "Pull-Ups",
+  "Lat Pulldowns":           "Pull-Ups",
+  // Shoulders
+  "Shoulder / Strict Press": "Overhead Press",
+  "Overhead Press":          "Overhead Press",
+  "Push Press":              "Push Press",
+  // Legs
+  "Squat":                   "Squat",
+  "Smith Squat":             "Squat",
+  "Front Squat":             "Front Squat",
+  "Hack Squat":              "Hack Squat",
+  "Sumo Deadlift":           "Sumo Deadlift",
+  "Trap Bar Deadlift":       "Trap Bar Deadlift",
+  "RDLs":                    "RDLs",
+  "Hip Thrust":              "Hip Thrust",
+  "Leg Press":               "Leg Press",
+  // Chest/triceps
+  "Weighted Dips":           "Dips",
+  "Dips":                    "Dips",
+};
+
 function computeProfileScores() {
+  // Use most recent logged bodyweight, fall back to settings, then 183 as last resort
+  const bwEntries = sortedEntries(Array.isArray(data["BODY"]) ? data["BODY"] : []);
+  const latestBW = bwEntries.length ? parseFloat(bwEntries[bwEntries.length-1].weight) : null;
+  const settingsBW = settings.weight ? parseFloat(settings.weight) : null;
+  const bodyweight = latestBW || settingsBW || 183;
+
+  // Scale standards to actual bodyweight
+  const scaledStandards = {};
+  for (const [name, ratios] of Object.entries(STRENGTH_STANDARDS)) {
+    scaledStandards[name] = ratios.map(r => Math.round(r * bodyweight));
+  }
+
   // Gather best 1RMs across all workout days
-  const best1RMs = {}; // standardName → best 1RM
+  const best1RMs = {};
   for (const day of WORKOUT_DAYS) {
     const exs = data[day] || {};
     for (const [exName, entries] of Object.entries(exs)) {
@@ -1777,13 +1922,13 @@ function computeProfileScores() {
     }
   }
 
-  // Score: 0–100 per lift. 25=beg, 50=int, 75=adv, 100=elite
+  // Score each lift against BW-scaled standards
   const scores = [];
-  for (const [stdName, standards] of Object.entries(STRENGTH_STANDARDS)) {
+  for (const [stdName, ratios] of Object.entries(STRENGTH_STANDARDS)) {
     const rm = best1RMs[stdName];
     if (!rm) continue;
+    const standards = scaledStandards[stdName];
     const tierIdx = getTierIndex(rm, standards);
-    // Interpolate within tier for smooth score
     let score;
     if (tierIdx < 0) {
       score = Math.round((rm / standards[0]) * 20);
@@ -1795,7 +1940,7 @@ function computeProfileScores() {
       const within = (rm - lo) / (hi - lo);
       score = Math.round(tierIdx * 25 + within * 25);
     }
-    scores.push({ name: stdName, rm, tierIdx, score, standards });
+    scores.push({ name: stdName, rm, tierIdx, score, standards, bodyweight });
   }
   return scores;
 }
@@ -2068,7 +2213,7 @@ function renderProfile() {
     return `<div class="prof-stat">
       <div class="prof-stat-lbl">${escH(s.name)}</div>
       <div class="prof-stat-val">${s.rm} lbs <span class="prof-tier ${tierCls}">${tierLabel}</span></div>
-      <div class="prof-stat-sub">Est. 1RM · std ${s.standards[1]} / ${s.standards[2]} / ${s.standards[3]}</div>
+      <div class="prof-stat-sub">Est. 1RM · int ${s.standards[1]} / adv ${s.standards[2]} / elite ${s.standards[3]} @ ${Math.round(s.bodyweight)} lbs BW</div>
     </div>`;
   }).join("");
 
@@ -2167,16 +2312,27 @@ function renderProfile() {
       </div>
     </div>` : "";
 
+  const bwEntries = sortedEntries(Array.isArray(data["BODY"]) ? data["BODY"] : []);
+  const latestBW = bwEntries.length ? parseFloat(bwEntries[bwEntries.length-1].weight) : null;
+  const displayBW = latestBW || (settings.weight ? parseFloat(settings.weight) : null);
+  const heightStr = settings.height || "";
+  const sexStr = settings.sex ? settings.sex.toUpperCase() : "";
+  const profileSubtitle = [
+    heightStr,
+    sexStr,
+    displayBW ? `${Math.round(displayBW * 10) / 10} LBS` : null,
+  ].filter(Boolean).join(" · ");
+
   return `
     ${easterEgg}
     <div class="prof-card">
-      <div class="prof-title">FITNESS PROFILE — 5'11" MALE · ~183 LBS</div>
+      <div class="prof-title">FITNESS PROFILE${profileSubtitle ? ` — ${profileSubtitle}` : ""}</div>
       <div class="prof-chart-wrap">${donutSVG}</div>
       <div class="prof-legend">${legendHtml}</div>
     </div>
     <div class="prof-card">
       <div class="prof-title">STRENGTH CLASSIFICATION</div>
-      <div style="font-size:9px;color:#444;margin-bottom:10px;letter-spacing:1px">BASED ON EST. 1RM vs STANDARDS FOR YOUR SIZE</div>
+      <div style="font-size:9px;color:#444;margin-bottom:10px;letter-spacing:1px">BASED ON EST. 1RM vs BODYWEIGHT-RELATIVE STANDARDS</div>
       <div class="prof-stat-grid">${liftRows}${noLiftMsg}</div>
     </div>
     <div class="prof-card">
@@ -2280,9 +2436,77 @@ function renderSearchResults() {
   </div>`;
 }
 
+
+// ─────────────────────────────────────────────────────────────
+// VITAMIN TRACKER TAB — single daily checkbox
+// ─────────────────────────────────────────────────────────────
+function getVitChecked() {
+  if (!data.vitamins) data.vitamins = {};
+  return !!data.vitamins[today()];
+}
+function toggleVitamin() {
+  if (!data.vitamins) data.vitamins = {};
+  data.vitamins[today()] = !data.vitamins[today()];
+  save(); render();
+}
+
+function renderVitamins() {
+  const checked = getVitChecked();
+  const dayNames = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+  const d = new Date();
+  const dayStr = dayNames[d.getDay()] + ", " + (d.getMonth()+1) + "/" + d.getDate();
+
+  // Last 7 days streak
+  const days = [];
+  for (let i = 6; i >= 0; i--) {
+    const dd = new Date(); dd.setDate(dd.getDate() - i);
+    const key = String(dd.getMonth()+1).padStart(2,"0") + "/" + String(dd.getDate()).padStart(2,"0");
+    days.push({ key, checked: !!(data.vitamins && data.vitamins[key]) });
+  }
+  const streak = [...days].reverse().findIndex(d => !d.checked);
+  const streakCount = streak === -1 ? 7 : streak;
+
+  const dots = days.map(d => `
+    <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+      <div style="width:10px;height:10px;border-radius:50%;background:${d.checked ? "var(--accent)" : "var(--surface2)"}"></div>
+      <span style="font-size:8px;color:#444">${d.key.slice(3)}</span>
+    </div>`).join("");
+
+  return `
+    <div style="text-align:center;padding:32px 20px 20px">
+      <div style="font-size:10px;color:var(--text-dim);letter-spacing:2px;margin-bottom:6px">VITAMINS</div>
+      <div style="font-size:12px;color:var(--accent);margin-bottom:32px">${escH(dayStr)}</div>
+
+      <!-- Big checkbox -->
+      <div onclick="toggleVitamin()" style="
+        width:88px;height:88px;border-radius:20px;margin:0 auto 20px;cursor:pointer;
+        border:3px solid ${checked ? "var(--accent)" : "var(--border)"};
+        background:${checked ? "color-mix(in srgb, var(--accent) 12%, var(--surface))" : "var(--surface)"};
+        display:flex;align-items:center;justify-content:center;
+        font-size:40px;transition:all 0.2s;
+        box-shadow:${checked ? "0 0 24px color-mix(in srgb, var(--accent) 25%, transparent)" : "none"}
+      ">${checked ? "✓" : ""}</div>
+
+      <div style="font-size:13px;color:${checked ? "var(--accent)" : "var(--text-dim)"};margin-bottom:32px;font-weight:${checked ? 700 : 400}">
+        ${checked ? "Taken today ✓" : "Tap to mark as taken"}
+      </div>
+
+      <!-- 7-day streak dots -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;">
+        <div style="font-size:9px;color:var(--text-dim);letter-spacing:2px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center">
+          <span>LAST 7 DAYS</span>
+          <span style="color:var(--accent)">${streakCount > 0 ? streakCount + " day streak 🔥" : "Start your streak"}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:0 4px">${dots}</div>
+      </div>
+    </div>`;
+}
+
+
 function render() {
   const isProfile = activeTab === "PROFILE";
   const isBW = activeTab === "BODY";
+  const isVitamins = activeTab === "VITAMINS";
   const isSearching = searchQuery.trim().length > 0;
 
   document.getElementById("app").innerHTML = `
@@ -2301,9 +2525,10 @@ function render() {
     <div class="tabs" style="margin-top:4px">
       <button class="tab-btn bwtab ${activeTab==="BODY"?"active":""}" onclick="switchTab('BODY')">BODY</button>
       <button class="tab-btn proftab ${activeTab==="PROFILE"?"active":""}" onclick="switchTab('PROFILE')">PROFILE</button>
+      <button class="tab-btn ${activeTab==="VITAMINS"?"active":""}" style="${activeTab==="VITAMINS"?"background:#4ade80;color:#0f0f0f":getVitChecked()?"":"background:#3a0a0a;color:#f87171;border:1px solid #7a1a1a"}" onclick="switchTab('VITAMINS')">${getVitChecked() ? "VITAMINS" : "VITAMINS !"}</button>
     </div>
     <div class="tab-note">${escH(SPLIT_META[activeTab]||"")}</div>
-    ${isProfile ? renderProfile() : isBW ? renderBW() : renderWorkout()}
+    ${isProfile ? renderProfile() : isBW ? renderBW() : isVitamins ? renderVitamins() : renderWorkout()}
     `}
     ${renderLogModal()}
     ${renderBWModal()}
@@ -2511,11 +2736,127 @@ function renderCard(ex) {
     </div>`;
 }
 
+function calcBMI(weight, heightStr) {
+  if (!heightStr) return null;
+  // parse height like "5'11" or "71" (inches) or "180cm"
+  let inches = null;
+  const ftIn = heightStr.match(/(\d+)'(\d+)/);
+  const ftOnly = heightStr.match(/^(\d+)'$/);
+  const inOnly = heightStr.match(/^(\d+)"?$/);
+  const cm = heightStr.match(/(\d+)\s*cm/i);
+  if (ftIn) inches = parseInt(ftIn[1]) * 12 + parseInt(ftIn[2]);
+  else if (ftOnly) inches = parseInt(ftOnly[1]) * 12;
+  else if (cm) inches = parseFloat(cm[1]) / 2.54;
+  else if (inOnly) inches = parseInt(inOnly[1]);
+  if (!inches) return null;
+  return ((weight / (inches * inches)) * 703).toFixed(1);
+}
+
+function calcLean(weight, fatPct) {
+  if (!fatPct) return null;
+  return (weight * (1 - fatPct / 100)).toFixed(1);
+}
+
+function renderBWGraph(entries) {
+  if (entries.length < 2) return `<div style="padding:20px;text-align:center;color:#444;font-size:11px">Log at least 2 entries to see graphs.</div>`;
+
+  const heightStr = (settings && settings.height) ? settings.height : "";
+  const metrics = {
+    weight: { label: "Weight (lbs)", color: "#a78bfa", vals: entries.map(e => parseFloat(e.weight)) },
+    fat:    { label: "Body Fat %",   color: "#f5a05a", vals: entries.map(e => e.fat ? parseFloat(e.fat) : null) },
+    lean:   { label: "Lean Mass (lbs)", color: "#4ade80", vals: entries.map(e => (e.fat && e.weight) ? parseFloat(calcLean(e.weight, e.fat)) : null) },
+    bmi:    { label: "BMI",          color: "#5ab4f5", vals: entries.map(e => heightStr ? parseFloat(calcBMI(e.weight, heightStr)) : null) },
+  };
+
+  // Filter to last 30 entries max
+  const slice = entries.slice(-30);
+  const metric = metrics[bwGraphMetric];
+  const vals = metric.vals.slice(-30);
+
+  // Check we have enough real values
+  const realVals = vals.filter(v => v !== null && !isNaN(v));
+  if (realVals.length < 2) {
+    let msg = "No data for this metric.";
+    if (bwGraphMetric === "fat" || bwGraphMetric === "lean") msg = "Log body fat % to see this graph.";
+    if (bwGraphMetric === "bmi") msg = heightStr ? "Not enough data." : "Add your height in Settings to see BMI.";
+    return `<div style="padding:20px;text-align:center;color:#444;font-size:11px">${msg}</div>`;
+  }
+
+  const W = 320, H = 120, PL = 36, PR = 10, PT = 10, PB = 24;
+  const gW = W - PL - PR, gH = H - PT - PB;
+  const mn = Math.min(...realVals), mx = Math.max(...realVals);
+  const range = mx - mn || 1;
+
+  const points = slice.map((e, i) => {
+    const v = vals[i];
+    if (v === null || isNaN(v)) return null;
+    const x = PL + (i / (slice.length - 1)) * gW;
+    const y = PT + (1 - (v - mn) / range) * gH;
+    return { x, y, v, date: e.date };
+  });
+
+  // SVG path from non-null points
+  const validPts = points.filter(Boolean);
+  const pathD = validPts.map((p, i) => `${i === 0 ? "M" : "L"}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" ");
+
+  // Y axis labels
+  const yLabels = [mn, (mn + mx) / 2, mx].map((v, i) => {
+    const y = PT + (1 - (v - mn) / range) * gH;
+    return `<text class="svg-axis-label" x="${PL - 4}" y="${y.toFixed(1)}" text-anchor="end" dominant-baseline="middle">${v.toFixed(1)}</text>`;
+  }).join("");
+
+  // X axis labels (first, mid, last)
+  const xIdxs = [0, Math.floor((slice.length - 1) / 2), slice.length - 1];
+  const xLabels = xIdxs.map(i => {
+    const x = PL + (i / (slice.length - 1)) * gW;
+    return `<text class="svg-axis-label" x="${x.toFixed(1)}" y="${H - 4}" text-anchor="middle">${escH(slice[i] ? fmtDate(slice[i].date) : "")}</text>`;
+  }).join("");
+
+  // Dots with tooltip via title
+  const dots = validPts.map(p =>
+    `<circle class="svg-dot" cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="3.5" fill="${metric.color}" opacity="0.9">
+      <title>${escH(fmtDate(p.date))}: ${p.v.toFixed(1)}</title>
+    </circle>`
+  ).join("");
+
+  // Gradient fill under line
+  const fillD = pathD + ` L${validPts[validPts.length-1].x.toFixed(1)},${(PT+gH).toFixed(1)} L${validPts[0].x.toFixed(1)},${(PT+gH).toFixed(1)} Z`;
+
+  const svgId = "bw-svg-" + bwGraphMetric;
+  return `
+    <svg class="bw-svg" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="bwgrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="${metric.color}" stop-opacity="0.18"/>
+          <stop offset="100%" stop-color="${metric.color}" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <!-- grid lines -->
+      <line x1="${PL}" y1="${PT}" x2="${PL+gW}" y2="${PT}" stroke="#222" stroke-width="0.5"/>
+      <line x1="${PL}" y1="${PT+gH/2}" x2="${PL+gW}" y2="${PT+gH/2}" stroke="#222" stroke-width="0.5"/>
+      <line x1="${PL}" y1="${PT+gH}" x2="${PL+gW}" y2="${PT+gH}" stroke="#222" stroke-width="0.5"/>
+      <!-- fill -->
+      <path d="${fillD}" fill="url(#bwgrad)"/>
+      <!-- line -->
+      <path class="svg-line" d="${pathD}" stroke="${metric.color}"/>
+      <!-- dots -->
+      ${dots}
+      <!-- labels -->
+      ${yLabels}
+      ${xLabels}
+    </svg>`;
+}
+
 function renderBW() {
   const rawEntries = Array.isArray(data["BODY"]) ? data["BODY"] : [];
   const entries = sortedEntries(rawEntries);
   const latest = entries.length ? entries[entries.length-1] : null;
   const first  = entries.length > 1 ? entries[0] : null;
+
+  const heightStr = (settings && settings.height) ? settings.height : "";
+  const latestBMI = latest ? calcBMI(latest.weight, heightStr) : null;
+  const latestLean = (latest && latest.fat) ? calcLean(latest.weight, latest.fat) : null;
+
   const totalChg = (latest && first) ? (latest.weight - first.weight).toFixed(1) : null;
   const last7 = entries.slice(-7);
   const weekChg = last7.length >= 2 ? (last7[last7.length-1].weight - last7[0].weight).toFixed(1) : null;
@@ -2523,69 +2864,105 @@ function renderBW() {
   const statsHtml = `
     <div class="bw-stats">
       <div class="bw-stat">
-        <div class="bw-stat-lbl">CURRENT</div>
-        <div class="bw-stat-val">${latest?latest.weight:"—"}<span class="bw-unit">lbs</span></div>
+        <div class="bw-stat-lbl">WEIGHT</div>
+        <div class="bw-stat-val">${latest ? latest.weight : "—"}<span class="bw-unit">lbs</span></div>
       </div>
-      ${totalChg!==null?`<div class="bw-stat">
+      ${latestBMI ? `<div class="bw-stat">
+        <div class="bw-stat-lbl">BMI</div>
+        <div class="bw-stat-val">${latestBMI}</div>
+      </div>` : ""}
+      ${latestLean ? `<div class="bw-stat">
+        <div class="bw-stat-lbl">LEAN MASS</div>
+        <div class="bw-stat-val">${latestLean}<span class="bw-unit">lbs</span></div>
+      </div>` : ""}
+      ${totalChg !== null ? `<div class="bw-stat">
         <div class="bw-stat-lbl">TOTAL</div>
         <div class="bw-stat-val ${parseFloat(totalChg)>0?"pos":"neg"}">${parseFloat(totalChg)>0?"+":""}${totalChg}<span class="bw-unit">lbs</span></div>
-      </div>`:""}
-      ${weekChg!==null?`<div class="bw-stat">
+      </div>` : ""}
+      ${weekChg !== null ? `<div class="bw-stat">
         <div class="bw-stat-lbl">LAST 7</div>
         <div class="bw-stat-val ${parseFloat(weekChg)>0?"pos":"neg"}">${parseFloat(weekChg)>0?"+":""}${weekChg}<span class="bw-unit">lbs</span></div>
-      </div>`:""}
-      ${latest&&latest.fat?`<div class="bw-stat">
+      </div>` : ""}
+      ${latest && latest.fat ? `<div class="bw-stat">
         <div class="bw-stat-lbl">BODY FAT</div>
         <div class="bw-stat-val">${latest.fat}<span class="bw-unit">%</span></div>
-      </div>`:""}
-      ${latest&&latest.muscle?`<div class="bw-stat">
-        <div class="bw-stat-lbl">MUSCLE</div>
-        <div class="bw-stat-val">${latest.muscle}<span class="bw-unit">lbs</span></div>
-      </div>`:""}
+      </div>` : ""}
     </div>`;
 
+  // ── Graphs ──
+  const graphHtml = bwGraphOpen ? `
+    <div class="bw-graph-body">
+      <div class="bw-graph-tabs">
+        <button class="bw-gtab ${bwGraphMetric==="weight"?"active":""}" onclick="bwGraphMetric='weight';render()">WEIGHT</button>
+        <button class="bw-gtab ${bwGraphMetric==="fat"?"active":""}" onclick="bwGraphMetric='fat';render()">BODY FAT</button>
+        <button class="bw-gtab ${bwGraphMetric==="lean"?"active":""}" onclick="bwGraphMetric='lean';render()">LEAN MASS</button>
+        <button class="bw-gtab ${bwGraphMetric==="bmi"?"active":""}" onclick="bwGraphMetric='bmi';render()">BMI</button>
+      </div>
+      ${renderBWGraph(entries)}
+    </div>` : "";
+
+  // ── History ──
   const chartEntries = entries.slice(-14);
-  let chartHtml = "";
-  if (bwHistOpen && chartEntries.length >= 2) {
-    const ws = chartEntries.map(e=>e.weight);
-    const mn = Math.min(...ws), mx = Math.max(...ws), rng = mx-mn||1;
-    chartHtml = `<div class="bw-chart">
-      ${chartEntries.map(e=>{
-        const pct = ((e.weight-mn)/rng*70+15).toFixed(1);
-        return `<div class="bar-row">
-          <span class="bar-date">${escH(fmtDate(e.date))}</span>
-          <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
-          <span class="bar-val">${e.weight} lbs</span>
-        </div>`;
-      }).join("")}
-    </div>`;
-  }
-
   const histRows = bwHistOpen ? (entries.length ? entries.slice().reverse().map((e,i)=>{
     const prev = entries[entries.length-2-i];
     const diff = prev ? (e.weight-prev.weight).toFixed(1) : null;
     const cls = diff===null?"": parseFloat(diff)>0?"up":"dn";
     const ds = diff!==null ? `<span class="bw-delta ${cls}">${parseFloat(diff)>0?"+":""}${diff}</span>` : "";
+    const bmi = calcBMI(e.weight, heightStr);
+    const lean = e.fat ? calcLean(e.weight, e.fat) : null;
     return `<div class="bw-erow ${i===0?"latest":""}">
       <span>${escH(fmtDate(e.date))}</span>
       <span>${e.weight} lbs ${ds}</span>
-      ${e.fat?`<span>${e.fat}% fat</span>`:"<span></span>"}
-      ${e.note?`<span class="hnote">${escH(e.note)}</span>`:""}
+      ${e.fat ? `<span>${e.fat}% fat</span>` : "<span></span>"}
+      ${lean ? `<span>${lean} lbs lean</span>` : "<span></span>"}
+      ${bmi ? `<span>BMI ${bmi}</span>` : "<span></span>"}
     </div>`;
   }).join("") : '<div class="empty">No weigh-ins yet.</div>') : "";
 
+  // ── JSON Paste section ──
+  const pasteHtml = bwPasteOpen ? `
+    <div class="bw-paste-body">
+      <div class="bw-paste-sub">Paste one entry or an array from OKOK / Apple Health export.<br>
+        Accepted fields: <span style="color:#666">weight</span>, <span style="color:#666">bodyFat</span>, <span style="color:#666">date</span> (MM/DD or YYYY-MM-DD)
+      </div>
+      <textarea class="bw-paste-textarea" id="bw-paste-input" placeholder='{"weight": 182.4, "bodyFat": 18.2, "date": "05/09"}&#10;&#10;or paste an array:&#10;[{"weight":182,"bodyFat":18,"date":"05/01"}, ...]'></textarea>
+      <div id="bw-paste-status" class="bw-paste-status"></div>
+      <button class="bw-paste-btn" onclick="submitBWPaste()">IMPORT</button>
+    </div>` : "";
+
   return `
     <div class="bw-summary">${statsHtml}</div>
+
+    <!-- Graphs card -->
+    <div class="bw-graph-card">
+      <div class="bw-graph-header" onclick="bwGraphOpen=!bwGraphOpen;render()">
+        <span class="bw-graph-title">GRAPHS</span>
+        <span class="chevron">${bwGraphOpen?"▲":"▼"}</span>
+      </div>
+      ${graphHtml}
+    </div>
+
+    <!-- Action buttons -->
     <div style="display:flex;gap:8px;margin-bottom:10px">
       <button class="bw-log-btn" style="margin-bottom:0;flex:2" onclick="openBW()">+ LOG WEIGH-IN</button>
-      <button class="bw-log-btn" style="margin-bottom:0;flex:1;background:#1a1a1a;color:#666;border:1px solid #222" onclick="openManageBW()">⚙ MANAGE</button>
+      <button class="bw-log-btn" style="margin-bottom:0;flex:1;background:var(--surface2);color:var(--text-dim);border:1px solid var(--border)" onclick="openManageBW()">⚙ MANAGE</button>
     </div>
+
+    <!-- JSON paste card -->
+    <div class="bw-paste-card">
+      <div class="bw-paste-header" onclick="bwPasteOpen=!bwPasteOpen;render()">
+        <span class="bw-paste-title">IMPORT JSON</span>
+        <span class="chevron">${bwPasteOpen?"▲":"▼"}</span>
+      </div>
+      ${pasteHtml}
+    </div>
+
+    <!-- History card -->
     <div class="bw-card">
       <div class="bw-card-header" onclick="toggleBWHist()">
         <span class="bw-card-title">HISTORY ${entries.length?"("+entries.length+")":""}</span>
         <span class="chevron">${bwHistOpen?"▲":"▼"}</span>
       </div>
-      ${chartHtml}
       ${histRows}
     </div>`;
 }
@@ -2846,6 +3223,92 @@ function submitLog() {
 
 function openBW() { addingBW=true; render(); setTimeout(()=>{const el=document.getElementById("bw-weight");if(el)el.focus();},50); }
 function closeBW() { addingBW=false; render(); }
+
+function submitBWPaste() {
+  const raw = (document.getElementById("bw-paste-input") || {}).value || "";
+  const statusEl = document.getElementById("bw-paste-status");
+  const setStatus = (msg, ok) => {
+    if (!statusEl) return;
+    statusEl.textContent = msg;
+    statusEl.className = "bw-paste-status " + (ok ? "ok" : "err");
+  };
+  if (!raw.trim()) { setStatus("Nothing to import.", false); return; }
+
+  let parsed;
+  try { parsed = JSON.parse(raw.trim()); }
+  catch(e) { setStatus("Invalid JSON — check your format.", false); return; }
+
+  const arr = Array.isArray(parsed) ? parsed : [parsed];
+  if (!arr.length) { setStatus("Empty array.", false); return; }
+
+  let added = 0, skipped = 0;
+  if (!Array.isArray(data["BODY"])) data["BODY"] = [];
+
+  for (const item of arr) {
+    const w = parseFloat(item.weight || item.Weight);
+    let f = parseFloat(item.bodyFat || item.body_fat || item.bodyFatPercentage || item.fatPercent);
+    let d = item.date || item.Date || item.timestamp || "";
+
+    // If bodyFat is a ratio (0-1) not a percentage, convert it
+    if (!isNaN(f) && f > 0 && f < 1) f = f * 100;
+    // Round to 2 decimal places for display
+    if (!isNaN(f)) f = Math.round(f * 100) / 100;
+
+    // Normalise weight to 1 decimal
+    const wRounded = Math.round(w * 10) / 10;
+
+    // Normalise date formats → MM/DD
+    if (typeof d === "string") {
+      // YYYY-MM-DD or YYYY-MM-DDThh:mm:ss
+      if (d.match(/^\d{4}-\d{2}-\d{2}/)) {
+        const parts = d.slice(0, 10).split("-");
+        d = parts[1] + "/" + parts[2];
+      }
+      // "May 8, 2026 at 11:24 PM" or "May 8, 2026"
+      else if (d.match(/^[A-Za-z]+ \d/)) {
+        const parsed = new Date(d.replace(" at ", " "));
+        if (!isNaN(parsed)) {
+          d = String(parsed.getMonth() + 1).padStart(2, "0") + "/" + String(parsed.getDate()).padStart(2, "0");
+        }
+      }
+      // Unix timestamp (number as string)
+      else if (d.match(/^\d{10,}/)) {
+        const parsed = new Date(parseInt(d) * (d.length === 10 ? 1000 : 1));
+        if (!isNaN(parsed)) {
+          d = String(parsed.getMonth() + 1).padStart(2, "0") + "/" + String(parsed.getDate()).padStart(2, "0");
+        }
+      }
+    } else if (typeof d === "number") {
+      // Unix timestamp as number
+      const parsed = new Date(d < 1e10 ? d * 1000 : d);
+      if (!isNaN(parsed)) {
+        d = String(parsed.getMonth() + 1).padStart(2, "0") + "/" + String(parsed.getDate()).padStart(2, "0");
+      }
+    }
+
+    if (isNaN(wRounded) || wRounded <= 0) { skipped++; continue; }
+    if (!d) d = today();
+
+    // Avoid exact duplicates (same date + weight)
+    const dup = data["BODY"].find(e => e.date === d && e.weight === wRounded);
+    if (dup) { skipped++; continue; }
+
+    const entry = { date: d, weight: wRounded };
+    if (!isNaN(f) && f > 0) entry.fat = f;
+    data["BODY"].push(entry);
+    added++;
+  }
+
+  if (added === 0) {
+    setStatus(`Nothing new to add (${skipped} duplicate${skipped!==1?"s":""} skipped).`, false);
+    return;
+  }
+  save();
+  setStatus(`✓ Added ${added} entr${added!==1?"ies":"y"}${skipped ? ", " + skipped + " skipped" : ""}.`, true);
+  if (document.getElementById("bw-paste-input")) document.getElementById("bw-paste-input").value = "";
+  render();
+}
+
 function submitBW() {
   const dv=(document.getElementById("bw-date").value||today()).trim();
   const wv=parseFloat(document.getElementById("bw-weight").value);
@@ -2897,16 +3360,17 @@ function _attachRangeMoveUp() {
   const move = e => {
     if (!_rangeDragging) return;
     if (e.cancelable) e.preventDefault();
-    const frac = _svgFrac(e);
-    if (frac === null) return;
+    const rawFrac = _svgFrac(e);
+    if (rawFrac === null) return;
+
     if (_rangeDragging === "start") {
-      statsRangeStart = Math.max(0, Math.min(frac, (statsRangeEnd ?? 1) - 0.02));
+      statsRangeStart = Math.max(0, Math.min(rawFrac, (statsRangeEnd ?? 1) - 0.02));
     } else if (_rangeDragging === "end") {
-      statsRangeEnd = Math.min(1, Math.max(frac, (statsRangeStart ?? 0) + 0.02));
+      statsRangeEnd = Math.min(1, Math.max(rawFrac, (statsRangeStart ?? 0) + 0.02));
     } else if (_rangeDragging === "window" && _rangeDragAnchor) {
       const { rs, re, fx } = _rangeDragAnchor;
       const span = re - rs;
-      const delta = frac - fx;
+      const delta = rawFrac - fx;
       statsRangeStart = Math.max(0, Math.min(rs + delta, 1 - span));
       statsRangeEnd   = statsRangeStart + span;
     }
@@ -2983,18 +3447,32 @@ function _updateRangeSVG() {
     });
   }
 
-  // Live date labels — snap to nearest session using stored globals
+  // Live date labels — only show when handle is near a tick
   if (window._mmSessions && window._mmAdjDays) {
-    function nearestDate(frac) {
-      const t = window._mmTMin + frac * window._mmTRng;
-      let best = window._mmSessions[0], bestDist = Infinity;
-      window._mmAdjDays.forEach((d,i) => { const dist = Math.abs(d-t); if (dist<bestDist){bestDist=dist;best=window._mmSessions[i];} });
-      return fmtDate(best.date);
+    function labelForFrac(frac) {
+      const days = window._mmAdjDays;
+      const tMin = window._mmTMin, tRng = window._mmTRng;
+      const t = tMin + frac * tRng;
+
+      let bestIdx = 0, bestDist = Infinity;
+      days.forEach((d, i) => {
+        const dist = Math.abs(d - t);
+        if (dist < bestDist) { bestDist = dist; bestIdx = i; }
+      });
+
+      // Only show if within 10% of the gap to the nearest neighbor
+      const prev = days[bestIdx - 1];
+      const next = days[bestIdx + 1];
+      const gapPrev = prev !== undefined ? days[bestIdx] - prev : Infinity;
+      const gapNext = next !== undefined ? next - days[bestIdx] : Infinity;
+      const threshold = Math.min(gapPrev, gapNext) * 0.10;
+
+      return bestDist <= threshold ? fmtDate(window._mmSessions[bestIdx].date) : "";
     }
     const lblS = document.getElementById("mm-lbl-start");
     const lblE = document.getElementById("mm-lbl-end");
-    if (lblS) lblS.textContent = nearestDate(rs);
-    if (lblE) lblE.textContent = nearestDate(re);
+    if (lblS) lblS.textContent = labelForFrac(rs);
+    if (lblE) lblE.textContent = labelForFrac(re);
   }
 }
 
