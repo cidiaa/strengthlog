@@ -481,11 +481,11 @@
   .page-action { background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 18px; padding: 4px; }
 
   /* ── Day selector pills (LOG tab) ─────────────────── */
-  .day-pills { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: none; margin-bottom: 14px; }
+  .day-pills { display: flex; gap: 6px; overflow-x: auto; padding: 3px 2px 8px; scrollbar-width: none; margin-bottom: 14px; }
   .day-pills::-webkit-scrollbar { display: none; }
   .day-pill { flex-shrink: 0; padding: 6px 12px; background: var(--surface2); color: var(--text-dim); border: none; border-radius: 20px; cursor: pointer; font-family: inherit; font-size: 10px; font-weight: 700; letter-spacing: 0.5px; white-space: nowrap; transition: background 0.15s, color 0.15s; }
   .day-pill.active { background: var(--accent); color: var(--accent-dark); }
-  .day-pill.today { box-shadow: 0 0 0 1px var(--accent-dim); }
+  .day-pill.today { box-shadow: 0 0 0 2px var(--accent-dim); }
 
   /* ── Today banner ─────────────────────────────────── */
   .today-banner { background: var(--accent-bg); border: 1px solid var(--accent-border); border-radius: 8px; padding: 10px 14px; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; }
@@ -531,7 +531,37 @@
 </head>
 <body>
 <div id="app"></div>
-<script>
+<script id="app-script">
+
+// ╔══════════════════════════════════════════════════════════════════════╗
+// ║                    STRENGTH LOG — SOURCE MAP                        ║
+// ║  Each section marked: ◆ SECTION NAME · future-filename.js ◆        ║
+// ╠══════════════════════════════════════════════════════════════════════╣
+// ║  CONSTANTS & STATE ............. constants.js                       ║
+// ║  UTILS ......................... utils.js                           ║
+// ║  SHARED EXERCISE HELPERS ....... utils.js                           ║
+// ║  STATS (modal, graph, slider) .. stats.js                          ║
+// ║  MANAGE MODAL .................. manage.js                          ║
+// ║  SETTINGS & DATA ............... settings.js                        ║
+// ║  EXERCISE LIBRARY .............. library.js                         ║
+// ║  STRENGTH STANDARDS ............ profile.js                         ║
+// ║  PROFILE RENDER ................ profile.js                         ║
+// ║  SEARCH ........................ render.js                           ║
+// ║  VITAMINS ...................... vitamins.js                         ║
+// ║  RENDER (MAIN) ................. render.js                           ║
+// ║  DRAG REORDER .................. workout.js                          ║
+// ║  WORKOUT & CARDS ............... workout.js                          ║
+// ║  BODY / BW ..................... body.js                             ║
+// ║  MODALS & PICKER ............... modals.js                           ║
+// ║  LOG ACTIONS ................... modals.js                           ║
+// ║  RANGE SLIDER .................. stats.js                            ║
+// ║  SETTINGS DRAG ................. settings.js                         ║
+// ╚══════════════════════════════════════════════════════════════════════╝
+
+
+////////////////////////////////////////////////////////////////////////
+// ◆ CONSTANTS & STATE                                    · constants.js ◆ //
+////////////////////////////////////////////////////////////////////////
 const SPLIT_META = {
   "MON · Push":  "2x6-8 unless marked",
   "TUE · Pull":  "2x5-8 unless marked",
@@ -697,6 +727,10 @@ function load() {
 
 // Finds exercises that appear on multiple days and consolidates their entries
 // onto the first (canonical) day, clearing duplicates from the rest.
+
+////////////////////////////////////////////////////////////////////////
+// ◆ UTILS                                                    · utils.js ◆ //
+////////////////////////////////////////////////////////////////////////
 function today() {
   const d = new Date();
   return `${String(d.getMonth()+1).padStart(2,"0")}/${String(d.getDate()).padStart(2,"0")}/${d.getFullYear()}`;
@@ -900,6 +934,10 @@ function escH(s) { return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").r
 function cssVar(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
 function escQ(s) { return String(s).replace(/\\/g,"\\\\").replace(/'/g,"\\'"); }
 
+
+////////////////////////////////////////////////////////////////////////
+// ◆ SHARED EXERCISE HELPERS                                  · utils.js ◆ //
+////////////////////////////////////////////////////////////////////////
 // ── Shared-exercise helpers ───────────────────────────────────────────────────
 // Returns the canonical (first) day that owns this exercise name.
 // All writes go here so every day listing the same name reads the same data.
@@ -921,6 +959,10 @@ function canonicalDay(exName) {
   return activeTab;
 }
 
+
+////////////////////////////////////////////////////////////////////////
+// ◆ STATS                                                    · stats.js ◆ //
+////////////////////////////////////////////////////////////////////////
 // ────────────────────────────────────────────────────────────
 // STATS MODAL
 // ────────────────────────────────────────────────────────────
@@ -1441,6 +1483,10 @@ function renderStatsModal() {
   </div>`;
 }
 
+
+////////////////////////////////////////////////////////////////////////
+// ◆ MANAGE MODAL                                            · manage.js ◆ //
+////////////////////////////////////////////////////////////////////////
 // ────────────────────────────────────────────────────────────
 // MANAGE MODAL
 // ────────────────────────────────────────────────────────────
@@ -1584,6 +1630,10 @@ function renderManageBWModal() {
 }
 
 
+
+////////////////////////////////////////////////////////////////////////
+// ◆ SETTINGS & DATA                                       · settings.js ◆ //
+////////////////////////////////////////////////////////////////////////
 // ────────────────────────────────────────────────────────────
 // SETTINGS MODAL
 // ────────────────────────────────────────────────────────────
@@ -1813,6 +1863,10 @@ function confirmReset() {
 // muscle: display group label
 // tags: array of day keys that suggest this exercise (for auto-day)
 // ────────────────────────────────────────────────────────────
+
+////////////////////////////////////////////////////////////////////////
+// ◆ EXERCISE LIBRARY                                       · library.js ◆ //
+////////////////////////////////////////////////////////////////////////
 const EXERCISE_LIBRARY = [
 
   // ══════════════════════════════════════════
@@ -2153,6 +2207,10 @@ const MUSCLE_GROUPS = ["ALL", ...new Set(EXERCISE_LIBRARY.map(e => e.muscle))];
 // Strength standards as bodyweight multipliers
 // [beginner, intermediate, advanced, elite] × bodyweight
 // Derived from widely-used relative strength tables
+
+////////////////////////////////////////////////////////////////////////
+// ◆ STRENGTH STANDARDS                                     · profile.js ◆ //
+////////////////////////////////////////////////////////////////////////
 const STRENGTH_STANDARDS = {
   "Bench Press":       [0.63, 1.01, 1.39, 1.80],
   "Incline Bench":     [0.52, 0.85, 1.17, 1.53],
@@ -2461,6 +2519,10 @@ function getExercisesForMuscle(muscle) {
   return found;
 }
 
+
+////////////////////////////////////////////////////////////////////////
+// ◆ PROFILE RENDER                                         · profile.js ◆ //
+////////////////////////////////////////////////////////////////////////
 function renderProfile() {
   const scores = computeProfileScores();
   const endScore = computeEnduranceScore();
@@ -2703,6 +2765,10 @@ function renderProfile() {
     </div>`;
 }
 
+
+////////////////////////////////////////////////////////////////////////
+// ◆ SEARCH                                                  · render.js ◆ //
+////////////////////////////////////////////////////////////////////////
 // ────────────────────────────────────────────────────────────
 // SEARCH
 // ────────────────────────────────────────────────────────────
@@ -2771,6 +2837,10 @@ function renderSearchResults() {
 }
 
 
+
+////////////////////////////////////////////////////////////////////////
+// ◆ VITAMINS                                              · vitamins.js ◆ //
+////////////////////////////////////////////////////////////////////////
 // ─────────────────────────────────────────────────────────────
 // VITAMIN TRACKER TAB — single daily checkbox
 // ─────────────────────────────────────────────────────────────
@@ -2838,6 +2908,10 @@ function renderVitamins() {
 }
 
 
+
+////////////////////////////////////////////////////////////////////////
+// ◆ RENDER (MAIN)                                           · render.js ◆ //
+////////////////////////////////////////////////////////////////////////
 function render() {
   const isSearching = searchQuery.trim().length > 0;
 
@@ -2959,6 +3033,10 @@ function renderNavHeader(todayDay) {
   </div>`;
 }
 
+
+////////////////////////////////////////////////////////////////////////
+// ◆ LOG TAB                                                 · render.js ◆ //
+////////////////////////////////////////////////////////////////////////
 // ── LOG TAB ─────────────────────────────────────────────────
 function renderLogTab(todayDay) {
   // Day pills
@@ -2970,13 +3048,17 @@ function renderLogTab(todayDay) {
   }).join("");
 
   // Today banner
+  const activeSplitName = activeTab.split("·")[1]?.trim().toUpperCase() || "";
+  const activeSplitMeta = SPLIT_META[activeTab] || "";
+  const isViewingToday = activeTab === todayDay;
+
   const banner = todayDay ? `
     <div class="today-banner">
       <div>
-        <div class="today-day">${escH(todayDay.split("·")[1]?.trim().toUpperCase() || "")}</div>
-        <div class="today-scheme">${escH(SPLIT_META[activeTab]||"")}</div>
+        <div class="today-day">${escH(activeSplitName)}</div>
+        <div class="today-scheme">${escH(activeSplitMeta)}</div>
       </div>
-      <span style="font-size:10px;color:var(--accent-dim)">${escH(activeTab===todayDay?"TODAY":"")}</span>
+      <span style="font-size:10px;color:var(--accent-dim)">${isViewingToday ? "TODAY" : escH(todayDay.split("·")[0].trim() + " IS TODAY")}</span>
     </div>` : "";
 
   return `
@@ -2986,6 +3068,10 @@ function renderLogTab(todayDay) {
   `;
 }
 
+
+////////////////////////////////////////////////////////////////////////
+// ◆ PROGRESS TAB                                            · render.js ◆ //
+////////////////////////////////////////////////////////////////////////
 // ── PROGRESS TAB ─────────────────────────────────────────────
 function renderProgressTab() {
   // Collect all exercises that have entries, grouped by muscle/day
@@ -3031,6 +3117,10 @@ function renderProgressTab() {
 }
 
 // ── MORE TAB ─────────────────────────────────────────────────
+
+////////////////////////////////////////////////////////////////////////
+// ◆ MORE TAB                                                · render.js ◆ //
+////////////////////////////////////////////////////////////////////////
 function renderMoreTab() {
   const vitChecked = getVitChecked();
   return `
@@ -3129,6 +3219,10 @@ function renderMoreTab() {
 }
 
 
+
+////////////////////////////////////////////////////////////////////////
+// ◆ DRAG REORDER                                           · workout.js ◆ //
+////////////////////////////////////////////////////////////////////////
 // ────────────────────────────────────────────────────────────
 // DRAG REORDER
 // ────────────────────────────────────────────────────────────
@@ -3251,6 +3345,10 @@ function reorderExercise(tab, srcEx, overEx) {
   render();
 }
 
+
+////////////////////////////////////////////////////////////////////////
+// ◆ WORKOUT & CARDS                                        · workout.js ◆ //
+////////////////////////////////////////////////////////////////////////
 function renderWorkout() {
   const exs = getExOrder(activeTab);
   return `
@@ -3319,6 +3417,10 @@ function renderCard(ex) {
     </div>`;
 }
 
+
+////////////////////////////////////////////////////////////////////////
+// ◆ BODY / BW                                                 · body.js ◆ //
+////////////////////////////////////////////////////////////////////////
 function calcBMI(weight, heightStr) {
   if (!heightStr) return null;
   // parse height like "5'11" or "71" (inches) or "180cm"
@@ -3552,6 +3654,10 @@ function renderBW() {
     </div>`;
 }
 
+
+////////////////////////////////////////////////////////////////////////
+// ◆ MODALS                                                  · modals.js ◆ //
+////////////////////////////////////////////////////////////////////////
 function renderLogModal() {
   if (!addingEx) return "";
   const t = today();
@@ -3583,6 +3689,10 @@ function renderBWModal() {
     </div></div>`;
 }
 
+
+////////////////////////////////////////////////////////////////////////
+// ◆ EXERCISE PICKER                                         · modals.js ◆ //
+////////////////////////////////////////////////////////////////////////
 // ── Exercise Picker ──────────────────────────────────────────
 function renderNewExModal() {
   if (!pickerOpen) return "";
@@ -3750,6 +3860,10 @@ function submitCustomEx() {
   renderPickerOnly();
 }
 
+
+////////////////////////////////////////////////////////////////////////
+// ◆ LOG ACTIONS                                             · modals.js ◆ //
+////////////////////////////////////////////////////////////////////////
 function openNewEx() {
   pickerOpen = true;
   const initDay = (activeTab === "BODY" || activeTab === "PROFILE") ? WORKOUT_DAYS[0] : activeTab;
@@ -3913,6 +4027,10 @@ function submitBW() {
 
 
 
+
+////////////////////////////////////////////////////////////////////////
+// ◆ RANGE SLIDER                                             · stats.js ◆ //
+////////////////////////////////////////////////////////////////////////
 // ── Range minimap drag ───────────────────────────────────────
 let _rangeDragging = null; // "start" | "end" | "window"
 let _rangeDragAnchor = null; // { rs, re, fx } for window drag
@@ -4066,6 +4184,10 @@ function _updateRangeSVG() {
   }
 }
 
+
+////////////////////////////////////////////////////////////////////////
+// ◆ SETTINGS DRAG                                         · settings.js ◆ //
+////////////////////////////////////////////////////////////////////////
 // ── Settings sheet swipe-to-close ────────────────────────────
 function startSettingsDrag(e) {
   e.stopPropagation();
