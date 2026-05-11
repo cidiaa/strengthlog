@@ -32,6 +32,15 @@
     --text: #e8e8e8;
     --text-dim: #666;
     --text-mute: #444;
+    /* Graph colors — used in SVG via JS getComputedStyle */
+    --graph-line: #5ab4f5;
+    --graph-area: #5ab4f5;
+    --graph-dot-active: #c8f55a;
+    --graph-dot-latest: #5ab4f5;
+    --graph-bw: #a78bfa;
+    --graph-badge: #f5a05a;
+    --minimap-line: #5ab4f5;
+    --minimap-dim: #252525;
   }
   [data-theme="ocean"] {
     --accent: #38bdf8;
@@ -51,6 +60,14 @@
     --text: #e2f0ff;
     --text-dim: #4a7090;
     --text-mute: #2a4560;
+    --graph-line: #818cf8;
+    --graph-area: #818cf8;
+    --graph-dot-active: #38bdf8;
+    --graph-dot-latest: #818cf8;
+    --graph-bw: #34d399;
+    --graph-badge: #38bdf8;
+    --minimap-line: #818cf8;
+    --minimap-dim: #1a3040;
   }
   [data-theme="ember"] {
     --accent: #fb923c;
@@ -58,8 +75,8 @@
     --accent-bg: #2a1100;
     --accent-border: #3a1a00;
     --accent-dark: #0f0800;
-    --secondary: #f472b6;
-    --secondary-bg: #2a0f1e;
+    --secondary: #fb923c;
+    --secondary-bg: #2a1500;
     --tertiary: #fbbf24;
     --tertiary-bg: #2a1e00;
     --bg: #100800;
@@ -70,6 +87,14 @@
     --text: #fff0e6;
     --text-dim: #6b4020;
     --text-mute: #4a2a10;
+    --graph-line: #fb923c;
+    --graph-area: #fb923c;
+    --graph-dot-active: #fbbf24;
+    --graph-dot-latest: #fb923c;
+    --graph-bw: #fbbf24;
+    --graph-badge: #ea580c;
+    --minimap-line: #fb923c;
+    --minimap-dim: #2e1a00;
   }
   [data-theme="mono"] {
     --accent: #e8e8e8;
@@ -89,6 +114,14 @@
     --text: #e8e8e8;
     --text-dim: #555;
     --text-mute: #333;
+    --graph-line: #aaaaaa;
+    --graph-area: #aaaaaa;
+    --graph-dot-active: #e8e8e8;
+    --graph-dot-latest: #aaaaaa;
+    --graph-bw: #777777;
+    --graph-badge: #aaaaaa;
+    --minimap-line: #aaaaaa;
+    --minimap-dim: #222;
   }
 
   body { background: var(--bg); color: var(--text); font-family: 'IBM Plex Mono', 'Courier New', monospace; min-height: 100vh; }
@@ -284,7 +317,7 @@
   .prof-tier.adv { background: #2a1e3a; color: #a78bfa; }
   .prof-tier.eli { background: #3a2a1e; color: #f5a05a; }
   .prof-setup { text-align: center; padding: 32px 16px; color: #555; font-size: 11px; }
-  .manage-modal { background: var(--surface); border: 1px solid #2a1a1a; border-radius: 8px; padding: 20px; width: 100%; max-width: 400px; max-height: 85vh; overflow-y: auto; }
+  .manage-modal { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 20px; width: 100%; max-width: 400px; max-height: 85vh; overflow-y: auto; }
 
   /* Search */
   .search-wrap { position: relative; margin-bottom: 14px; }
@@ -301,7 +334,8 @@
   .settings-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 200; align-items: flex-end; justify-content: center; padding: 0; }
   .settings-overlay.open { display: flex; }
   .settings-sheet { background: #111; border-top: 1px solid var(--border); border-radius: 16px 16px 0 0; width: 100%; max-width: 560px; max-height: 88vh; overflow-y: auto; padding: 0 0 calc(24px + env(safe-area-inset-bottom)); }
-  .settings-handle { width: 36px; height: 4px; background: #333; border-radius: 2px; margin: 12px auto 20px; }
+  .settings-handle { width: 44px; height: 5px; background: #444; border-radius: 3px; margin: 14px auto 20px; cursor: grab; touch-action: none; transition: background 0.15s; }
+  .settings-handle:hover { background: #666; }
   .settings-title { font-size: 10px; color: var(--accent-dim); letter-spacing: 3px; padding: 0 20px; margin-bottom: 16px; }
   .settings-section { margin-bottom: 28px; }
   .settings-section-title { font-size: 9px; color: var(--text-mute); letter-spacing: 2px; padding: 0 20px; margin-bottom: 10px; }
@@ -413,8 +447,11 @@
     border-top: 1px solid var(--border);
     display: flex; align-items: stretch;
     padding-bottom: env(safe-area-inset-bottom);
-    z-index: 90; max-width: 560px; margin: 0 auto;
-    left: 50%; transform: translateX(-50%);
+    z-index: 90;
+  }
+  .bnav-inner {
+    display: flex; align-items: stretch; width: 100%;
+    max-width: 560px; margin: 0 auto;
   }
   .bnav-item {
     flex: 1; display: flex; flex-direction: column; align-items: center;
@@ -530,12 +567,6 @@ const DEFAULT_DATA = {
     "Bulgarian Split Squats": [], "Calf Raises": [], "RDLs": [],
   },
   "FRI · Upper": {
-    "Incline Bench": [],
-    "Pull-Ups": [],
-    "T-Bar Rows": [],
-    "Pec Dec": [],
-    "JM Press / Tricep Pushdown": [],
-    "Preacher Curls": [],
     "Shoulder / Strict Press": [],
     "Barbell Rows": [],
   },
@@ -631,11 +662,12 @@ function load() {
     const s = localStorage.getItem("wt-v3");
     if (s) {
       const p = JSON.parse(s);
-      // Restore each workout day exercise-by-exercise
+      // Start from a clean structure — don't inject DEFAULT_DATA keys
+      // into days the user hasn't explicitly added exercises to
       for (const day of WORKOUT_DAYS) {
+        data[day] = {}; // wipe DEFAULT_DATA for this day
         if (!p[day]) continue;
         for (const [ex, entries] of Object.entries(p[day])) {
-          if (!data[day]) data[day] = {};
           data[day][ex] = Array.isArray(entries) ? entries : [];
         }
       }
@@ -865,12 +897,24 @@ function isPR(entries) {
 }
 
 function escH(s) { return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function cssVar(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
 function escQ(s) { return String(s).replace(/\\/g,"\\\\").replace(/'/g,"\\'"); }
 
 // ── Shared-exercise helpers ───────────────────────────────────────────────────
 // Returns the canonical (first) day that owns this exercise name.
 // All writes go here so every day listing the same name reads the same data.
 function canonicalDay(exName) {
+  // Prefer the day that has actual entries
+  for (const day of WORKOUT_DAYS) {
+    if (data[day]?.[exName]?.length > 0) return day;
+  }
+  // Fall back to first day that has the key at all (user added it but no entries yet)
+  // but only if it was explicitly added to that day (check __order)
+  for (const day of WORKOUT_DAYS) {
+    const order = data.__order?.[day];
+    if (order && order.includes(exName)) return day;
+  }
+  // Last resort: first day with the key
   for (const day of WORKOUT_DAYS) {
     if (data[day] && exName in data[day]) return day;
   }
@@ -1007,6 +1051,10 @@ function renderRangeSlider(tMinAll, tMaxAll, tRngAll, allAdjDays, sessions) {
   const vols = sessions.map(s => s.sessionVolume || 1);
   const maxVol = Math.max(...vols, 1);
 
+  // Theme-aware colors
+  const mmLine = cssVar('--minimap-line') || '#5ab4f5';
+  const mmDim  = cssVar('--minimap-dim')  || '#252525';
+
   // Session ticks — height proportional to session volume
   const ticks = sessions.map((s, i) => {
     const fx = tRngAll > 0 ? ((allAdjDays[i] - tMinAll) / tRngAll) * W : W / 2;
@@ -1015,7 +1063,7 @@ function renderRangeSlider(tMinAll, tMaxAll, tRngAll, allAdjDays, sessions) {
     const maxH = H - 4;
     const barH = inside ? Math.round(maxH * volFrac) : Math.round(maxH * volFrac * 0.45);
     const y1 = H - 2 - barH; // anchor to bottom
-    const color = inside ? "#5ab4f5" : "#252525";
+    const color = inside ? mmLine : mmDim;
     return `<line id="tick-${i}" x1="${fx.toFixed(1)}" y1="${y1}" x2="${fx.toFixed(1)}" y2="${(H-2).toFixed(1)}" stroke="${color}" stroke-width="1.5" stroke-linecap="round" style="pointer-events:none"/>`;
   }).join("");
 
@@ -1033,20 +1081,20 @@ function renderRangeSlider(tMinAll, tMaxAll, tRngAll, allAdjDays, sessions) {
   const bgRect = `<rect x="0" y="0" width="${W}" height="${H}" rx="3" fill="#0d0d0d" stroke="#1e1e1e" stroke-width="1"/>`;
 
   // Selected overlay
-  const selRect = `<rect id="mm-sel" x="${lx.toFixed(1)}" y="0" width="${(rx-lx).toFixed(1)}" height="${H}" fill="#5ab4f5" fill-opacity="0.06"/>`;
+  const selRect = `<rect id="mm-sel" x="${lx.toFixed(1)}" y="0" width="${(rx-lx).toFixed(1)}" height="${H}" fill="${mmLine}" fill-opacity="0.06"/>`;
 
   // Dimmers — always present, width/x updated live
   const dimL = `<rect id="mm-diml" x="0" y="0" width="${lx.toFixed(1)}" height="${H}" rx="3" fill="#0d0d0d" fill-opacity="0.62"/>`;
   const dimR = `<rect id="mm-dimr" x="${rx.toFixed(1)}" y="0" width="${(W-rx).toFixed(1)}" height="${H}" rx="3" fill="#0d0d0d" fill-opacity="0.62"/>`;
 
   // Edge lines
-  const edgeL = `<line id="mm-el" x1="${lx.toFixed(1)}" y1="0" x2="${lx.toFixed(1)}" y2="${H}" stroke="#5ab4f5" stroke-width="1.5" opacity="0.7"/>`;
-  const edgeR = `<line id="mm-er" x1="${rx.toFixed(1)}" y1="0" x2="${rx.toFixed(1)}" y2="${H}" stroke="#5ab4f5" stroke-width="1.5" opacity="0.7"/>`;
+  const edgeL = `<line id="mm-el" x1="${lx.toFixed(1)}" y1="0" x2="${lx.toFixed(1)}" y2="${H}" stroke="${mmLine}" stroke-width="1.5" opacity="0.7"/>`;
+  const edgeR = `<line id="mm-er" x1="${rx.toFixed(1)}" y1="0" x2="${rx.toFixed(1)}" y2="${H}" stroke="${mmLine}" stroke-width="1.5" opacity="0.7"/>`;
 
   // Handles — visible pill + invisible oversized hit rect for easy mobile grab
   const handleL = `
     <rect id="mm-hl" x="${(lx - HANDLE_W/2).toFixed(1)}" y="3" width="${HANDLE_W}" height="${H-6}" rx="4"
-      fill="#5ab4f5" opacity="0.9" style="pointer-events:none"/>
+      fill="${mmLine}" opacity="0.9" style="pointer-events:none"/>
     <line id="mm-hll" x1="${lx.toFixed(1)}" y1="${(H/2-4).toFixed(1)}" x2="${lx.toFixed(1)}" y2="${(H/2+4).toFixed(1)}"
       stroke="#061220" stroke-width="2" stroke-linecap="round" style="pointer-events:none"/>
     <rect x="${(lx - HIT_W/2).toFixed(1)}" y="0" width="${HIT_W}" height="${H}" rx="0" fill="transparent"
@@ -1055,7 +1103,7 @@ function renderRangeSlider(tMinAll, tMaxAll, tRngAll, allAdjDays, sessions) {
 
   const handleR = `
     <rect id="mm-hr" x="${(rx - HANDLE_W/2).toFixed(1)}" y="3" width="${HANDLE_W}" height="${H-6}" rx="4"
-      fill="#5ab4f5" opacity="0.9" style="pointer-events:none"/>
+      fill="${mmLine}" opacity="0.9" style="pointer-events:none"/>
     <line id="mm-hrl" x1="${rx.toFixed(1)}" y1="${(H/2-4).toFixed(1)}" x2="${rx.toFixed(1)}" y2="${(H/2+4).toFixed(1)}"
       stroke="#061220" stroke-width="2" stroke-linecap="round" style="pointer-events:none"/>
     <rect x="${(rx - HIT_W/2).toFixed(1)}" y="0" width="${HIT_W}" height="${H}" rx="0" fill="transparent"
@@ -1172,6 +1220,12 @@ function renderStatsModal() {
 
     // BW overlay
     let bwLine = "";
+    const grLine   = cssVar('--graph-line')       || '#5ab4f5';
+    const grActive = cssVar('--graph-dot-active') || '#c8f55a';
+    const grLatest = cssVar('--graph-dot-latest') || '#5ab4f5';
+    const grBW     = cssVar('--graph-bw')         || '#a78bfa';
+    const grBadge  = cssVar('--graph-badge')      || '#f5a05a';
+    const grBg     = cssVar('--bg')               || '#0f0f0f';
     if (statsShowBW && hasBWData) {
       const bwPtsRaw = pts.map(p => {
         const bw = p.s.bw;
@@ -1183,10 +1237,10 @@ function renderStatsModal() {
         const bwPts2 = bwPtsRaw.map(p => ({ ...p, y: PAD.t + IH - ((p.bw - bwMn) / bwRng) * IH }));
         const bwPath = bwPts2.map((p, i) => `${i===0?"M":"L"} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(" ");
         bwLine = `
-          <path d="${bwPath}" fill="none" stroke="#a78bfa" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.7"/>
-          ${bwPts2.map(p=>`<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="2.5" fill="#a78bfa" opacity="0.9"/>`).join("")}
-          <text x="${(W-PAD.r+4).toFixed(1)}" y="${(PAD.t+5).toFixed(1)}" font-size="8" fill="#a78bfa" opacity="0.7" font-family="monospace">${bwMx.toFixed(0)}</text>
-          <text x="${(W-PAD.r+4).toFixed(1)}" y="${(PAD.t+IH).toFixed(1)}" font-size="8" fill="#a78bfa" opacity="0.7" font-family="monospace">${bwMn.toFixed(0)}</text>`;
+          <path d="${bwPath}" fill="none" stroke="${grBW}" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.7"/>
+          ${bwPts2.map(p=>`<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="2.5" fill="${grBW}" opacity="0.9"/>`).join("")}
+          <text x="${(W-PAD.r+4).toFixed(1)}" y="${(PAD.t+5).toFixed(1)}" font-size="8" fill="${grBW}" opacity="0.7" font-family="monospace">${bwMx.toFixed(0)}</text>
+          <text x="${(W-PAD.r+4).toFixed(1)}" y="${(PAD.t+IH).toFixed(1)}" font-size="8" fill="${grBW}" opacity="0.7" font-family="monospace">${bwMn.toFixed(0)}</text>`;
       }
     }
 
@@ -1211,12 +1265,10 @@ function renderStatsModal() {
       const isActive = statsActiveDate === p.s.date;
       const isLatest = i === pts.length - 1;
       const multiSet = p.s.raws.length > 1;
-      const fill = isActive ? "#c8f55a" : isLatest ? "#5ab4f5" : "#0f0f0f";
-      const stroke = isActive ? "#c8f55a" : "#5ab4f5";
+      const fill = isActive ? grActive : isLatest ? grLatest : grBg;
+      const stroke = isActive ? grActive : grLine;
       const r = isActive ? 5 : isLatest ? 4 : 3;
-      // Orange badge: same filled/outline logic as the blue dot.
-      const badgeFill = isLatest ? "#f5a05a" : "#0f0f0f";
-      // Voronoi band: midpoint between this dot and its neighbors → exclusive hit zone
+      const badgeFill = isLatest ? grBadge : grBg;
       const prevX = i > 0 ? pts[i-1].x : 0;
       const nextX = i < pts.length - 1 ? pts[i+1].x : W;
       const bandLeft  = (p.x + prevX) / 2;
@@ -1225,17 +1277,17 @@ function renderStatsModal() {
       return `
         <rect x="${bandLeft.toFixed(1)}" y="0" width="${bandW.toFixed(1)}" height="${H}" fill="transparent" style="cursor:pointer" onclick="setStatsDate('${escQ(p.s.date)}')"/>
         <circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${r}" fill="${fill}" stroke="${stroke}" stroke-width="1.5" style="pointer-events:none"/>
-        ${multiSet ? `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="2" fill="${badgeFill}" stroke="#f5a05a" stroke-width="1" style="pointer-events:none"/>` : ""}`;
+        ${multiSet ? `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="2" fill="${badgeFill}" stroke="${grBadge}" stroke-width="1" style="pointer-events:none"/>` : ""}`;
     }).join("");
 
     graphSVG = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
       ${gridLines}
       <defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#5ab4f5" stop-opacity="0.2"/>
-        <stop offset="100%" stop-color="#5ab4f5" stop-opacity="0.02"/>
+        <stop offset="0%" stop-color="${grLine}" stop-opacity="0.2"/>
+        <stop offset="100%" stop-color="${grLine}" stop-opacity="0.02"/>
       </linearGradient></defs>
       <path d="${areaD}" fill="url(#sg)"/>
-      <path d="${pathD}" fill="none" stroke="#5ab4f5" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="${pathD}" fill="none" stroke="${grLine}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
       ${dots}
       ${bwLine}
       ${yAxisLabels}
@@ -1244,9 +1296,9 @@ function renderStatsModal() {
 
     // ── Legend hint ──
     graphSVG += `<div style="display:flex;gap:12px;padding:4px 2px 0;flex-wrap:wrap">
-      <span style="font-size:9px;color:#555"><span style="color:#5ab4f5">●</span> top set · tap to expand</span>
-      <span style="font-size:9px;color:#555"><span style="color:#f5a05a">●</span> multiple sets logged</span>
-      ${statsShowBW ? `<span style="font-size:9px;color:#555"><span style="color:#a78bfa">--</span> bodyweight</span>` : ""}
+      <span style="font-size:9px;color:#555"><span style="color:${grLine}">●</span> top set · tap to expand</span>
+      <span style="font-size:9px;color:#555"><span style="color:${grBadge}">●</span> multiple sets logged</span>
+      ${statsShowBW ? `<span style="font-size:9px;color:#555"><span style="color:${grBW}">--</span> bodyweight</span>` : ""}
     </div>`;
 
     // ── Session detail panel (shows when a dot is tapped) ──
@@ -1260,15 +1312,15 @@ function renderStatsModal() {
           return rm > best ? rm : best;
         }, 0) || null;
 
-        graphSVG += `<div style="background:#0f1a0f;border:1px solid #1e3a1e;border-radius:4px;padding:10px 12px;margin-top:8px">
+        graphSVG += `<div style="background:color-mix(in srgb,var(--accent-bg) 80%,transparent);border:1px solid var(--accent-border);border-radius:4px;padding:10px 12px;margin-top:8px">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-            <span style="font-size:10px;color:#c8f55a;letter-spacing:2px">SESSION · ${escH(fmtDate(statsActiveDate))}</span>
-            ${sessionRM ? `<span style="font-size:10px;color:#5ab4f5">1RM~${sessionRM}</span>` : ""}
+            <span style="font-size:10px;color:var(--accent);letter-spacing:2px">SESSION · ${escH(fmtDate(statsActiveDate))}</span>
+            ${sessionRM ? `<span style="font-size:10px;color:${grLine}">1RM~${sessionRM}</span>` : ""}
           </div>
           ${activeSess.raws.map((e, i) => {
             const w = resolveWeight(e);
             const rm = w ? est1RM(w, Math.max(...e.sets)) : null;
-            return `<div style="display:flex;align-items:baseline;gap:8px;padding:4px 0;border-bottom:1px solid #1a2a1a;font-size:11px">
+            return `<div style="display:flex;align-items:baseline;gap:8px;padding:4px 0;border-bottom:1px solid var(--border2);font-size:11px">
               <span style="color:#666;min-width:14px">${i+1}.</span>
               <span style="color:#e8e8e8;font-weight:600">${escH(fmtW(e.weight))}</span>
               <span style="color:#555">·</span>
@@ -1394,10 +1446,10 @@ function renderStatsModal() {
 // ────────────────────────────────────────────────────────────
 function openManage(ex, tab) {
   manageEx = ex;
-  manageTab = tab || activeTab;
+  manageTab = tab || canonicalDay(ex) || activeTab;
   render();
 }
-function closeManage() { manageEx = null; manageTab = null; render(); }
+function closeManage() { manageEx = null; manageTab = null; deleteExPending = false; render(); }
 
 function deleteEntry(exName, tabName, sortedIdx) {
   if (!data[tabName] || !data[tabName][exName]) return;
@@ -1411,12 +1463,26 @@ function deleteEntry(exName, tabName, sortedIdx) {
   save(); render();
 }
 
+let deleteExPending = false;
+function deleteExerciseConfirm() {
+  if (!manageEx) return;
+  deleteExPending = true;
+  render();
+}
+function deleteExerciseCancel() {
+  deleteExPending = false;
+  render();
+}
+
 function deleteExercise(exName, tabName) {
-  if (!data[tabName]) return;
-  delete data[tabName][exName];
-  // Remove from saved order
-  if (data.__order && data.__order[tabName]) {
-    data.__order[tabName] = data.__order[tabName].filter(n => n !== exName);
+  // Remove from every day that has this exercise (shared exercises live on multiple days)
+  for (const day of WORKOUT_DAYS) {
+    if (data[day] && exName in data[day]) {
+      delete data[day][exName];
+    }
+    if (data.__order && data.__order[day]) {
+      data.__order[day] = data.__order[day].filter(n => n !== exName);
+    }
   }
   save(); manageEx = null; manageTab = null; render();
 }
@@ -1446,7 +1512,7 @@ function renderManageModal() {
             <div class="mrow-val">${escH(fmtW(e.weight))} · [${escH(fmtSets(e.sets))}]${vol ? ` · vol ${vol}` : ""}</div>
             ${e.note ? `<div class="mrow-note">${escH(e.note)}</div>` : ""}
           </div>
-          <button class="del-entry-btn" onclick="deleteEntry('${escQ(manageEx)}','${escQ(manageTab)}',${sortedIdx})">✕ DEL</button>
+          <button class="del-entry-btn" onclick="deleteEntry('${escQ(manageEx)}','${escQ(manageTab)}',${sortedIdx})" style="display:inline-flex;align-items:center;gap:5px"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="display:block;flex-shrink:0"><polyline points="3,6 5,6 21,6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg> DEL</button>
         </div>`;
       }).join("")
     : `<div style="color:#444;font-size:11px;padding:12px 0">No entries to manage.</div>`;
@@ -1457,13 +1523,21 @@ function renderManageModal() {
       <div class="mtitle danger">${escH(manageEx)}</div>
       <div class="manage-section-title">EXERCISE NOTE</div>
       <div style="display:flex;gap:6px;margin-bottom:10px">
-        <input id="ex-note-input" value="${escH(currentNote)}" placeholder="e.g. mind-muscle cue, form note…" style="flex:1;background:#0f0f0f;border:1px solid #222;color:#e8e8e8;border-radius:4px;padding:7px 9px;font-family:inherit;font-size:11px;outline:none">
-        <button onclick="setExNote('${escQ(manageTab)}','${escQ(manageEx)}',document.getElementById('ex-note-input').value.trim())" style="background:#8aaa2e;color:#0f0f0f;border:none;border-radius:4px;padding:7px 10px;cursor:pointer;font-family:inherit;font-size:10px;font-weight:700;flex-shrink:0">SAVE</button>
+        <input id="ex-note-input" value="${escH(currentNote)}" placeholder="e.g. mind-muscle cue, form note…" style="flex:1;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:4px;padding:7px 9px;font-family:inherit;font-size:11px;outline:none">
+        <button onclick="setExNote('${escQ(manageTab)}','${escQ(manageEx)}',document.getElementById('ex-note-input').value.trim())" style="background:var(--accent-dim);color:var(--bg);border:none;border-radius:4px;padding:7px 10px;cursor:pointer;font-family:inherit;font-size:10px;font-weight:700;flex-shrink:0">SAVE</button>
       </div>
       <div class="manage-section-title">ENTRIES — tap × to delete</div>
       ${rows}
       <div class="del-ex-row">
-        <button class="del-ex-btn" onclick="if(confirm('Delete entire exercise \\'${escQ(manageEx)}\\' and all its data?'))deleteExercise('${escQ(manageEx)}','${escQ(manageTab)}')">⚠ DELETE ENTIRE EXERCISE</button>
+        ${deleteExPending ? `
+          <div style="font-size:11px;color:#f87171;margin-bottom:8px;text-align:center">Remove <strong>${escH(manageEx)}</strong> and all its logs?</div>
+          <div style="display:flex;gap:8px">
+            <button onclick="deleteExerciseCancel()" style="flex:1;padding:9px;background:transparent;border:1px solid var(--border);color:var(--text-dim);border-radius:4px;cursor:pointer;font-family:inherit;font-size:11px;font-weight:700">CANCEL</button>
+            <button onclick="deleteExercise(manageEx,manageTab)" style="flex:1;padding:9px;background:#2a0a0a;border:1px solid #7a1a1a;color:#f87171;border-radius:4px;cursor:pointer;font-family:inherit;font-size:11px;font-weight:700">YES, DELETE</button>
+          </div>
+        ` : `
+          <button class="del-ex-btn" onclick="deleteExerciseConfirm()">⚠ DELETE ENTIRE EXERCISE</button>
+        `}
       </div>
       <div class="brow" style="margin-top:14px">
         <button class="bcnl" onclick="closeManage()">DONE</button>
@@ -1491,7 +1565,7 @@ function renderManageBWModal() {
             <div class="mrow-val">${e.weight} lbs${e.fat ? ` · ${e.fat}% fat` : ""}${e.muscle ? ` · ${e.muscle} lbs muscle` : ""}</div>
             ${e.note ? `<div class="mrow-note">${escH(e.note)}</div>` : ""}
           </div>
-          <button class="del-entry-btn" onclick="deleteBWEntry(${sortedIdx})">✕ DEL</button>
+          <button class="del-entry-btn" onclick="deleteBWEntry(${sortedIdx})" style="display:inline-flex;align-items:center;gap:5px"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="display:block;flex-shrink:0"><polyline points="3,6 5,6 21,6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg> DEL</button>
         </div>`;
       }).join("")
     : `<div style="color:#444;font-size:11px;padding:12px 0">No weigh-ins yet.</div>`;
@@ -1518,7 +1592,9 @@ function renderSettingsModal() {
   return `
     <div class="settings-overlay open" onclick="if(event.target===this){settingsOpen=false;render()}">
       <div class="settings-sheet">
-        <div class="settings-handle"></div>
+        <div class="settings-handle" id="settings-handle"
+          onpointerdown="startSettingsDrag(event)"
+          ontouchstart="startSettingsDrag(event)"></div>
         <div class="settings-title">SETTINGS</div>
 
         <div class="settings-section">
@@ -1738,122 +1814,341 @@ function confirmReset() {
 // tags: array of day keys that suggest this exercise (for auto-day)
 // ────────────────────────────────────────────────────────────
 const EXERCISE_LIBRARY = [
-  // ── CHEST ──────────────────────────────────────────────
-  { name:"Flat Bench Press",       muscle:"Chest",     tags:["MON · Push","FRI · Upper"] },
-  { name:"Incline Bench",          muscle:"Chest",     tags:["MON · Push","FRI · Upper"] },
-  { name:"Decline Bench Press",    muscle:"Chest",     tags:["MON · Push"] },
-  { name:"DB Bench Press",         muscle:"Chest",     tags:["MON · Push","FRI · Upper"] },
-  { name:"Incline DB Press",       muscle:"Chest",     tags:["MON · Push","FRI · Upper"] },
-  { name:"Decline DB Press",       muscle:"Chest",     tags:["MON · Push"] },
-  { name:"Pec Dec",                muscle:"Chest",     tags:["MON · Push","FRI · Upper"] },
-  { name:"Cable Fly",              muscle:"Chest",     tags:["MON · Push","FRI · Upper"] },
-  { name:"Low Cable Fly",          muscle:"Chest",     tags:["MON · Push"] },
-  { name:"High Cable Fly",         muscle:"Chest",     tags:["MON · Push"] },
-  { name:"Dips",                   muscle:"Chest",     tags:["MON · Push","FRI · Upper"] },
-  { name:"Weighted Dips",          muscle:"Chest",     tags:["MON · Push","FRI · Upper"] },
-  { name:"Smith Machine Bench",    muscle:"Chest",     tags:["MON · Push"] },
-  { name:"Chest Press Machine",    muscle:"Chest",     tags:["MON · Push","FRI · Upper"] },
-  // ── SHOULDERS ──────────────────────────────────────────
-  { name:"Overhead Press",         muscle:"Shoulders", tags:["MON · Push","FRI · Upper"] },
-  { name:"Shoulder / Strict Press",muscle:"Shoulders", tags:["MON · Push","FRI · Upper"] },
-  { name:"DB Shoulder Press",      muscle:"Shoulders", tags:["MON · Push","FRI · Upper"] },
-  { name:"Push Press",             muscle:"Shoulders", tags:["MON · Push","FRI · Upper"] },
-  { name:"Arnold Press",           muscle:"Shoulders", tags:["MON · Push"] },
-  { name:"Lateral Raises",         muscle:"Shoulders", tags:["MON · Push","FRI · Upper"] },
-  { name:"Cable Lateral Raise",    muscle:"Shoulders", tags:["MON · Push"] },
-  { name:"Front Raise",            muscle:"Shoulders", tags:["MON · Push"] },
-  { name:"Rear Delt Fly",          muscle:"Shoulders", tags:["TUE · Pull","FRI · Upper"] },
-  { name:"Face Pulls",             muscle:"Shoulders", tags:["TUE · Pull","FRI · Upper"] },
-  { name:"Upright Row",            muscle:"Shoulders", tags:["MON · Push","FRI · Upper"] },
-  { name:"Shrugs",                 muscle:"Shoulders", tags:["TUE · Pull"] },
-  { name:"DB Shrugs",              muscle:"Shoulders", tags:["TUE · Pull"] },
-  // ── TRICEPS ────────────────────────────────────────────
-  { name:"JM Press / Tricep Pushdown", muscle:"Triceps", tags:["MON · Push","FRI · Upper"] },
-  { name:"Tricep Pushdown",        muscle:"Triceps",   tags:["MON · Push","FRI · Upper"] },
-  { name:"Overhead Tricep Extension", muscle:"Triceps",tags:["MON · Push"] },
-  { name:"Skull Crushers",         muscle:"Triceps",   tags:["MON · Push","FRI · Upper"] },
-  { name:"Close Grip Bench",       muscle:"Triceps",   tags:["MON · Push"] },
-  { name:"Tricep Kickbacks",       muscle:"Triceps",   tags:["MON · Push"] },
-  { name:"Cable Tricep Extension", muscle:"Triceps",   tags:["MON · Push"] },
-  // ── BACK ───────────────────────────────────────────────
-  { name:"Pull-Ups",               muscle:"Back",      tags:["TUE · Pull","FRI · Upper"] },
-  { name:"Weighted Pull-Ups",      muscle:"Back",      tags:["TUE · Pull","FRI · Upper"] },
-  { name:"Lat Pulldowns",          muscle:"Back",      tags:["TUE · Pull","FRI · Upper"] },
-  { name:"Close Grip Pulldown",    muscle:"Back",      tags:["TUE · Pull"] },
-  { name:"T-Bar Rows",             muscle:"Back",      tags:["TUE · Pull","FRI · Upper"] },
-  { name:"Barbell Rows",           muscle:"Back",      tags:["TUE · Pull","FRI · Upper"] },
-  { name:"Seated Rows",            muscle:"Back",      tags:["TUE · Pull","FRI · Upper"] },
-  { name:"Seated / Barbell Rows",  muscle:"Back",      tags:["TUE · Pull","FRI · Upper"] },
-  { name:"Single Arm DB Row",      muscle:"Back",      tags:["TUE · Pull"] },
-  { name:"Chest Supported Row",    muscle:"Back",      tags:["TUE · Pull"] },
-  { name:"Cable Row",              muscle:"Back",      tags:["TUE · Pull"] },
-  { name:"Meadows Row",            muscle:"Back",      tags:["TUE · Pull"] },
-  { name:"Pendlay Row",            muscle:"Back",      tags:["TUE · Pull","FRI · Upper"] },
-  { name:"Straight Arm Pulldown",  muscle:"Back",      tags:["TUE · Pull"] },
-  { name:"Good Mornings",          muscle:"Back",      tags:["WED · Legs","SAT · Legs"] },
-  // ── BICEPS ─────────────────────────────────────────────
-  { name:"Barbell Curl",           muscle:"Biceps",    tags:["TUE · Pull","FRI · Upper"] },
-  { name:"DB Curl",                muscle:"Biceps",    tags:["TUE · Pull","FRI · Upper"] },
-  { name:"Hammer Curls",           muscle:"Biceps",    tags:["TUE · Pull","FRI · Upper"] },
-  { name:"Preacher Curls",         muscle:"Biceps",    tags:["TUE · Pull","FRI · Upper"] },
-  { name:"Incline DB Curl",        muscle:"Biceps",    tags:["TUE · Pull"] },
-  { name:"Cable Curl",             muscle:"Biceps",    tags:["TUE · Pull"] },
-  { name:"Concentration Curl",     muscle:"Biceps",    tags:["TUE · Pull"] },
-  { name:"Spider Curl",            muscle:"Biceps",    tags:["TUE · Pull"] },
-  { name:"Reverse Curl",           muscle:"Biceps",    tags:["TUE · Pull"] },
-  { name:"Wrist Cable Curls",      muscle:"Biceps",    tags:["TUE · Pull"] },
-  { name:"Wrist Roller",           muscle:"Biceps",    tags:["TUE · Pull"] },
-  // ── QUADS ──────────────────────────────────────────────
-  { name:"Squat",                  muscle:"Quads",     tags:["WED · Legs","SAT · Legs"] },
-  { name:"Smith Squat",            muscle:"Quads",     tags:["WED · Legs","SAT · Legs"] },
-  { name:"Front Squat",            muscle:"Quads",     tags:["WED · Legs","SAT · Legs"] },
-  { name:"Hack Squat",             muscle:"Quads",     tags:["WED · Legs","SAT · Legs"] },
-  { name:"Leg Press",              muscle:"Quads",     tags:["WED · Legs","SAT · Legs"] },
-  { name:"Leg Extensions",         muscle:"Quads",     tags:["WED · Legs","SAT · Legs"] },
-  { name:"Bulgarian Split Squats", muscle:"Quads",     tags:["WED · Legs","SAT · Legs"] },
-  { name:"Walking Lunges",         muscle:"Quads",     tags:["WED · Legs","SAT · Legs"] },
-  { name:"Reverse Lunges",         muscle:"Quads",     tags:["WED · Legs","SAT · Legs"] },
-  { name:"Step Ups",               muscle:"Quads",     tags:["WED · Legs","SAT · Legs"] },
-  { name:"Sissy Squats",           muscle:"Quads",     tags:["WED · Legs","SAT · Legs"] },
-  // ── HAMSTRINGS ─────────────────────────────────────────
-  { name:"RDLs",                   muscle:"Hamstrings",tags:["WED · Legs","SAT · Legs"] },
-  { name:"Sumo Deadlift",          muscle:"Hamstrings",tags:["WED · Legs","SAT · Legs"] },
-  { name:"Trap Bar Deadlift",      muscle:"Hamstrings",tags:["WED · Legs","SAT · Legs"] },
-  { name:"Deadlift",               muscle:"Hamstrings",tags:["WED · Legs","SAT · Legs"] },
-  { name:"Lying Hamstring Curls",  muscle:"Hamstrings",tags:["WED · Legs","SAT · Legs"] },
-  { name:"Seated Hamstring Curl",  muscle:"Hamstrings",tags:["WED · Legs","SAT · Legs"] },
-  { name:"Standing Hamstring Curl",muscle:"Hamstrings",tags:["WED · Legs","SAT · Legs"] },
-  { name:"Nordic Curls",           muscle:"Hamstrings",tags:["WED · Legs","SAT · Legs"] },
-  // ── GLUTES ─────────────────────────────────────────────
-  { name:"Hip Thrust",             muscle:"Glutes",    tags:["WED · Legs","SAT · Legs"] },
-  { name:"Glute Bridge",           muscle:"Glutes",    tags:["WED · Legs","SAT · Legs"] },
-  { name:"Cable Kickback",         muscle:"Glutes",    tags:["WED · Legs","SAT · Legs"] },
-  { name:"Abductor Machine",       muscle:"Glutes",    tags:["WED · Legs","SAT · Legs"] },
-  { name:"Adductor Machine",       muscle:"Glutes",    tags:["WED · Legs","SAT · Legs"] },
-  // ── CALVES ─────────────────────────────────────────────
-  { name:"Calf Raises",            muscle:"Calves",    tags:["WED · Legs","SAT · Legs"] },
-  { name:"Seated Calf Raises",     muscle:"Calves",    tags:["WED · Legs","SAT · Legs"] },
-  { name:"Single Leg Calf Raise",  muscle:"Calves",    tags:["WED · Legs","SAT · Legs"] },
-  { name:"Leg Press Calf Raise",   muscle:"Calves",    tags:["WED · Legs","SAT · Legs"] },
-  // ── CORE ───────────────────────────────────────────────
-  { name:"Ab Cable Crunch",        muscle:"Core",      tags:["TUE · Pull","FRI · Upper"] },
-  { name:"Hanging Leg Raise",      muscle:"Core",      tags:["TUE · Pull"] },
-  { name:"Cable Woodchop",         muscle:"Core",      tags:["TUE · Pull"] },
-  { name:"Plank",                  muscle:"Core",      tags:["WED · Legs"] },
-  { name:"Decline Crunch",         muscle:"Core",      tags:["TUE · Pull"] },
-  { name:"Dragon Flag",            muscle:"Core",      tags:["TUE · Pull"] },
-  { name:"Ab Wheel Rollout",       muscle:"Core",      tags:["TUE · Pull"] },
-  { name:"Oblique Crunch",         muscle:"Core",      tags:["TUE · Pull"] },
-  { name:"Landmine Twist",         muscle:"Core",      tags:["TUE · Pull"] },
-  // ── FOREARMS ───────────────────────────────────────────
-  { name:"Wrist Curls",            muscle:"Forearms",  tags:["TUE · Pull"] },
-  { name:"Reverse Wrist Curls",    muscle:"Forearms",  tags:["TUE · Pull"] },
-  { name:"Farmer Carries",         muscle:"Forearms",  tags:["TUE · Pull"] },
-  { name:"Dead Hangs",             muscle:"Forearms",  tags:["TUE · Pull"] },
+
+  // ══════════════════════════════════════════
+  // CHEST
+  // ══════════════════════════════════════════
+  // Barbell
+  { name:"Flat Bench Press",              muscle:"Chest",     tags:["MON · Push","FRI · Upper"] },
+  { name:"Incline Bench Press",           muscle:"Chest",     tags:["MON · Push","FRI · Upper"] },
+  { name:"Decline Bench Press",           muscle:"Chest",     tags:["MON · Push"] },
+  { name:"Close Grip Bench Press",        muscle:"Chest",     tags:["MON · Push"] },
+  { name:"Paused Bench Press",            muscle:"Chest",     tags:["MON · Push","FRI · Upper"] },
+  { name:"Spoto Press",                   muscle:"Chest",     tags:["MON · Push"] },
+  // Smith
+  { name:"Smith Machine Bench",           muscle:"Chest",     tags:["MON · Push"] },
+  { name:"Smith Incline Bench",           muscle:"Chest",     tags:["MON · Push"] },
+  { name:"Smith Decline Bench",           muscle:"Chest",     tags:["MON · Push"] },
+  // Dumbbell
+  { name:"DB Bench Press",                muscle:"Chest",     tags:["MON · Push","FRI · Upper"] },
+  { name:"Incline DB Press",              muscle:"Chest",     tags:["MON · Push","FRI · Upper"] },
+  { name:"Decline DB Press",              muscle:"Chest",     tags:["MON · Push"] },
+  { name:"DB Fly",                        muscle:"Chest",     tags:["MON · Push"] },
+  { name:"Incline DB Fly",                muscle:"Chest",     tags:["MON · Push"] },
+  { name:"DB Pullover",                   muscle:"Chest",     tags:["MON · Push"] },
+  // Cable
+  { name:"Cable Fly",                     muscle:"Chest",     tags:["MON · Push","FRI · Upper"] },
+  { name:"Low Cable Fly",                 muscle:"Chest",     tags:["MON · Push"] },
+  { name:"High Cable Fly",                muscle:"Chest",     tags:["MON · Push"] },
+  { name:"Mid Cable Fly",                 muscle:"Chest",     tags:["MON · Push"] },
+  { name:"Single Arm Cable Fly",          muscle:"Chest",     tags:["MON · Push"] },
+  { name:"Cable Pullover",                muscle:"Chest",     tags:["MON · Push"] },
+  // Machine
+  { name:"Pec Dec",                       muscle:"Chest",     tags:["MON · Push","FRI · Upper"] },
+  { name:"Chest Press Machine",           muscle:"Chest",     tags:["MON · Push","FRI · Upper"] },
+  { name:"Incline Chest Press Machine",   muscle:"Chest",     tags:["MON · Push"] },
+  { name:"Hammer Strength Chest Press",   muscle:"Chest",     tags:["MON · Push"] },
+  { name:"Hammer Strength Incline",       muscle:"Chest",     tags:["MON · Push"] },
+  { name:"Cybex Chest Press",             muscle:"Chest",     tags:["MON · Push"] },
+  // Bodyweight
+  { name:"Dips",                          muscle:"Chest",     tags:["MON · Push","FRI · Upper"] },
+  { name:"Weighted Dips",                 muscle:"Chest",     tags:["MON · Push","FRI · Upper"] },
+
+  // ══════════════════════════════════════════
+  // SHOULDERS
+  // ══════════════════════════════════════════
+  // Barbell
+  { name:"Overhead Press",                muscle:"Shoulders", tags:["MON · Push","FRI · Upper"] },
+  { name:"Shoulder / Strict Press",       muscle:"Shoulders", tags:["MON · Push","FRI · Upper"] },
+  { name:"Push Press",                    muscle:"Shoulders", tags:["MON · Push","FRI · Upper"] },
+  { name:"Behind The Neck Press",         muscle:"Shoulders", tags:["MON · Push"] },
+  { name:"Z Press",                       muscle:"Shoulders", tags:["MON · Push"] },
+  // Smith
+  { name:"Smith OHP",                     muscle:"Shoulders", tags:["MON · Push"] },
+  // Dumbbell
+  { name:"DB Shoulder Press",             muscle:"Shoulders", tags:["MON · Push","FRI · Upper"] },
+  { name:"Arnold Press",                  muscle:"Shoulders", tags:["MON · Push"] },
+  { name:"Lateral Raises",                muscle:"Shoulders", tags:["MON · Push","FRI · Upper"] },
+  { name:"DB Front Raise",                muscle:"Shoulders", tags:["MON · Push"] },
+  { name:"DB Rear Delt Fly",              muscle:"Shoulders", tags:["TUE · Pull","FRI · Upper"] },
+  { name:"Incline DB Lateral Raise",      muscle:"Shoulders", tags:["MON · Push"] },
+  { name:"Prone DB Rear Delt Fly",        muscle:"Shoulders", tags:["TUE · Pull"] },
+  { name:"DB Upright Row",                muscle:"Shoulders", tags:["MON · Push","FRI · Upper"] },
+  // Cable
+  { name:"Cable Lateral Raise",           muscle:"Shoulders", tags:["MON · Push"] },
+  { name:"Single Arm Cable Lateral",      muscle:"Shoulders", tags:["MON · Push"] },
+  { name:"Cable Front Raise",             muscle:"Shoulders", tags:["MON · Push"] },
+  { name:"Face Pulls",                    muscle:"Shoulders", tags:["TUE · Pull","FRI · Upper"] },
+  { name:"Cable Rear Delt Fly",           muscle:"Shoulders", tags:["TUE · Pull"] },
+  { name:"Cable Upright Row",             muscle:"Shoulders", tags:["MON · Push"] },
+  // Machine
+  { name:"Shoulder Press Machine",        muscle:"Shoulders", tags:["MON · Push","FRI · Upper"] },
+  { name:"Lateral Raise Machine",         muscle:"Shoulders", tags:["MON · Push"] },
+  { name:"Rear Delt Machine",             muscle:"Shoulders", tags:["TUE · Pull","FRI · Upper"] },
+  { name:"Hammer Strength OHP",           muscle:"Shoulders", tags:["MON · Push"] },
+  { name:"Pec Dec Rear Delt",             muscle:"Shoulders", tags:["TUE · Pull"] },
+  // Trap
+  { name:"Barbell Shrugs",                muscle:"Shoulders", tags:["TUE · Pull"] },
+  { name:"DB Shrugs",                     muscle:"Shoulders", tags:["TUE · Pull"] },
+  { name:"Cable Shrugs",                  muscle:"Shoulders", tags:["TUE · Pull"] },
+  { name:"Behind Back Shrugs",            muscle:"Shoulders", tags:["TUE · Pull"] },
+
+  // ══════════════════════════════════════════
+  // TRICEPS
+  // ══════════════════════════════════════════
+  // Barbell
+  { name:"JM Press",                      muscle:"Triceps",   tags:["MON · Push","FRI · Upper"] },
+  { name:"JM Press / Tricep Pushdown",    muscle:"Triceps",   tags:["MON · Push","FRI · Upper"] },
+  { name:"Skull Crushers",                muscle:"Triceps",   tags:["MON · Push","FRI · Upper"] },
+  { name:"Close Grip Bench",              muscle:"Triceps",   tags:["MON · Push"] },
+  { name:"Board Press",                   muscle:"Triceps",   tags:["MON · Push"] },
+  // Cable
+  { name:"Tricep Pushdown",               muscle:"Triceps",   tags:["MON · Push","FRI · Upper"] },
+  { name:"Rope Pushdown",                 muscle:"Triceps",   tags:["MON · Push","FRI · Upper"] },
+  { name:"Single Arm Pushdown",           muscle:"Triceps",   tags:["MON · Push"] },
+  { name:"Overhead Cable Tricep Ext",     muscle:"Triceps",   tags:["MON · Push"] },
+  { name:"Single Arm Overhead Cable Ext", muscle:"Triceps",   tags:["MON · Push"] },
+  { name:"Cable Kickback",                muscle:"Triceps",   tags:["MON · Push"] },
+  { name:"Straight Bar Pushdown",         muscle:"Triceps",   tags:["MON · Push"] },
+  // Dumbbell
+  { name:"DB Skull Crushers",             muscle:"Triceps",   tags:["MON · Push"] },
+  { name:"Overhead DB Tricep Ext",        muscle:"Triceps",   tags:["MON · Push"] },
+  { name:"Single Arm DB Tricep Ext",      muscle:"Triceps",   tags:["MON · Push"] },
+  { name:"DB Kickback",                   muscle:"Triceps",   tags:["MON · Push"] },
+  // Machine
+  { name:"Tricep Dip Machine",            muscle:"Triceps",   tags:["MON · Push"] },
+  { name:"Tricep Extension Machine",      muscle:"Triceps",   tags:["MON · Push"] },
+  { name:"Assisted Dip Machine",          muscle:"Triceps",   tags:["MON · Push"] },
+
+  // ══════════════════════════════════════════
+  // BACK
+  // ══════════════════════════════════════════
+  // Barbell
+  { name:"Barbell Rows",                  muscle:"Back",      tags:["TUE · Pull","FRI · Upper"] },
+  { name:"Pendlay Row",                   muscle:"Back",      tags:["TUE · Pull","FRI · Upper"] },
+  { name:"Yates Row",                     muscle:"Back",      tags:["TUE · Pull"] },
+  { name:"Deadlift",                      muscle:"Back",      tags:["WED · Legs","SAT · Legs"] },
+  { name:"Rack Pull",                     muscle:"Back",      tags:["TUE · Pull"] },
+  { name:"Good Mornings",                 muscle:"Back",      tags:["WED · Legs","SAT · Legs"] },
+  // T-Bar
+  { name:"T-Bar Rows",                    muscle:"Back",      tags:["TUE · Pull","FRI · Upper"] },
+  { name:"T-Bar Row Machine",             muscle:"Back",      tags:["TUE · Pull"] },
+  { name:"Landmine Row",                  muscle:"Back",      tags:["TUE · Pull"] },
+  // Dumbbell
+  { name:"Single Arm DB Row",             muscle:"Back",      tags:["TUE · Pull"] },
+  { name:"DB Row",                        muscle:"Back",      tags:["TUE · Pull"] },
+  { name:"Incline DB Row",                muscle:"Back",      tags:["TUE · Pull"] },
+  { name:"Meadows Row",                   muscle:"Back",      tags:["TUE · Pull"] },
+  { name:"Chest Supported DB Row",        muscle:"Back",      tags:["TUE · Pull"] },
+  // Cable
+  { name:"Seated Cable Row",              muscle:"Back",      tags:["TUE · Pull","FRI · Upper"] },
+  { name:"Seated Rows",                   muscle:"Back",      tags:["TUE · Pull","FRI · Upper"] },
+  { name:"Wide Grip Cable Row",           muscle:"Back",      tags:["TUE · Pull"] },
+  { name:"Close Grip Cable Row",          muscle:"Back",      tags:["TUE · Pull"] },
+  { name:"Single Arm Cable Row",          muscle:"Back",      tags:["TUE · Pull"] },
+  { name:"Straight Arm Pulldown",         muscle:"Back",      tags:["TUE · Pull"] },
+  { name:"Cable Row",                     muscle:"Back",      tags:["TUE · Pull"] },
+  // Pulldowns
+  { name:"Lat Pulldowns",                 muscle:"Back",      tags:["TUE · Pull","FRI · Upper"] },
+  { name:"Wide Grip Pulldown",            muscle:"Back",      tags:["TUE · Pull"] },
+  { name:"Close Grip Pulldown",           muscle:"Back",      tags:["TUE · Pull"] },
+  { name:"Neutral Grip Pulldown",         muscle:"Back",      tags:["TUE · Pull"] },
+  { name:"Single Arm Pulldown",           muscle:"Back",      tags:["TUE · Pull"] },
+  { name:"Reverse Grip Pulldown",         muscle:"Back",      tags:["TUE · Pull"] },
+  { name:"Pulldown Machine",              muscle:"Back",      tags:["TUE · Pull"] },
+  // Bodyweight / Weighted
+  { name:"Pull-Ups",                      muscle:"Back",      tags:["TUE · Pull","FRI · Upper"] },
+  { name:"Weighted Pull-Ups",             muscle:"Back",      tags:["TUE · Pull","FRI · Upper"] },
+  { name:"Chin-Ups",                      muscle:"Back",      tags:["TUE · Pull","FRI · Upper"] },
+  { name:"Weighted Chin-Ups",             muscle:"Back",      tags:["TUE · Pull"] },
+  { name:"Neutral Grip Pull-Ups",         muscle:"Back",      tags:["TUE · Pull"] },
+  // Machine
+  { name:"Hammer Strength Row",           muscle:"Back",      tags:["TUE · Pull"] },
+  { name:"Hammer Strength Pulldown",      muscle:"Back",      tags:["TUE · Pull"] },
+  { name:"Chest Supported Row Machine",   muscle:"Back",      tags:["TUE · Pull"] },
+  { name:"Iso Lateral Row",               muscle:"Back",      tags:["TUE · Pull"] },
+  { name:"Low Row Machine",               muscle:"Back",      tags:["TUE · Pull"] },
+  { name:"Cybex Row",                     muscle:"Back",      tags:["TUE · Pull"] },
+  { name:"Pullover Machine",              muscle:"Back",      tags:["TUE · Pull"] },
+
+  // ══════════════════════════════════════════
+  // BICEPS
+  // ══════════════════════════════════════════
+  // Barbell
+  { name:"Barbell Curl",                  muscle:"Biceps",    tags:["TUE · Pull","FRI · Upper"] },
+  { name:"EZ Bar Curl",                   muscle:"Biceps",    tags:["TUE · Pull","FRI · Upper"] },
+  { name:"Reverse Barbell Curl",          muscle:"Biceps",    tags:["TUE · Pull"] },
+  { name:"Cheat Curl",                    muscle:"Biceps",    tags:["TUE · Pull"] },
+  // Dumbbell
+  { name:"DB Curl",                       muscle:"Biceps",    tags:["TUE · Pull","FRI · Upper"] },
+  { name:"Hammer Curls",                  muscle:"Biceps",    tags:["TUE · Pull","FRI · Upper"] },
+  { name:"Incline DB Curl",               muscle:"Biceps",    tags:["TUE · Pull"] },
+  { name:"Concentration Curl",            muscle:"Biceps",    tags:["TUE · Pull"] },
+  { name:"Spider Curl",                   muscle:"Biceps",    tags:["TUE · Pull"] },
+  { name:"Cross Body Hammer Curl",        muscle:"Biceps",    tags:["TUE · Pull"] },
+  { name:"Zottman Curl",                  muscle:"Biceps",    tags:["TUE · Pull"] },
+  { name:"DB Reverse Curl",               muscle:"Biceps",    tags:["TUE · Pull"] },
+  // Cable
+  { name:"Cable Curl",                    muscle:"Biceps",    tags:["TUE · Pull"] },
+  { name:"Single Arm Cable Curl",         muscle:"Biceps",    tags:["TUE · Pull"] },
+  { name:"Rope Hammer Curl",              muscle:"Biceps",    tags:["TUE · Pull"] },
+  { name:"Cable Reverse Curl",            muscle:"Biceps",    tags:["TUE · Pull"] },
+  { name:"High Cable Curl",               muscle:"Biceps",    tags:["TUE · Pull"] },
+  // Machine
+  { name:"Preacher Curls",                muscle:"Biceps",    tags:["TUE · Pull","FRI · Upper"] },
+  { name:"Preacher Curl Machine",         muscle:"Biceps",    tags:["TUE · Pull","FRI · Upper"] },
+  { name:"Seated Curl Machine",           muscle:"Biceps",    tags:["TUE · Pull"] },
+  { name:"Hammer Strength Curl",          muscle:"Biceps",    tags:["TUE · Pull"] },
+  // Forearms
+  { name:"Wrist Curls",                   muscle:"Biceps",    tags:["TUE · Pull"] },
+  { name:"Reverse Wrist Curls",           muscle:"Biceps",    tags:["TUE · Pull"] },
+  { name:"Wrist Cable Curls",             muscle:"Biceps",    tags:["TUE · Pull"] },
+  { name:"Wrist Roller",                  muscle:"Biceps",    tags:["TUE · Pull"] },
+  { name:"Dead Hangs",                    muscle:"Biceps",    tags:["TUE · Pull"] },
+
+  // ══════════════════════════════════════════
+  // QUADS
+  // ══════════════════════════════════════════
+  // Barbell
+  { name:"Squat",                         muscle:"Quads",     tags:["WED · Legs","SAT · Legs"] },
+  { name:"Front Squat",                   muscle:"Quads",     tags:["WED · Legs","SAT · Legs"] },
+  { name:"Low Bar Squat",                 muscle:"Quads",     tags:["WED · Legs","SAT · Legs"] },
+  { name:"High Bar Squat",                muscle:"Quads",     tags:["WED · Legs","SAT · Legs"] },
+  { name:"Pause Squat",                   muscle:"Quads",     tags:["WED · Legs","SAT · Legs"] },
+  { name:"Box Squat",                     muscle:"Quads",     tags:["WED · Legs","SAT · Legs"] },
+  // Smith
+  { name:"Smith Squat",                   muscle:"Quads",     tags:["WED · Legs","SAT · Legs"] },
+  { name:"Smith Split Squat",             muscle:"Quads",     tags:["WED · Legs","SAT · Legs"] },
+  // Machine
+  { name:"Hack Squat",                    muscle:"Quads",     tags:["WED · Legs","SAT · Legs"] },
+  { name:"Leg Press",                     muscle:"Quads",     tags:["WED · Legs","SAT · Legs"] },
+  { name:"Leg Extensions",                muscle:"Quads",     tags:["WED · Legs","SAT · Legs"] },
+  { name:"Single Leg Press",              muscle:"Quads",     tags:["WED · Legs","SAT · Legs"] },
+  { name:"Single Leg Extension",          muscle:"Quads",     tags:["WED · Legs","SAT · Legs"] },
+  { name:"Pendulum Squat",                muscle:"Quads",     tags:["WED · Legs","SAT · Legs"] },
+  { name:"V-Squat Machine",               muscle:"Quads",     tags:["WED · Legs","SAT · Legs"] },
+  { name:"Belt Squat",                    muscle:"Quads",     tags:["WED · Legs","SAT · Legs"] },
+  // Dumbbell / Bodyweight
+  { name:"Bulgarian Split Squats",        muscle:"Quads",     tags:["WED · Legs","SAT · Legs"] },
+  { name:"DB Bulgarian Split Squat",      muscle:"Quads",     tags:["WED · Legs","SAT · Legs"] },
+  { name:"Walking Lunges",                muscle:"Quads",     tags:["WED · Legs","SAT · Legs"] },
+  { name:"DB Walking Lunges",             muscle:"Quads",     tags:["WED · Legs","SAT · Legs"] },
+  { name:"Reverse Lunges",                muscle:"Quads",     tags:["WED · Legs","SAT · Legs"] },
+  { name:"DB Reverse Lunges",             muscle:"Quads",     tags:["WED · Legs","SAT · Legs"] },
+  { name:"Step Ups",                      muscle:"Quads",     tags:["WED · Legs","SAT · Legs"] },
+  { name:"DB Step Ups",                   muscle:"Quads",     tags:["WED · Legs","SAT · Legs"] },
+  { name:"Sissy Squats",                  muscle:"Quads",     tags:["WED · Legs","SAT · Legs"] },
+  { name:"Goblet Squat",                  muscle:"Quads",     tags:["WED · Legs","SAT · Legs"] },
+
+  // ══════════════════════════════════════════
+  // HAMSTRINGS
+  // ══════════════════════════════════════════
+  // Barbell
+  { name:"RDLs",                          muscle:"Hamstrings",tags:["WED · Legs","SAT · Legs"] },
+  { name:"Stiff Leg Deadlift",            muscle:"Hamstrings",tags:["WED · Legs","SAT · Legs"] },
+  { name:"Deadlift",                      muscle:"Hamstrings",tags:["WED · Legs","SAT · Legs"] },
+  { name:"Sumo Deadlift",                 muscle:"Hamstrings",tags:["WED · Legs","SAT · Legs"] },
+  { name:"Trap Bar Deadlift",             muscle:"Hamstrings",tags:["WED · Legs","SAT · Legs"] },
+  { name:"Deficit Deadlift",              muscle:"Hamstrings",tags:["WED · Legs","SAT · Legs"] },
+  { name:"Rack Pull",                     muscle:"Hamstrings",tags:["WED · Legs","SAT · Legs"] },
+  // Dumbbell
+  { name:"DB RDL",                        muscle:"Hamstrings",tags:["WED · Legs","SAT · Legs"] },
+  { name:"Single Leg DB RDL",             muscle:"Hamstrings",tags:["WED · Legs","SAT · Legs"] },
+  // Machine
+  { name:"Lying Hamstring Curls",         muscle:"Hamstrings",tags:["WED · Legs","SAT · Legs"] },
+  { name:"Seated Hamstring Curl",         muscle:"Hamstrings",tags:["WED · Legs","SAT · Legs"] },
+  { name:"Standing Hamstring Curl",       muscle:"Hamstrings",tags:["WED · Legs","SAT · Legs"] },
+  { name:"Single Leg Lying Curl",         muscle:"Hamstrings",tags:["WED · Legs","SAT · Legs"] },
+  { name:"Single Leg Seated Curl",        muscle:"Hamstrings",tags:["WED · Legs","SAT · Legs"] },
+  { name:"Nordic Curls",                  muscle:"Hamstrings",tags:["WED · Legs","SAT · Legs"] },
+  // Cable
+  { name:"Cable Pull Through",            muscle:"Hamstrings",tags:["WED · Legs","SAT · Legs"] },
+  { name:"Cable RDL",                     muscle:"Hamstrings",tags:["WED · Legs","SAT · Legs"] },
+
+  // ══════════════════════════════════════════
+  // GLUTES
+  // ══════════════════════════════════════════
+  // Barbell
+  { name:"Hip Thrust",                    muscle:"Glutes",    tags:["WED · Legs","SAT · Legs"] },
+  { name:"Barbell Glute Bridge",          muscle:"Glutes",    tags:["WED · Legs","SAT · Legs"] },
+  { name:"Smith Hip Thrust",              muscle:"Glutes",    tags:["WED · Legs","SAT · Legs"] },
+  // Dumbbell
+  { name:"DB Hip Thrust",                 muscle:"Glutes",    tags:["WED · Legs","SAT · Legs"] },
+  { name:"Single Leg Hip Thrust",         muscle:"Glutes",    tags:["WED · Legs","SAT · Legs"] },
+  // Machine
+  { name:"Abductor Machine",              muscle:"Glutes",    tags:["WED · Legs","SAT · Legs"] },
+  { name:"Adductor Machine",              muscle:"Glutes",    tags:["WED · Legs","SAT · Legs"] },
+  { name:"Glute Kickback Machine",        muscle:"Glutes",    tags:["WED · Legs","SAT · Legs"] },
+  { name:"Hip Thrust Machine",            muscle:"Glutes",    tags:["WED · Legs","SAT · Legs"] },
+  { name:"Pendulum Hip Thrust",           muscle:"Glutes",    tags:["WED · Legs","SAT · Legs"] },
+  // Cable
+  { name:"Cable Kickback",                muscle:"Glutes",    tags:["WED · Legs","SAT · Legs"] },
+  { name:"Cable Pull Through",            muscle:"Glutes",    tags:["WED · Legs","SAT · Legs"] },
+  { name:"Cable Hip Abduction",           muscle:"Glutes",    tags:["WED · Legs","SAT · Legs"] },
+
+  // ══════════════════════════════════════════
+  // CALVES
+  // ══════════════════════════════════════════
+  { name:"Calf Raises",                   muscle:"Calves",    tags:["WED · Legs","SAT · Legs"] },
+  { name:"Seated Calf Raises",            muscle:"Calves",    tags:["WED · Legs","SAT · Legs"] },
+  { name:"Single Leg Calf Raise",         muscle:"Calves",    tags:["WED · Legs","SAT · Legs"] },
+  { name:"Leg Press Calf Raise",          muscle:"Calves",    tags:["WED · Legs","SAT · Legs"] },
+  { name:"Smith Calf Raises",             muscle:"Calves",    tags:["WED · Legs","SAT · Legs"] },
+  { name:"DB Calf Raises",                muscle:"Calves",    tags:["WED · Legs","SAT · Legs"] },
+  { name:"Donkey Calf Raise",             muscle:"Calves",    tags:["WED · Legs","SAT · Legs"] },
+  { name:"Tibialis Raise",                muscle:"Calves",    tags:["WED · Legs","SAT · Legs"] },
+  { name:"Calf Raise Machine",            muscle:"Calves",    tags:["WED · Legs","SAT · Legs"] },
+  { name:"Seated Calf Machine",           muscle:"Calves",    tags:["WED · Legs","SAT · Legs"] },
+
+  // ══════════════════════════════════════════
+  // CORE
+  // ══════════════════════════════════════════
+  // Weighted
+  { name:"Ab Cable Crunch",               muscle:"Core",      tags:["TUE · Pull","FRI · Upper"] },
+  { name:"Cable Woodchop",                muscle:"Core",      tags:["TUE · Pull"] },
+  { name:"Decline Weighted Crunch",       muscle:"Core",      tags:["TUE · Pull"] },
+  { name:"Landmine Rotation",             muscle:"Core",      tags:["TUE · Pull"] },
+  { name:"Pallof Press",                  muscle:"Core",      tags:["TUE · Pull"] },
+  { name:"Ab Wheel Rollout",              muscle:"Core",      tags:["TUE · Pull"] },
+  { name:"Weighted Situp",                muscle:"Core",      tags:["TUE · Pull"] },
+  { name:"Dragon Flag",                   muscle:"Core",      tags:["TUE · Pull"] },
+  // Machine
+  { name:"Crunch Machine",                muscle:"Core",      tags:["TUE · Pull"] },
+  { name:"Torso Rotation Machine",        muscle:"Core",      tags:["TUE · Pull"] },
+  { name:"Ab Machine",                    muscle:"Core",      tags:["TUE · Pull"] },
+  // Hanging
+  { name:"Hanging Leg Raise",             muscle:"Core",      tags:["TUE · Pull"] },
+  { name:"Hanging Knee Raise",            muscle:"Core",      tags:["TUE · Pull"] },
+  { name:"Toes To Bar",                   muscle:"Core",      tags:["TUE · Pull"] },
+  // Bodyweight
+  { name:"Plank",                         muscle:"Core",      tags:["WED · Legs"] },
+  { name:"Side Plank",                    muscle:"Core",      tags:["WED · Legs"] },
+  { name:"Oblique Crunch",                muscle:"Core",      tags:["TUE · Pull"] },
+  { name:"Decline Crunch",                muscle:"Core",      tags:["TUE · Pull"] },
+  { name:"Bicycle Crunch",                muscle:"Core",      tags:["TUE · Pull"] },
+  { name:"Reverse Crunch",                muscle:"Core",      tags:["TUE · Pull"] },
+  { name:"V-Ups",                         muscle:"Core",      tags:["TUE · Pull"] },
+  { name:"Dead Bug",                      muscle:"Core",      tags:["TUE · Pull"] },
+  { name:"Hollow Body Hold",              muscle:"Core",      tags:["TUE · Pull"] },
+
+  // ══════════════════════════════════════════
+  // FOREARMS
+  // ══════════════════════════════════════════
+  { name:"Barbell Wrist Curl",            muscle:"Forearms",  tags:["TUE · Pull"] },
+  { name:"Barbell Reverse Wrist Curl",    muscle:"Forearms",  tags:["TUE · Pull"] },
+  { name:"DB Wrist Curl",                 muscle:"Forearms",  tags:["TUE · Pull"] },
+  { name:"Wrist Cable Curls",             muscle:"Forearms",  tags:["TUE · Pull"] },
+  { name:"Wrist Roller",                  muscle:"Forearms",  tags:["TUE · Pull"] },
+  { name:"Reverse Curl",                  muscle:"Forearms",  tags:["TUE · Pull"] },
+  { name:"Hammer Curl",                   muscle:"Forearms",  tags:["TUE · Pull"] },
+  { name:"Dead Hangs",                    muscle:"Forearms",  tags:["TUE · Pull"] },
+  { name:"Farmer Carry",                  muscle:"Forearms",  tags:["TUE · Pull"] },
+  { name:"Plate Pinch",                   muscle:"Forearms",  tags:["TUE · Pull"] },
 ];
 
 // Unique muscle groups in order
 const MUSCLE_GROUPS = ["ALL", ...new Set(EXERCISE_LIBRARY.map(e => e.muscle))];
+
 
 // Strength standards as bodyweight multipliers
 // [beginner, intermediate, advanced, elite] × bodyweight
@@ -2318,7 +2613,7 @@ function renderProfile() {
 
   const volSummaryChips = `
     <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">
-      <span style="font-size:9px;font-weight:700;letter-spacing:1px;padding:3px 8px;border-radius:3px;background:#1a2a1a;color:#4ade80">✓ ${onTrackCount} on track</span>
+      <span style="font-size:9px;font-weight:700;letter-spacing:1px;padding:3px 8px;border-radius:3px;background:#1a2a1a;color:#4ade80" style="display:inline-flex;align-items:center;gap:4px"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="display:block;flex-shrink:0"><polyline points="20,6 9,17 4,12"/></svg> ${onTrackCount} on track</span>
       ${underCount ? `<span style="font-size:9px;font-weight:700;letter-spacing:1px;padding:3px 8px;border-radius:3px;background:#2a1a1a;color:#f87171">↓ ${underCount} under</span>` : ""}
       ${noDataCount ? `<span style="font-size:9px;font-weight:700;letter-spacing:1px;padding:3px 8px;border-radius:3px;background:#1a1a1a;color:#555">· ${noDataCount} no data</span>` : ""}
     </div>`;
@@ -2421,7 +2716,7 @@ function renderSearchBar() {
     <span class="search-icon">🔍</span>
     <input class="search-input" id="search-input" type="text" placeholder="Search exercises…" value="${escH(searchQuery)}"
       oninput="setSearch(this.value)" autocomplete="off" autocorrect="off" spellcheck="false">
-    ${searchQuery ? `<button class="search-clear" onclick="setSearch('')">✕</button>` : ""}
+    ${searchQuery ? `<button class="search-clear" onclick="setSearch('')" style="display:flex;align-items:center"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="display:block;flex-shrink:0"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>` : ""}
   </div>`;
 }
 
@@ -2466,8 +2761,8 @@ function renderSearchResults() {
             <div class="ex-sub">${sub}</div>
             ${noteLine}
           </div>
-          <button class="stats-btn" onclick="openStats('${escQ(ex)}','${escQ(day)}')">▲ STATS</button>
-          <button class="manage-btn" onclick="openManage('${escQ(ex)}','${escQ(day)}')">⚙</button>
+          <button class="stats-btn" onclick="openStats('${escQ(ex)}','${escQ(day)}')" style="display:inline-flex;align-items:center;gap:4px;padding:5px 8px"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="display:block;flex-shrink:0"><polyline points="3,17 8,11 13,14 19,6"/><line x1="3" y1="20" x2="21" y2="20"/><line x1="3" y1="4" x2="3" y2="20"/></svg></button>
+          <button class="manage-btn" onclick="openManage('${escQ(ex)}','${escQ(day)}')" style="display:inline-flex;align-items:center;padding:5px 8px"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="display:block;flex-shrink:0"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
           <button class="log-btn" onclick="openLog('${escQ(ex)}','${escQ(day)}')">+ LOG</button>
         </div>
       </div>`;
@@ -2584,7 +2879,7 @@ function render() {
     ${renderSettingsModal()}
 
     <!-- Bottom Nav -->
-    <nav class="bnav">
+    <nav class="bnav"><div class="bnav-inner">
       <button class="bnav-item ${activeNav==="LOG"?"active":""}" onclick="setNav('LOG')">
         <svg class="bnav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
           <!-- dumbbell -->
@@ -2625,7 +2920,7 @@ function render() {
         </svg>
         <span class="bnav-label">MORE</span>
       </button>
-    </nav>
+    </div></nav>
   `;
 
   // Restore search input focus
@@ -2660,7 +2955,7 @@ function renderNavHeader(todayDay) {
       <div style="font-size:10px;color:var(--accent-dim);letter-spacing:3px;margin-bottom:2px">${subs[activeNav]||""}</div>
       <div class="page-title">${titles[activeNav]||""}</div>
     </div>
-    <button class="page-action" onclick="settingsOpen=true;render()" title="Settings">⚙️</button>
+    <button class="page-action" onclick="settingsOpen=true;render()" title="Settings" style="display:flex;align-items:center;color:var(--text-dim)"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="display:block;flex-shrink:0"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
   </div>`;
 }
 
@@ -2755,9 +3050,9 @@ function renderMoreTab() {
         </div>
         <div style="display:flex;align-items:center;gap:8px">
           ${vitChecked
-            ? `<span style="color:var(--accent);font-size:13px">✓</span>`
-            : `<span style="color:#f87171;font-size:13px;font-weight:700">!</span>`}
-          <span class="more-row-arrow">›</span>
+            ? `<span style="display:flex;align-items:center;color:var(--accent)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="display:block;flex-shrink:0"><polyline points="20,6 9,17 4,12"/></svg></span>`
+            : `<span style="display:flex;align-items:center;color:#f87171"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="display:block;flex-shrink:0"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>`}
+          <span class="more-row-arrow" style="display:flex;align-items:center;color:var(--text-mute)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="display:block;flex-shrink:0"><polyline points="9,6 15,12 9,18"/></svg></span>
         </div>
       </div>
     </div>
@@ -2776,7 +3071,7 @@ function renderMoreTab() {
             <div class="more-row-sub">Download all data as JSON</div>
           </div>
         </div>
-        <span class="more-row-arrow">›</span>
+        <span class="more-row-arrow" style="display:flex;align-items:center;color:var(--text-mute)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="display:block;flex-shrink:0"><polyline points="9,6 15,12 9,18"/></svg></span>
       </div>
       <div class="more-row" onclick="document.getElementById('import-file-input').click()">
         <div class="more-row-left">
@@ -2790,7 +3085,7 @@ function renderMoreTab() {
             <div class="more-row-sub">Restore from export file</div>
           </div>
         </div>
-        <span class="more-row-arrow">›</span>
+        <span class="more-row-arrow" style="display:flex;align-items:center;color:var(--text-mute)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="display:block;flex-shrink:0"><polyline points="9,6 15,12 9,18"/></svg></span>
       </div>
       <input type="file" id="import-file-input" accept=".json" onchange="importData(event)" style="display:none">
     </div>
@@ -2808,7 +3103,7 @@ function renderMoreTab() {
             <div class="more-row-sub">Profile, height, theme</div>
           </div>
         </div>
-        <span class="more-row-arrow">›</span>
+        <span class="more-row-arrow" style="display:flex;align-items:center;color:var(--text-mute)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="display:block;flex-shrink:0"><polyline points="9,6 15,12 9,18"/></svg></span>
       </div>
     </div>
 
@@ -2827,7 +3122,7 @@ function renderMoreTab() {
             <div class="more-row-sub">Permanently wipes all logs</div>
           </div>
         </div>
-        <span class="more-row-arrow" style="color:#f87171">›</span>
+        <span class="more-row-arrow" style="display:flex;align-items:center;color:#f87171"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="display:block;flex-shrink:0"><polyline points="9,6 15,12 9,18"/></svg></span>
       </div>
     </div>
   `;
@@ -3009,14 +3304,14 @@ function renderCard(ex) {
       ontouchend="onCardTouchEnd(event,'${escQ(ex)}')"
     >
       <div class="ex-header" onclick="if(!longPressFired)toggleCard('${escQ(ex)}')">
-        <span class="drag-handle" title="Hold to reorder">⠿</span>
+        <span class="drag-handle" title="Hold to reorder" style="display:flex;align-items:center"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="display:block;flex-shrink:0;opacity:0.35"><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="18" x2="16" y2="18"/></svg></span>
         <div style="flex:1;min-width:0">
           <div class="ex-name">${escH(ex)}${prBadge}</div>
           <div class="ex-sub">${sub}</div>
           ${noteLine}
         </div>
-        <button class="stats-btn" onclick="event.stopPropagation();openStats('${escQ(ex)}')">▲ STATS</button>
-        <button class="manage-btn" onclick="event.stopPropagation();openManage('${escQ(ex)}')">⚙</button>
+        <button class="stats-btn" onclick="event.stopPropagation();openStats('${escQ(ex)}')" style="display:inline-flex;align-items:center;gap:4px;padding:5px 8px"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="display:block;flex-shrink:0"><polyline points="3,17 8,11 13,14 19,6"/><line x1="3" y1="20" x2="21" y2="20"/><line x1="3" y1="4" x2="3" y2="20"/></svg></button>
+        <button class="manage-btn" onclick="event.stopPropagation();openManage('${escQ(ex)}')" style="display:inline-flex;align-items:center;padding:5px 8px"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="display:block;flex-shrink:0"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
         <button class="log-btn" onclick="event.stopPropagation();openLog('${escQ(ex)}')">+ LOG</button>
         <span class="chevron">${isOpen?"▲":"▼"}</span>
       </div>
@@ -3207,15 +3502,17 @@ function renderBW() {
     </div>`;
   }).join("") : '<div class="empty">No weigh-ins yet.</div>') : "";
 
-  // ── JSON Paste section ──
+  // ── JSON Paste section — clipboard button ──
   const pasteHtml = bwPasteOpen ? `
     <div class="bw-paste-body">
-      <div class="bw-paste-sub">Paste one entry or an array from OKOK / Apple Health export.<br>
-        Accepted fields: <span style="color:#666">weight</span>, <span style="color:#666">bodyFat</span>, <span style="color:#666">date</span> (MM/DD or YYYY-MM-DD)
+      <div class="bw-paste-sub">Accepts one entry or an array from OKOK / Apple Health export.<br>
+        Fields: <span style="color:#666">weight</span>, <span style="color:#666">bodyFat</span>, <span style="color:#666">date</span> (MM/DD or YYYY-MM-DD)
       </div>
-      <textarea class="bw-paste-textarea" id="bw-paste-input" placeholder='{"weight": 182.4, "bodyFat": 18.2, "date": "05/09"}&#10;&#10;or paste an array:&#10;[{"weight":182,"bodyFat":18,"date":"05/01"}, ...]'></textarea>
-      <div id="bw-paste-status" class="bw-paste-status"></div>
-      <button class="bw-paste-btn" onclick="submitBWPaste()">IMPORT</button>
+      <div id="bw-paste-status" class="bw-paste-status" style="min-height:16px;margin-bottom:6px"></div>
+      <div style="display:flex;gap:8px">
+        <button class="bw-paste-btn" style="flex:1" onclick="importBWFromClipboard()">📋 PASTE FROM CLIPBOARD</button>
+        <button class="bw-paste-btn" style="flex:1;background:var(--surface2);color:var(--text-dim);border:1px solid var(--border)" onclick="bwPasteOpen=false;render()">CANCEL</button>
+      </div>
     </div>` : "";
 
   return `
@@ -3233,7 +3530,7 @@ function renderBW() {
     <!-- Action buttons -->
     <div style="display:flex;gap:8px;margin-bottom:10px">
       <button class="bw-log-btn" style="margin-bottom:0;flex:2" onclick="openBW()">+ LOG WEIGH-IN</button>
-      <button class="bw-log-btn" style="margin-bottom:0;flex:1;background:var(--surface2);color:var(--text-dim);border:1px solid var(--border)" onclick="openManageBW()">⚙ MANAGE</button>
+      <button class="bw-log-btn" style="margin-bottom:0;flex:1;background:var(--surface2);color:var(--text-dim);border:1px solid var(--border)" onclick="openManageBW()" style="display:inline-flex;align-items:center;gap:6px"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="display:block;flex-shrink:0"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> MANAGE</button>
     </div>
 
     <!-- JSON paste card -->
@@ -3332,7 +3629,7 @@ function renderNewExModal() {
         <div class="picker-header">
           <div class="picker-title-row">
             <span class="picker-title">ADD EXERCISE</span>
-            <button class="picker-close" onclick="closeNewEx()">✕</button>
+            <button class="picker-close" onclick="closeNewEx()" style="display:flex;align-items:center"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="display:block;flex-shrink:0"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
           </div>
           <div class="picker-search-wrap">
             <input class="picker-search" id="picker-search-input"
@@ -3340,7 +3637,7 @@ function renderNewExModal() {
               value="${escH(pickerSearch)}"
               oninput="pickerSearch=this.value;renderPickerOnly()"
               autocomplete="off" autocorrect="off" spellcheck="false">
-            ${pickerSearch ? `<button class="picker-search-x" onclick="pickerSearch='';renderPickerOnly()">✕</button>` : ""}
+            ${pickerSearch ? `<button class="picker-search-x" onclick="pickerSearch='';renderPickerOnly()" style="display:flex;align-items:center"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="display:block;flex-shrink:0"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>` : ""}
           </div>
           <div class="picker-muscles">
             ${MUSCLE_GROUPS.map(m => `
@@ -3507,13 +3804,35 @@ function submitLog() {
 function openBW() { addingBW=true; render(); setTimeout(()=>{const el=document.getElementById("bw-weight");if(el)el.focus();},50); }
 function closeBW() { addingBW=false; render(); }
 
-function submitBWPaste() {
-  const raw = (document.getElementById("bw-paste-input") || {}).value || "";
+function importBWFromClipboard() {
   const statusEl = document.getElementById("bw-paste-status");
   const setStatus = (msg, ok) => {
     if (!statusEl) return;
     statusEl.textContent = msg;
     statusEl.className = "bw-paste-status " + (ok ? "ok" : "err");
+    statusEl.style.display = "block";
+  };
+  if (!navigator.clipboard || !navigator.clipboard.readText) {
+    setStatus("Clipboard not available — try a different browser.", false);
+    return;
+  }
+  setStatus("Reading clipboard…", true);
+  navigator.clipboard.readText().then(text => {
+    if (!text.trim()) { setStatus("Clipboard is empty.", false); return; }
+    submitBWPaste(text);
+  }).catch(() => {
+    setStatus("Clipboard permission denied — grant access and try again.", false);
+  });
+}
+
+function submitBWPaste(raw) {
+  if (raw === undefined) raw = (document.getElementById("bw-paste-input") || {}).value || "";
+  const statusEl = document.getElementById("bw-paste-status");
+  const setStatus = (msg, ok) => {
+    if (!statusEl) return;
+    statusEl.textContent = msg;
+    statusEl.className = "bw-paste-status " + (ok ? "ok" : "err");
+    statusEl.style.display = "block";
   };
   if (!raw.trim()) { setStatus("Nothing to import.", false); return; }
 
@@ -3577,8 +3896,7 @@ function submitBWPaste() {
   }
   save();
   setStatus(`✓ Added ${added} entr${added!==1?"ies":"y"}${skipped ? ", " + skipped + " skipped" : ""}.`, true);
-  if (document.getElementById("bw-paste-input")) document.getElementById("bw-paste-input").value = "";
-  render();
+  setTimeout(() => { bwPasteOpen = false; render(); }, 1400);
 }
 
 function submitBW() {
@@ -3746,6 +4064,43 @@ function _updateRangeSVG() {
     if (lblS) lblS.textContent = labelForFrac(rs);
     if (lblE) lblE.textContent = labelForFrac(re);
   }
+}
+
+// ── Settings sheet swipe-to-close ────────────────────────────
+function startSettingsDrag(e) {
+  e.stopPropagation();
+  const startY = e.touches ? e.touches[0].clientY : e.clientY;
+  const sheet = document.querySelector('.settings-sheet');
+  if (!sheet) return;
+  let dy = 0;
+
+  const move = ev => {
+    if (ev.cancelable) ev.preventDefault();
+    const cy = ev.touches ? ev.touches[0].clientY : ev.clientY;
+    dy = Math.max(0, cy - startY); // only allow downward drag
+    sheet.style.transform = `translateY(${dy}px)`;
+    sheet.style.transition = 'none';
+  };
+  const up = () => {
+    document.removeEventListener('pointermove', move);
+    document.removeEventListener('pointerup', up);
+    document.removeEventListener('touchmove', move);
+    document.removeEventListener('touchend', up);
+    if (dy > 80) {
+      // Enough drag — animate out then close
+      sheet.style.transition = 'transform 0.2s ease';
+      sheet.style.transform = 'translateY(100%)';
+      setTimeout(() => { settingsOpen = false; render(); }, 200);
+    } else {
+      // Snap back
+      sheet.style.transition = 'transform 0.2s ease';
+      sheet.style.transform = 'translateY(0)';
+    }
+  };
+  document.addEventListener('pointermove', move);
+  document.addEventListener('pointerup', up);
+  document.addEventListener('touchmove', move, { passive: false });
+  document.addEventListener('touchend', up);
 }
 
 load(); render();
