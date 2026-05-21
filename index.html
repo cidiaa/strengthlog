@@ -628,7 +628,7 @@ let activeTheme = "default"; // default | ocean | ember | mono
 let statsEx = null;        // exercise name
 let statsTab = null;       // which day
 let statsShowBW = false;   // toggle body weight overlay
-let statsMetric = "weight"; // "weight" | "volume" | "avg"
+let statsMetric = "1rm"; // "1rm" | "weight" | "volume" | "avg"
 let statsActiveDate = null; // tapped dot date — shows session detail panel
 let statsRangeStart = null; // fractional 0–1, left handle position
 let statsRangeEnd = null;   // fractional 0–1, right handle position
@@ -985,7 +985,7 @@ function openStats(ex, tab) { if (activeNav !== 'LOG' && activeNav !== 'PROGRESS
   statsRangeEnd = 1;
   const entries = getAllEntriesForEx(ex);
   const hasResolvableWeight = entries.some(e => resolveWeight(e) !== null);
-  statsMetric = hasResolvableWeight ? "weight" : "avg";
+  statsMetric = hasResolvableWeight ? "1rm" : "avg";
   render();
 }
 function closeStats() { statsEx = null; statsTab = null; statsActiveDate = null; render(); }
@@ -1033,18 +1033,27 @@ function setStatsPreset(days) {
 // Each session carries the raw entries plus a representative "top value"
 // per metric so the graph has one clean dot per date.
 function groupSessionsByDate(entries) {
-  // entries already sorted chronologically
+  // Group by normalized date key (timestamp) so MM/DD and MM/DD/YYYY don't split
   const map = new Map();
+  const keyToDate = new Map(); // canonical date string per key
   for (const e of entries) {
-    if (!map.has(e.date)) map.set(e.date, []);
-    map.get(e.date).push(e);
+    const k = dateKey(e.date);
+    if (!map.has(k)) {
+      map.set(k, []);
+      keyToDate.set(k, e.date); // store the first date string seen for this day
+    }
+    map.get(k).push(e);
   }
-  return [...map.entries()].map(([date, raws]) => {
-    // Top weight: highest numeric weight in session (best calibration attempt)
-    const numericWeights = raws.map(e => resolveWeight(e)).filter(v => v !== null);
-    const topWeight = numericWeights.length ? Math.max(...numericWeights) : null;
+  // Sort by timestamp so sessions are chronological
+  const sortedKeys = [...map.keys()].sort((a,b) => a - b);
+  return sortedKeys.map(k => {
+    const raws = map.get(k);
+    const date = keyToDate.get(k);
 
-    // For non-numeric weights, pick the entry with most total reps as "top"
+    // Top weight: highest resolved weight in session
+    const resolvedWeights = raws.map(e => resolveWeight(e)).filter(v => v !== null);
+    const topWeight = resolvedWeights.length ? Math.max(...resolvedWeights) : null;
+
     const topEntry = topWeight !== null
       ? raws.reduce((best, e) => {
           const w = resolveWeight(e) ?? 0;
@@ -1054,24 +1063,32 @@ function groupSessionsByDate(entries) {
         })
       : raws.reduce((best, e) => totalReps(e.sets) > totalReps(best.sets) ? e : best);
 
-    // Session totals
     const sessionVolume = raws.reduce((sum, e) => {
       const w = resolveWeight(e) ?? 1;
       return sum + totalReps(e.sets) * w;
     }, 0);
     const sessionAvgReps = raws.reduce((sum, e) => sum + avgReps(e.sets), 0) / raws.length;
 
-    // Best BW for this date
-    const bw = topEntry.bw || getBWForDate(date);
+    // Best estimated 1RM for the session
+    const top1RM = raws.reduce((best, e) => {
+      const w = resolveWeight(e);
+      if (!w) return best;
+      const rm = Math.max(...e.sets.map(r => est1RM(w, r)));
+      return rm > best ? rm : best;
+    }, 0) || null;
 
-    return { date, raws, topEntry, topWeight, sessionVolume, sessionAvgReps, bw };
+    // BW for this date — always look up fresh so it reflects actual logged BW
+    const bw = getBWForDate(date);
+
+    return { date, raws, topEntry, topWeight, top1RM, sessionVolume, sessionAvgReps, bw };
   });
 }
 
 function sessionMetricVal(session) {
   if (statsMetric === "volume") return session.sessionVolume;
   if (statsMetric === "avg") return session.sessionAvgReps;
-  return session.topWeight; // already resolved via resolveWeight in groupSessionsByDate
+  if (statsMetric === "1rm") return session.top1RM;
+  return session.topWeight;
 }
 
 // ── Range Slider ─────────────────────────────────────────────
@@ -1222,6 +1239,8 @@ function renderStatsModal() {
   // For weight metric, filter sessions that have no numeric weight
   const metricFiltered = statsMetric === "weight"
     ? sessions.filter(s => s.topWeight !== null)
+    : statsMetric === "1rm"
+    ? sessions.filter(s => s.top1RM !== null)
     : sessions;
 
   const visibleSessions = metricFiltered.filter((s, i) => {
@@ -1238,7 +1257,7 @@ function renderStatsModal() {
   const hasBWData = Array.isArray(data["BODY"]) && data["BODY"].length > 0;
 
   // ── Graph ─────────────────────────────────────────────────
-  if (statsMetric === "weight" && !hasResolvableWeight) {
+  if ((statsMetric === "weight" || statsMetric === "1rm") && !hasResolvableWeight) {
     graphSVG = `<div class="no-data-msg" style="padding:24px 0">
       <div style="color:#5ab4f5;margin-bottom:6px">NO NUMERIC WEIGHT</div>
       <div style="color:#444;font-size:10px">Weight "${escH(allSorted[0]?.weight ?? "")}" can't be parsed — use Npl for plates or a number. Switch to AVG REPS to see rep progress.</div>
@@ -1392,9 +1411,10 @@ function renderStatsModal() {
     const fmt = v => statsMetric === "avg" ? v.toFixed(1) : statsMetric === "volume" ? Math.round(v).toLocaleString() : v.toFixed(0);
 
     const visibleEntries = visibleSessions.flatMap(s => s.raws);
-    const best1RM = statsMetric === "weight" ? getBest1RM(visibleEntries) : null;
+    const best1RM = (statsMetric === "weight" || statsMetric === "1rm") ? getBest1RM(visibleEntries) : null;
     const isFiltered = (statsRangeStart ?? 0) > 0.001 || (statsRangeEnd ?? 1) < 0.999;
-    const rm1Banner = best1RM ? `
+    // On 1rm metric the banner IS the graph so skip the separate banner
+    const rm1Banner = (best1RM && statsMetric === "weight") ? `
       <div style="display:flex;align-items:center;justify-content:space-between;background:#0f1a2a;border:1px solid #1e3a4a;border-radius:4px;padding:8px 12px;margin-bottom:10px">
         <span style="font-size:9px;color:#5ab4f5;letter-spacing:2px">EST. 1RM (EPLEY)${isFiltered ? " · SELECTED RANGE" : " · ALL TIME"}</span>
         <span style="font-size:18px;font-weight:700;color:#5ab4f5">${best1RM} <span style="font-size:11px;opacity:0.7">lbs</span></span>
@@ -1409,47 +1429,57 @@ function renderStatsModal() {
       <div class="s-stat"><div class="s-stat-lbl">SESSIONS</div><div class="s-stat-val">${sessions.length}</div></div>
     </div>`;
 
-    // ── Session history list (grouped by date) ──
+    // ── Session history list ──
+    // Pre-compute per-session 1RM for drop detection
+    const sessionsWith1RM = sessions.map(s => ({ ...s, rm: s.top1RM }));
+
     const prDates = new Set();
     {
-      let runMaxW = -Infinity;
-      const repMaxByW = {};
+      let runMaxRM = -Infinity;
       for (const sess of visibleSessions) {
-        const w = sess.topWeight ?? -1;
-        const maxRep = Math.max(...sess.raws.flatMap(e => e.sets));
-        const key = sess.date;
-        if (w > runMaxW) { runMaxW = w; prDates.add(key); }
-        else if (w === runMaxW) {
-          const prevBest = repMaxByW[w] ?? 0;
-          if (maxRep > prevBest) prDates.add(key);
-        }
-        repMaxByW[w] = Math.max(repMaxByW[w] ?? 0, maxRep);
+        const rm = sess.top1RM ?? -1;
+        if (rm > runMaxRM) { runMaxRM = rm; prDates.add(sess.date); }
       }
     }
 
     summaryHtml += `<div class="manage-section-title" style="margin-top:14px;margin-bottom:6px">SESSION HISTORY</div>
       <div style="max-height:200px;overflow-y:auto">
-      ${sessions.slice().reverse().map((sess) => {
+      ${sessions.slice().reverse().map((sess, ri) => {
         const isPRSess = prDates.has(sess.date);
         const isActive = statsActiveDate === sess.date;
         const v = sessionMetricVal(sess);
         const topFmt = v !== null ? fmt(v) : "—";
-        return `<div onclick="setStatsDate('${escQ(sess.date)}')" style="padding:7px 0;border-bottom:1px solid #1a1a1a;cursor:pointer;${isActive?"background:#0f1a0f;margin:0 -4px;padding-left:4px;padding-right:4px;border-radius:3px":""}">
+
+        // 1RM drop detection: weight went up but 1RM dropped
+        const allSessList = sessions;
+        const si = allSessList.length - 1 - ri;
+        const prevSess = allSessList[si - 1];
+        const rmDrop = prevSess && sess.top1RM && prevSess.top1RM
+          && sess.topWeight > (prevSess.topWeight ?? 0)
+          && sess.top1RM < prevSess.top1RM;
+        const rmDropAmt = rmDrop ? Math.round(prevSess.top1RM - sess.top1RM) : 0;
+
+        return `<div onclick="setStatsDate('${escQ(sess.date)}')" style="padding:7px 0;border-bottom:1px solid var(--border2);cursor:pointer;${isActive?"background:color-mix(in srgb,var(--accent) 6%,var(--surface));margin:0 -4px;padding-left:4px;padding-right:4px;border-radius:3px":""}">
           <div style="display:flex;align-items:baseline;gap:6px">
             <span class="mrow-date">${escH(fmtDate(sess.date))}</span>
             ${isPRSess?`<span style="color:#f5c542;font-size:10px">🏆</span>`:""}
-            ${sess.raws.length>1?`<span style="color:#f5a05a;font-size:9px;letter-spacing:1px">${sess.raws.length} SETS</span>`:""}
-            <span style="margin-left:auto;font-size:11px;color:${statsMetric==="weight"?"#c8f55a":"#5ab4f5"}">${topFmt}${unit}</span>
+            ${sess.raws.length>1?`<span style="color:#f5a05a;font-size:9px;letter-spacing:1px">${sess.raws.length} sets</span>`:""}
+            ${rmDrop?`<span title="Weight up but est. 1RM dropped ${rmDropAmt} lbs — consider building reps before adding load" style="color:#f87171;font-size:9px;cursor:help">↓${rmDropAmt} 1RM ⚠</span>`:""}
+            <span style="margin-left:auto;font-size:11px;color:${statsMetric==="1rm"||statsMetric==="weight"?"var(--accent)":"var(--secondary)"}">${topFmt}${unit}</span>
           </div>
-          <div style="font-size:10px;color:#555;margin-top:2px">
-            ${sess.raws.map(e => `${escH(fmtW(e.weight))} [${escH(fmtSets(e.sets))}]`).join("  ·  ")}
+          <div style="font-size:10px;color:var(--text-mute);margin-top:2px">
+            ${sess.raws.map(e => {
+              const w = resolveWeight(e);
+              const sessRM = w ? est1RM(w, Math.max(...e.sets)) : null;
+              return `${escH(fmtW(e.weight))} [${escH(fmtSets(e.sets))}]${sessRM ? ` <span style="color:var(--secondary);font-size:9px">~${sessRM}</span>` : ""}`;
+            }).join("  ·  ")}
           </div>
         </div>`;
       }).join("")}
       </div>`;
   }
 
-  const metricLabels = { weight: "WEIGHT", volume: "VOLUME", avg: "AVG REPS" };
+  const metricLabels = { "1rm": "EST 1RM", weight: "WEIGHT", volume: "VOLUME", avg: "AVG REPS" };
   const daysWithEx = WORKOUT_DAYS.filter(d => data[d]?.[statsEx] !== undefined);
   const multiDay = daysWithEx.length > 1;
   const sliderHtml = sessions.length >= 2
@@ -2854,13 +2884,15 @@ function toggleVitamin() {
   save(); render();
 }
 
+function vitToggleDay(key) {} // backdating disabled — today only
+
 function renderVitamins() {
   const checked = getVitChecked();
   const dayNames = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
   const d = new Date();
   const dayStr = dayNames[d.getDay()] + ", " + (d.getMonth()+1) + "/" + d.getDate();
 
-  // Last 7 days streak — use MM/DD/YYYY keys to match today()
+  // Last 7 days streak
   const days = [];
   for (let i = 6; i >= 0; i--) {
     const dd = new Date(); dd.setDate(dd.getDate() - i);
@@ -2876,6 +2908,65 @@ function renderVitamins() {
       <div style="width:10px;height:10px;border-radius:50%;background:${d.checked ? "var(--accent)" : "var(--surface2)"}"></div>
       <span style="font-size:8px;color:#444">${d.displayKey.slice(3)}</span>
     </div>`).join("");
+
+  // ── Monthly calendar ──────────────────────────────────────
+  const now = new Date();
+  const calYear = now.getFullYear();
+  const calMonth = now.getMonth();
+  const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+  const firstDay = new Date(calYear, calMonth, 1).getDay();
+  const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+  const todayDate = now.getDate();
+
+  function vitKeyForDay(day) {
+    return String(calMonth+1).padStart(2,"0") + "/" + String(day).padStart(2,"0") + "/" + calYear;
+  }
+
+  const dayHeaders = ["S","M","T","W","T","F","S"].map(h =>
+    `<div style="text-align:center;font-size:9px;color:var(--text-mute);font-weight:700;padding-bottom:6px">${h}</div>`
+  ).join("");
+
+  const emptyCells = Array(firstDay).fill(`<div></div>`).join("");
+
+  const dayCells = Array.from({length: daysInMonth}, (_, i) => {
+    const day = i + 1;
+    const key = vitKeyForDay(day);
+    const taken = !!(data.vitamins && data.vitamins[key]);
+    const isToday = day === todayDate;
+    const isPast = day < todayDate;
+    const isFuture = day > todayDate;
+
+    if (isFuture) {
+      // Future: empty dim dot, not tappable
+      return `<div style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:3px 0">
+        <div style="width:8px;height:8px;border-radius:50%;background:var(--surface2);opacity:0.3"></div>
+        <span style="font-size:8px;color:var(--border)">${day}</span>
+      </div>`;
+    }
+
+    if (isToday) {
+      // Today: tappable, filled if taken, outlined ring if not
+      const dotBg = taken ? "var(--accent)" : "transparent";
+      const dotBorder = taken ? "none" : "2px solid var(--accent-dim)";
+      return `<div onclick="toggleVitamin()" style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:3px 0;cursor:pointer">
+        <div style="width:8px;height:8px;border-radius:50%;background:${dotBg};border:${dotBorder};box-sizing:border-box"></div>
+        <span style="font-size:8px;color:var(--accent);font-weight:700">${day}</span>
+      </div>`;
+    }
+
+    // Past: read-only, filled dot if taken, dim empty if not
+    const dotBg = taken ? "var(--accent)" : "var(--surface2)";
+    const opacity = taken ? "1" : "0.4";
+    return `<div style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:3px 0">
+      <div style="width:8px;height:8px;border-radius:50%;background:${dotBg};opacity:${opacity}"></div>
+      <span style="font-size:8px;color:var(--text-mute);opacity:${opacity}">${day}</span>
+    </div>`;
+  }).join("");
+
+  const takenThisMonth = Array.from({length: todayDate}, (_, i) => vitKeyForDay(i+1))
+    .filter(k => data.vitamins?.[k]).length;
+  const pctThisMonth = Math.round((takenThisMonth / todayDate) * 100);
 
   return `
     <div style="text-align:center;padding:32px 20px 20px">
@@ -2897,12 +2988,25 @@ function renderVitamins() {
       </div>
 
       <!-- 7-day streak dots -->
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;">
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px">
         <div style="font-size:9px;color:var(--text-dim);letter-spacing:2px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center">
           <span>LAST 7 DAYS</span>
           <span style="color:var(--accent)">${streakCount > 0 ? streakCount + " day streak 🔥" : "Start your streak"}</span>
         </div>
         <div style="display:flex;justify-content:space-between;padding:0 4px">${dots}</div>
+      </div>
+
+      <!-- Monthly calendar -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+          <span style="font-size:9px;color:var(--text-dim);letter-spacing:2px">${monthNames[calMonth].toUpperCase()} ${calYear}</span>
+          <span style="font-size:9px;color:var(--accent)">${takenThisMonth}/${todayDate} days · ${pctThisMonth}%</span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px">
+          ${dayHeaders}
+          ${emptyCells}
+          ${dayCells}
+        </div>
       </div>
     </div>`;
 }
