@@ -913,21 +913,21 @@ function isPR(entries) {
   const prevEntries = sorted.slice(0, -1);
 
   if (lw !== null) {
-    const prevMaxW = Math.max(...prevEntries.map(e => resolveWeight(e) ?? 0));
-    if (lw > prevMaxW) return true;
-    const lastMaxRep = Math.max(...last.sets);
-    const prevMaxRep = Math.max(...prevEntries.flatMap(e => {
+    // Use estimated 1RM as the source of truth so that adding weight
+    // but losing reps (net 1RM drop) does NOT count as a PR.
+    const last1RM = Math.max(...last.sets.map(r => est1RM(lw, r)));
+    const prev1RM = Math.max(...prevEntries.map(e => {
       const ew = resolveWeight(e);
-      return ew === lw ? e.sets : [];
-    }), 0);
-    if (lastMaxRep > prevMaxRep) return true;
+      if (!ew) return 0;
+      return Math.max(...e.sets.map(r => est1RM(ew, r)));
+    }));
+    return last1RM > prev1RM;
   } else {
     // Non-parseable weight — PR on reps only
     const lastMaxRep = Math.max(...last.sets);
     const prevMaxRep = Math.max(...prevEntries.flatMap(e => e.sets), 0);
-    if (lastMaxRep > prevMaxRep) return true;
+    return lastMaxRep > prevMaxRep;
   }
-  return false;
 }
 
 function escH(s) { return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
